@@ -23,6 +23,7 @@ final class ContextEngineService: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var indexedSinceLastCluster: Int = 0
     private let reclusterThreshold = 10
+    private let minProjectEntriesToDisplay = 5
 
     /// Approximate characters per token for budget estimation.
     private let charsPerToken: Double = 4.0
@@ -49,6 +50,75 @@ final class ContextEngineService: ObservableObject {
     }
 
     // MARK: - Public API
+
+    var displayableClusters: [ProjectCluster] {
+        clusters
+            .filter { $0.entryCount >= minProjectEntriesToDisplay && $0.entryCount > 0 && !$0.isHidden }
+            .sorted { lhs, rhs in
+                if lhs.entryCount == rhs.entryCount {
+                    return sanitizedClusterName(for: lhs) < sanitizedClusterName(for: rhs)
+                }
+                return lhs.entryCount > rhs.entryCount
+            }
+    }
+
+    func sanitizedClusterName(for cluster: ProjectCluster, maxLength: Int = 25) -> String {
+        let fallbackIndex = fallbackClusterIndex(for: cluster.id)
+        let preferred = cluster.effectiveDisplayName
+        return sanitizeProjectName(
+            preferred,
+            fallbackClusterIndex: fallbackIndex,
+            maxLength: maxLength,
+            maxWords: 2
+        )
+    }
+
+    @discardableResult
+    func renameCluster(clusterID: UUID, to customName: String) -> Bool {
+        guard let store else { return false }
+
+        let trimmed = customName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let fallbackIndex = fallbackClusterIndex(for: clusterID)
+        let sanitized = sanitizeProjectName(
+            trimmed,
+            fallbackClusterIndex: fallbackIndex,
+            maxLength: 25,
+            maxWords: 2
+        )
+
+        let explicitCustomName: String?
+        if sanitized == "Project \(fallbackIndex)" || sanitized == "Project" {
+            explicitCustomName = nil
+        } else {
+            explicitCustomName = sanitized
+        }
+
+        do {
+            try store.updateClusterCustomName(clusterID: clusterID, customName: explicitCustomName)
+            if let index = clusters.firstIndex(where: { $0.id == clusterID }) {
+                clusters[index].customName = explicitCustomName
+            }
+            return true
+        } catch {
+            Logger.shared.error("ContextEngineService: Failed to rename cluster", error: error)
+            return false
+        }
+    }
+
+    @discardableResult
+    func setClusterHidden(clusterID: UUID, hidden: Bool) -> Bool {
+        guard let store else { return false }
+        do {
+            try store.updateClusterHidden(clusterID: clusterID, isHidden: hidden)
+            if let index = clusters.firstIndex(where: { $0.id == clusterID }) {
+                clusters[index].isHidden = hidden
+            }
+            return true
+        } catch {
+            Logger.shared.error("ContextEngineService: Failed to update cluster visibility", error: error)
+            return false
+        }
+    }
 
     /// Index an optimization (input + output) for future context retrieval.
     func indexOptimization(
@@ -201,16 +271,37 @@ final class ContextEngineService: ObservableObject {
                 // Build ProjectCluster objects
                 let colors = ["#7C3AED", "#2563EB", "#059669", "#D97706", "#DC2626", "#EC4899", "#8B5CF6", "#0891B2"]
                 var newClusters: [ProjectCluster] = []
+                let existingClustersByID = Dictionary(uniqueKeysWithValues: self.clusters.map { ($0.id, $0) })
+                var usedExistingClusterIDs = Set<UUID>()
+                let sortedGroups = clusterGroups.sorted { lhs, rhs in
+                    if lhs.value.count == rhs.value.count {
+                        return lhs.key < rhs.key
+                    }
+                    return lhs.value.count > rhs.value.count
+                }
 
-                for (idx, (_, memberIDs)) in clusterGroups.enumerated() {
+                for (idx, (_, memberIDs)) in sortedGroups.enumerated() {
                     let memberEntries = entries.filter { memberIDs.contains($0.id) }
                     let centroid = self.clusterEngine.computeCentroid(embeddings: memberEntries.map(\.embedding))
-                    let name = self.generateClusterName(from: memberEntries)
+                    let generatedName = self.generateClusterName(from: memberEntries, clusterIndex: idx + 1)
                     let color = colors[idx % colors.count]
 
+                    let reusedClusterID = self.bestMatchingExistingClusterID(
+                        from: memberEntries,
+                        existingClusters: existingClustersByID,
+                        alreadyUsed: usedExistingClusterIDs
+                    )
+                    let preservedCluster = reusedClusterID.flatMap { existingClustersByID[$0] }
+                    if let reusedClusterID {
+                        usedExistingClusterIDs.insert(reusedClusterID)
+                    }
+
                     let cluster = ProjectCluster(
-                        displayName: name,
-                        color: color,
+                        id: preservedCluster?.id ?? UUID(),
+                        displayName: generatedName,
+                        customName: preservedCluster?.customName,
+                        isHidden: preservedCluster?.isHidden ?? false,
+                        color: preservedCluster?.color ?? color,
                         entryCount: memberIDs.count,
                         centroid: centroid
                     )
@@ -245,7 +336,10 @@ final class ContextEngineService: ObservableObject {
         do {
             guard let entry = try store.entryByPromptID(promptID) else { return nil }
             guard let clusterID = entry.clusterID else { return nil }
-            return clusters.first { $0.id == clusterID }
+            guard let cluster = clusters.first(where: { $0.id == clusterID }) else { return nil }
+            guard cluster.entryCount >= minProjectEntriesToDisplay else { return nil }
+            guard !cluster.isHidden else { return nil }
+            return cluster
         } catch {
             return nil
         }
@@ -448,86 +542,211 @@ final class ContextEngineService: ObservableObject {
         }
     }
 
-    /// Common English stop words to exclude from project naming.
-    private static let stopWords: Set<String> = [
-        "the", "a", "an", "is", "are", "was", "were", "be", "been", "being",
-        "have", "has", "had", "do", "does", "did", "will", "would", "shall",
-        "should", "may", "might", "must", "can", "could", "to", "of", "in",
-        "for", "on", "with", "at", "by", "from", "as", "into", "through",
-        "during", "before", "after", "above", "below", "between", "out",
-        "and", "but", "or", "nor", "not", "so", "yet", "both", "either",
-        "neither", "each", "every", "all", "any", "few", "more", "most",
-        "other", "some", "such", "no", "only", "own", "same", "than",
-        "too", "very", "just", "also", "now", "here", "there", "when",
-        "where", "why", "how", "what", "which", "who", "whom", "this",
-        "that", "these", "those", "i", "me", "my", "we", "our", "you",
-        "your", "he", "him", "his", "she", "her", "it", "its", "they",
-        "them", "their", "make", "use", "get", "add", "set", "put",
+    /// Words that should never appear in generated project names.
+    private static let projectNameFillerWords: Set<String> = [
+        "the", "a", "an", "new", "old", "my", "our", "this", "that",
+        "see", "get", "make", "do", "everything", "nothing", "finished",
+        "started", "working", "broken", "is", "are", "was", "were", "be",
+        "been", "being", "and", "or", "but", "to", "of", "in", "on", "for",
+        "with", "at", "by", "from", "as", "it", "its", "your", "their"
     ]
 
-    private func generateClusterName(from entries: [ContextEntry]) -> String {
-        // Primary source: structured entities.
-        let projects = entries.flatMap(\.projects).map { normalizeEntityToken($0) }.filter { !$0.isEmpty }
-        let environments = entries.flatMap(\.environments).map { normalizeEntityToken($0) }.filter { !$0.isEmpty }
-        let technicalTerms = entries.flatMap(\.technicalTerms).map { normalizeEntityToken($0) }.filter { !$0.isEmpty }
-        let persons = entries.flatMap(\.persons).map { normalizeEntityToken($0) }.filter { !$0.isEmpty }
+    private static let uppercaseAcronyms: Set<String> = [
+        "api", "vps", "sdk", "db", "sql", "ui", "ux", "qa", "ci", "cd", "aws", "gcp"
+    ]
 
-        if !projects.isEmpty || !environments.isEmpty || !technicalTerms.isEmpty || !persons.isEmpty {
-            let topProject = mostFrequentToken(in: projects)
-            let topEnvironment = mostFrequentToken(in: environments)
-            let topTechnical = mostFrequentToken(in: technicalTerms)
-            let topPerson = mostFrequentToken(in: persons)
+    func generateClusterName(from entries: [ContextEntry], clusterIndex: Int) -> String {
+        guard !entries.isEmpty else {
+            return sanitizeProjectName("", fallbackClusterIndex: clusterIndex)
+        }
 
-            var parts: [String] = []
-            if let env = topEnvironment { parts.append(env) }
-            if let project = topProject {
-                parts.append(project)
-            } else if let technical = topTechnical {
-                parts.append(technical)
-            } else if let person = topPerson {
-                parts.append(person)
-            }
+        let projects = entityFrequency(in: entries, extractor: \.projects)
+        let environments = entityFrequency(in: entries, extractor: \.environments)
+        let technicalTerms = entityFrequency(in: entries, extractor: \.technicalTerms)
+        let persons = entityFrequency(in: entries, extractor: \.persons)
 
-            let entityName = parts.joined(separator: "-")
-            if !entityName.isEmpty {
-                return String(entityName.prefix(30))
+        let orderedCategories: [(name: String, frequency: [String: Int])] = [
+            ("project", projects),
+            ("environment", environments),
+            ("technicalTerm", technicalTerms),
+            ("person", persons)
+        ]
+
+        var primaryCategoryName: String?
+        var primaryEntity: String?
+        var primaryCount = 0
+
+        for category in orderedCategories {
+            guard let top = topEntity(in: category.frequency) else { continue }
+            primaryCategoryName = category.name
+            primaryEntity = top.entity
+            primaryCount = top.count
+            break
+        }
+
+        guard let primaryCategoryName, let primaryEntity else {
+            return sanitizeProjectName("", fallbackClusterIndex: clusterIndex)
+        }
+
+        var selectedName = primaryEntity
+        let primaryWordCount = primaryEntity.split(separator: " ", omittingEmptySubsequences: true).count
+
+        if primaryWordCount == 1 {
+            let secondaryThreshold = max(2, Int(ceil(Double(primaryCount) * 0.5)))
+
+            let secondaryCandidates = orderedCategories
+                .filter { $0.name != primaryCategoryName }
+                .compactMap { category -> (entity: String, count: Int)? in
+                    guard let top = topEntity(in: category.frequency) else { return nil }
+                    let wordCount = top.entity.split(separator: " ", omittingEmptySubsequences: true).count
+                    guard wordCount == 1 else { return nil }
+                    guard top.count >= secondaryThreshold else { return nil }
+                    guard top.entity != primaryEntity else { return nil }
+                    return (top.entity, top.count)
+                }
+                .sorted { lhs, rhs in
+                    if lhs.count == rhs.count {
+                        return lhs.entity < rhs.entity
+                    }
+                    return lhs.count > rhs.count
+                }
+
+            if let secondary = secondaryCandidates.first {
+                selectedName = "\(primaryEntity) \(secondary.entity)"
             }
         }
 
-        // Fallback source: text term extraction.
-        let allInputText = entries.map(\.text).joined(separator: " ").lowercased()
-        let cleaned = applyStopPhraseFilter(to: allInputText)
+        return sanitizeProjectName(
+            selectedName,
+            fallbackClusterIndex: clusterIndex,
+            maxLength: 25,
+            maxWords: 2
+        )
+    }
 
-        let words = cleaned.components(separatedBy: .alphanumerics.inverted)
-            .filter { $0.count > 2 && !Self.stopWords.contains($0) }
-
+    private func entityFrequency(
+        in entries: [ContextEntry],
+        extractor: (ContextEntry) -> [String]
+    ) -> [String: Int] {
         var frequency: [String: Int] = [:]
-        for word in words {
-            frequency[word, default: 0] += 1
+
+        for entry in entries {
+            let normalized = Set(extractor(entry).compactMap { normalizeEntityCandidate($0) })
+            for entity in normalized {
+                frequency[entity, default: 0] += 1
+            }
         }
 
-        let topTerms = frequency.sorted { $0.value > $1.value }
-            .prefix(3)
-            .map(\.key)
-
-        guard !topTerms.isEmpty else { return "Project" }
-        return String(topTerms.joined(separator: "-").prefix(30))
+        return frequency
     }
 
-    private func mostFrequentToken(in tokens: [String]) -> String? {
+    private func topEntity(in frequency: [String: Int]) -> (entity: String, count: Int)? {
+        guard !frequency.isEmpty else { return nil }
+        return frequency.max { lhs, rhs in
+            if lhs.value == rhs.value {
+                return lhs.key > rhs.key
+            }
+            return lhs.value < rhs.value
+        }.map { ($0.key, $0.value) }
+    }
+
+    private func normalizeEntityCandidate(_ raw: String) -> String? {
+        let tokens = cleanedProjectNameTokens(from: raw, maxWords: 2)
         guard !tokens.isEmpty else { return nil }
-        var counts: [String: Int] = [:]
-        for token in tokens where token.count > 1 {
-            counts[token, default: 0] += 1
-        }
-        return counts.max(by: { $0.value < $1.value })?.key
+        return tokens.joined(separator: " ")
     }
 
-    private func normalizeEntityToken(_ token: String) -> String {
-        token
-            .lowercased()
-            .trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
-            .replacingOccurrences(of: " ", with: "-")
+    private func cleanedProjectNameTokens(from raw: String, maxWords: Int) -> [String] {
+        let lowercase = raw.lowercased()
+        let stripped = lowercase.replacingOccurrences(
+            of: "[^a-z0-9\\s]",
+            with: " ",
+            options: .regularExpression
+        )
+
+        let tokens = stripped
+            .split(whereSeparator: { $0.isWhitespace })
+            .map(String.init)
+            .filter { token in
+                guard token.count > 1 else { return false }
+                return !Self.projectNameFillerWords.contains(token)
+            }
+
+        if tokens.isEmpty { return [] }
+        return Array(tokens.prefix(maxWords))
+    }
+
+    private func sanitizeProjectName(
+        _ raw: String,
+        fallbackClusterIndex: Int?,
+        maxLength: Int = 25,
+        maxWords: Int = 2
+    ) -> String {
+        let tokens = cleanedProjectNameTokens(from: raw, maxWords: maxWords)
+        guard !tokens.isEmpty else {
+            return fallbackProjectName(clusterIndex: fallbackClusterIndex)
+        }
+
+        var formatted = tokens.map { token in
+            if Self.uppercaseAcronyms.contains(token) {
+                return token.uppercased()
+            }
+            return token.prefix(1).uppercased() + token.dropFirst()
+        }.joined(separator: " ")
+
+        if formatted.count < 2 {
+            return fallbackProjectName(clusterIndex: fallbackClusterIndex)
+        }
+
+        if formatted.count > maxLength {
+            let truncateLength = max(1, maxLength - 1)
+            formatted = String(formatted.prefix(truncateLength)).trimmingCharacters(in: .whitespacesAndNewlines) + "…"
+        }
+
+        return formatted
+    }
+
+    private func fallbackProjectName(clusterIndex: Int?) -> String {
+        if let clusterIndex, clusterIndex > 0 {
+            return "Project \(clusterIndex)"
+        }
+        return "Project"
+    }
+
+    private func fallbackClusterIndex(for clusterID: UUID) -> Int {
+        let sorted = clusters.sorted { lhs, rhs in
+            if lhs.entryCount == rhs.entryCount {
+                return lhs.createdAt < rhs.createdAt
+            }
+            return lhs.entryCount > rhs.entryCount
+        }
+
+        if let index = sorted.firstIndex(where: { $0.id == clusterID }) {
+            return index + 1
+        }
+        return 1
+    }
+
+    private func bestMatchingExistingClusterID(
+        from memberEntries: [ContextEntry],
+        existingClusters: [UUID: ProjectCluster],
+        alreadyUsed: Set<UUID>
+    ) -> UUID? {
+        var overlapCounts: [UUID: Int] = [:]
+
+        for entry in memberEntries {
+            guard let previousClusterID = entry.clusterID else { continue }
+            guard existingClusters[previousClusterID] != nil else { continue }
+            guard !alreadyUsed.contains(previousClusterID) else { continue }
+            overlapCounts[previousClusterID, default: 0] += 1
+        }
+
+        return overlapCounts.max { lhs, rhs in
+            if lhs.value == rhs.value {
+                return lhs.key.uuidString > rhs.key.uuidString
+            }
+            return lhs.value < rhs.value
+        }?.key
     }
 
     private func applyStopPhraseFilter(to text: String) -> String {
@@ -791,6 +1010,8 @@ private final class SQLiteStore {
         CREATE TABLE IF NOT EXISTS project_clusters (
             id TEXT PRIMARY KEY,
             display_name TEXT NOT NULL,
+            custom_name TEXT,
+            is_hidden INTEGER NOT NULL DEFAULT 0,
             color TEXT NOT NULL,
             created_at REAL NOT NULL,
             entry_count INTEGER DEFAULT 0,
@@ -824,6 +1045,7 @@ private final class SQLiteStore {
         }
 
         try migrateEntityColumnsIfNeeded()
+        try migrateClusterColumnsIfNeeded()
     }
 
     private func migrateEntityColumnsIfNeeded() throws {
@@ -846,6 +1068,27 @@ private final class SQLiteStore {
 
         if !migratedColumns.isEmpty {
             Logger.shared.info("ContextEngineService: Migrated context_entries with entity columns: \(migratedColumns.joined(separator: ", "))")
+        }
+    }
+
+    private func migrateClusterColumnsIfNeeded() throws {
+        let requiredColumns: [(name: String, definition: String)] = [
+            ("custom_name", "TEXT"),
+            ("is_hidden", "INTEGER NOT NULL DEFAULT 0")
+        ]
+
+        var migratedColumns: [String] = []
+        for column in requiredColumns {
+            guard !Self.columnExists(column.name, inTable: "project_clusters", db: db) else { continue }
+            let sql = "ALTER TABLE project_clusters ADD COLUMN \(column.name) \(column.definition)"
+            guard sqlite3_exec(db, sql, nil, nil, nil) == SQLITE_OK else {
+                throw ContextStoreError.queryFailed("Failed to add \(column.name) column")
+            }
+            migratedColumns.append(column.name)
+        }
+
+        if !migratedColumns.isEmpty {
+            Logger.shared.info("ContextEngineService: Migrated project_clusters with columns: \(migratedColumns.joined(separator: ", "))")
         }
     }
 
@@ -1013,7 +1256,7 @@ private final class SQLiteStore {
     // MARK: - Cluster Operations
 
     func allClusters() throws -> [ProjectCluster] {
-        let sql = "SELECT id, display_name, color, created_at, entry_count, centroid FROM project_clusters ORDER BY entry_count DESC"
+        let sql = "SELECT id, display_name, custom_name, is_hidden, color, created_at, entry_count, centroid FROM project_clusters ORDER BY entry_count DESC"
 
         var stmt: OpaquePointer?
         guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
@@ -1036,8 +1279,8 @@ private final class SQLiteStore {
         }
 
         let sql = """
-        INSERT INTO project_clusters (id, display_name, color, created_at, entry_count, centroid)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO project_clusters (id, display_name, custom_name, is_hidden, color, created_at, entry_count, centroid)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """
 
         for cluster in clusters {
@@ -1047,20 +1290,64 @@ private final class SQLiteStore {
 
             sqlite3_bind_text(stmt, 1, (cluster.id.uuidString as NSString).utf8String, -1, nil)
             sqlite3_bind_text(stmt, 2, (cluster.displayName as NSString).utf8String, -1, nil)
-            sqlite3_bind_text(stmt, 3, (cluster.color as NSString).utf8String, -1, nil)
-            sqlite3_bind_double(stmt, 4, cluster.createdAt.timeIntervalSince1970)
-            sqlite3_bind_int(stmt, 5, Int32(cluster.entryCount))
+            if let customName = cluster.customName, !customName.isEmpty {
+                sqlite3_bind_text(stmt, 3, (customName as NSString).utf8String, -1, nil)
+            } else {
+                sqlite3_bind_null(stmt, 3)
+            }
+            sqlite3_bind_int(stmt, 4, cluster.isHidden ? 1 : 0)
+            sqlite3_bind_text(stmt, 5, (cluster.color as NSString).utf8String, -1, nil)
+            sqlite3_bind_double(stmt, 6, cluster.createdAt.timeIntervalSince1970)
+            sqlite3_bind_int(stmt, 7, Int32(cluster.entryCount))
 
             if let centroid = cluster.centroid {
                 let data = embeddingToData(centroid)
                 data.withUnsafeBytes { ptr in
-                    sqlite3_bind_blob(stmt, 6, ptr.baseAddress, Int32(data.count), nil)
+                    sqlite3_bind_blob(stmt, 8, ptr.baseAddress, Int32(data.count), nil)
                 }
             } else {
-                sqlite3_bind_null(stmt, 6)
+                sqlite3_bind_null(stmt, 8)
             }
 
             sqlite3_step(stmt)
+        }
+    }
+
+    func updateClusterCustomName(clusterID: UUID, customName: String?) throws {
+        let sql = "UPDATE project_clusters SET custom_name = ? WHERE id = ?"
+
+        var stmt: OpaquePointer?
+        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
+            throw ContextStoreError.queryFailed("Failed to prepare cluster custom name update")
+        }
+        defer { sqlite3_finalize(stmt) }
+
+        if let customName, !customName.isEmpty {
+            sqlite3_bind_text(stmt, 1, (customName as NSString).utf8String, -1, nil)
+        } else {
+            sqlite3_bind_null(stmt, 1)
+        }
+        sqlite3_bind_text(stmt, 2, (clusterID.uuidString as NSString).utf8String, -1, nil)
+
+        guard sqlite3_step(stmt) == SQLITE_DONE else {
+            throw ContextStoreError.queryFailed("Failed to update cluster custom name")
+        }
+    }
+
+    func updateClusterHidden(clusterID: UUID, isHidden: Bool) throws {
+        let sql = "UPDATE project_clusters SET is_hidden = ? WHERE id = ?"
+
+        var stmt: OpaquePointer?
+        guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
+            throw ContextStoreError.queryFailed("Failed to prepare cluster hidden update")
+        }
+        defer { sqlite3_finalize(stmt) }
+
+        sqlite3_bind_int(stmt, 1, isHidden ? 1 : 0)
+        sqlite3_bind_text(stmt, 2, (clusterID.uuidString as NSString).utf8String, -1, nil)
+
+        guard sqlite3_step(stmt) == SQLITE_DONE else {
+            throw ContextStoreError.queryFailed("Failed to update cluster hidden state")
         }
     }
 
@@ -1201,18 +1488,25 @@ private final class SQLiteStore {
 
         guard let idCStr = sqlite3_column_text(stmt, 0),
               let nameCStr = sqlite3_column_text(stmt, 1),
-              let colorCStr = sqlite3_column_text(stmt, 2),
+              let colorCStr = sqlite3_column_text(stmt, 4),
               let id = UUID(uuidString: String(cString: idCStr))
         else { return nil }
 
         let displayName = String(cString: nameCStr)
+        let customName: String?
+        if let customNameCStr = sqlite3_column_text(stmt, 2) {
+            customName = String(cString: customNameCStr)
+        } else {
+            customName = nil
+        }
+        let isHidden = sqlite3_column_int(stmt, 3) == 1
         let color = String(cString: colorCStr)
-        let createdAt = Date(timeIntervalSince1970: sqlite3_column_double(stmt, 3))
-        let entryCount = Int(sqlite3_column_int(stmt, 4))
+        let createdAt = Date(timeIntervalSince1970: sqlite3_column_double(stmt, 5))
+        let entryCount = Int(sqlite3_column_int(stmt, 6))
 
         var centroid: [Float]?
-        if let blobPtr = sqlite3_column_blob(stmt, 5) {
-            let blobSize = Int(sqlite3_column_bytes(stmt, 5))
+        if let blobPtr = sqlite3_column_blob(stmt, 7) {
+            let blobSize = Int(sqlite3_column_bytes(stmt, 7))
             if blobSize > 0 {
                 centroid = dataToEmbedding(Data(bytes: blobPtr, count: blobSize))
             }
@@ -1221,6 +1515,8 @@ private final class SQLiteStore {
         return ProjectCluster(
             id: id,
             displayName: displayName,
+            customName: customName,
+            isHidden: isHidden,
             color: color,
             createdAt: createdAt,
             entryCount: entryCount,

@@ -78,6 +78,8 @@ struct MainPopoverView: View {
     // Verbosity picker
     @State private var showVerbosityMenu = false
     @State private var verbosityLabelID = UUID()
+    @State private var showVerbosityChangeToast = false
+    @State private var verbosityChangeMessage = ""
 
     // Template placeholder editor
     @State private var showTemplatePlaceholders = false
@@ -1028,9 +1030,28 @@ struct MainPopoverView: View {
         let allCases = OutputVerbosity.allCases
         guard let currentIndex = allCases.firstIndex(of: configService.configuration.outputVerbosity) else { return }
         let nextIndex = (currentIndex + 1) % allCases.count
+        updateVerbosityMode(allCases[nextIndex])
+    }
+
+    private func updateVerbosityMode(_ mode: OutputVerbosity) {
+        let currentMode = configService.configuration.outputVerbosity
+        guard currentMode != mode else { return }
+
         withAnimation(.easeInOut(duration: 0.15)) {
-            configService.update { $0.outputVerbosity = allCases[nextIndex] }
+            configService.update { $0.outputVerbosity = mode }
             verbosityLabelID = UUID()
+        }
+
+        guard !viewModel.outputText.isEmpty, !viewModel.isProcessing else { return }
+        verbosityChangeMessage = "\(mode.displayName) mode will apply on next optimization"
+        withAnimation(.easeInOut(duration: 0.15)) {
+            showVerbosityChangeToast = true
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.7) {
+            withAnimation(.easeInOut(duration: 0.15)) {
+                showVerbosityChangeToast = false
+            }
         }
     }
 
@@ -1065,10 +1086,7 @@ struct MainPopoverView: View {
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(OutputVerbosity.allCases, id: \.self) { mode in
                     Button(action: {
-                        withAnimation(.easeInOut(duration: 0.15)) {
-                            configService.update { $0.outputVerbosity = mode }
-                            verbosityLabelID = UUID()
-                        }
+                        updateVerbosityMode(mode)
                         showVerbosityMenu = false
                     }) {
                         HStack(spacing: 8) {
@@ -1254,6 +1272,25 @@ struct MainPopoverView: View {
                             icon: "checkmark.circle.fill",
                             isShowing: showCopyToast
                         )
+
+                        VStack {
+                            if showVerbosityChangeToast {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "slider.horizontal.3")
+                                        .font(.system(size: 11, weight: .semibold))
+                                    Text(verbosityChangeMessage)
+                                        .font(.system(size: 11, weight: .medium))
+                                }
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(.ultraThinMaterial)
+                                .clipShape(Capsule())
+                                .padding(.top, 8)
+                                .transition(.opacity)
+                            }
+                            Spacer()
+                        }
                     }
                 }
             }
@@ -1262,6 +1299,19 @@ struct MainPopoverView: View {
             .background(Color(nsColor: .textBackgroundColor).opacity(0.5))
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .innerShadowWell(cornerRadius: 8)
+            .overlay(alignment: .topTrailing) {
+                if let mode = viewModel.outputVerbosityUsed, !viewModel.outputText.isEmpty {
+                    Text(mode.badgeSymbol)
+                        .font(.system(size: 9, weight: .medium))
+                        .foregroundStyle(.secondary.opacity(0.75))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color(nsColor: .windowBackgroundColor).opacity(0.65))
+                        .clipShape(Capsule())
+                        .padding(.top, 6)
+                        .padding(.trailing, 6)
+                }
+            }
 
             // Streaming privacy indicator
             streamingPrivacyIndicator

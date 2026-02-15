@@ -318,6 +318,11 @@ final class SettingsViewModel: ObservableObject {
         showClearContextConfirmation = false
     }
 
+    @discardableResult
+    func renameContextProject(clusterID: UUID, to newName: String) -> Bool {
+        contextEngine.renameCluster(clusterID: clusterID, to: newName)
+    }
+
     // MARK: - Launch at Login
 
     func setLaunchAtLogin(_ enabled: Bool) {

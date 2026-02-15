@@ -323,7 +323,7 @@ struct HistoryView: View {
                             Circle()
                                 .fill(Color(hex: cluster.color))
                                 .frame(width: 6, height: 6)
-                            Text(cluster.displayName)
+                            Text(viewModel.projectClusterDisplayName(cluster))
                                 .font(.system(size: 9, weight: .medium))
                         }
                         .padding(.horizontal, 6)

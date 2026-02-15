@@ -5,6 +5,7 @@ import SwiftUI
 final class MainViewModel: ObservableObject {
     @Published var inputText: String = ""
     @Published var outputText: String = ""
+    @Published var outputVerbosityUsed: OutputVerbosity?
     @Published var selectedStyle: PromptStyle?
     @Published var isProcessing: Bool = false
     @Published var availableStyles: [PromptStyle] = []
@@ -198,6 +199,7 @@ final class MainViewModel: ObservableObject {
         guard isOptimizeEnabled, let style = selectedStyle else { return }
 
         let config = configurationService.configuration
+        let selectedVerbosity = config.outputVerbosity
         let provider = providerManager.activeProvider
 
         // Check for API key (Ollama and Cloud don't need one via Keychain)
@@ -224,6 +226,7 @@ final class MainViewModel: ObservableObject {
         isOutputVerbose = false
         isCompressing = false
         detectedMaxOutputWords = 0
+        outputVerbosityUsed = nil
 
         let startTime = Date()
 
@@ -237,7 +240,7 @@ final class MainViewModel: ObservableObject {
                     rawInput: inputText,
                     style: style,
                     providerType: config.selectedProvider,
-                    verbosity: config.outputVerbosity
+                    verbosity: selectedVerbosity
                 )
 
                 let complexity = assembled.complexity
@@ -329,7 +332,7 @@ final class MainViewModel: ObservableObject {
                         actualOutputWords: finalOutputWordCount,
                         compressionTriggered: false,
                         formattingStripped: post.formattingStripped,
-                        verbositySetting: config.outputVerbosity
+                        verbositySetting: selectedVerbosity
                     )
 
                     // Track optimization count for onboarding guidance
@@ -337,6 +340,7 @@ final class MainViewModel: ObservableObject {
 
                     // Store the output independently.
                     lastOptimizedOutput = outputText
+                    outputVerbosityUsed = selectedVerbosity
 
                     Logger.shared.info("Optimization complete: \(duration)ms, \(outputText.count) chars")
 
@@ -757,6 +761,7 @@ final class MainViewModel: ObservableObject {
     func useCompareResult(_ result: CompareResult) {
         outputText = result.outputText
         lastOptimizedOutput = result.outputText
+        outputVerbosityUsed = configurationService.configuration.outputVerbosity
         isCompareMode = false
         compareResults = []
     }
@@ -878,6 +883,7 @@ final class MainViewModel: ObservableObject {
         clipboardCopiedNotification = false
         contextUsed = false
         contextEntryCount = 0
+        outputVerbosityUsed = nil
     }
 
     // MARK: - Clear All
@@ -894,6 +900,7 @@ final class MainViewModel: ObservableObject {
         compareResults = []
         activeTemplate = nil
         templatePlaceholderValues = [:]
+        outputVerbosityUsed = nil
     }
 
     // MARK: - Select Style by Index

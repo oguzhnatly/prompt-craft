@@ -115,6 +115,10 @@ final class HistoryViewModel: ObservableObject {
         ContextEngineService.shared.clusterForEntry(promptID: entryID)
     }
 
+    func projectClusterDisplayName(_ cluster: ProjectCluster) -> String {
+        ContextEngineService.shared.sanitizedClusterName(for: cluster)
+    }
+
     // MARK: - Relative Time Formatting
 
     func relativeTimestamp(for date: Date) -> String {

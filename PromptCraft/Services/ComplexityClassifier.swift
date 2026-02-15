@@ -123,8 +123,13 @@ final class ComplexityClassifier {
             baseTier = .simple
         }
 
-        let adjustedTier = adjustTierForVerbosity(baseTier, verbosity: verbosity)
-        let maxOutputWords = computeMaxOutputWords(tier: adjustedTier, inputWords: inputWordCount)
+        let adjustedTier = adjustTierForVerbosity(
+            baseTier,
+            verbosity: verbosity,
+            intentCount: intentAnalysis.intentCount
+        )
+        let baseMaxOutputWords = computeMaxOutputWords(tier: adjustedTier, inputWords: inputWordCount)
+        let maxOutputWords = applyVerbosityWordBudget(baseMaxOutputWords, verbosity: verbosity)
 
         return ComplexityResult(
             tier: adjustedTier,
@@ -274,10 +279,19 @@ final class ComplexityClassifier {
 
     // MARK: - Verbosity
 
-    private func adjustTierForVerbosity(_ tier: ComplexityTier, verbosity: OutputVerbosity) -> ComplexityTier {
+    private func adjustTierForVerbosity(
+        _ tier: ComplexityTier,
+        verbosity: OutputVerbosity,
+        intentCount: Int
+    ) -> ComplexityTier {
         switch verbosity {
         case .concise:
-            return tier
+            switch tier {
+            case .trivial, .simple:
+                return tier
+            case .moderate, .complex:
+                return .simple
+            }
 
         case .balanced:
             switch tier {
@@ -287,7 +301,15 @@ final class ComplexityClassifier {
             }
 
         case .detailed:
-            return .complex
+            if intentCount >= 2 {
+                return .complex
+            }
+            switch tier {
+            case .trivial, .simple:
+                return .moderate
+            case .moderate, .complex:
+                return tier
+            }
         }
     }
 
@@ -316,5 +338,18 @@ final class ComplexityClassifier {
         }
 
         return max(8, Int(ceil(maxWords)))
+    }
+
+    private func applyVerbosityWordBudget(_ baseMaxWords: Int, verbosity: OutputVerbosity) -> Int {
+        switch verbosity {
+        case .concise:
+            let scaled = Int(round(Double(baseMaxWords) * 0.6))
+            return min(100, max(8, scaled))
+        case .balanced:
+            return baseMaxWords
+        case .detailed:
+            let scaled = Int(round(Double(baseMaxWords) * 3.0))
+            return min(1200, max(150, scaled))
+        }
     }
 }

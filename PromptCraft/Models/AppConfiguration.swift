@@ -119,6 +119,14 @@ enum OutputVerbosity: String, Codable, CaseIterable {
         case .detailed: return "Always uses full structured formatting."
         }
     }
+
+    var badgeSymbol: String {
+        switch self {
+        case .concise: return "C"
+        case .balanced: return "B"
+        case .detailed: return "D"
+        }
+    }
 }
 
 enum AppMode: String, Codable, CaseIterable, Equatable {

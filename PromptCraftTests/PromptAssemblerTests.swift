@@ -44,6 +44,7 @@ final class PromptAssemblerTests: XCTestCase {
 
         XCTAssertTrue(result.systemMessage.contains("ABSOLUTE CONSTRAINT"))
         XCTAssertTrue(result.systemMessage.contains("ZERO headers"))
+        XCTAssertTrue(result.systemMessage.contains("ADDITIONAL CONCISE CONSTRAINT"))
     }
 
     func testMaxOutputWordsPlaceholderIsResolved() async {
@@ -102,6 +103,73 @@ final class PromptAssemblerTests: XCTestCase {
         XCTAssertTrue(allMessageText.contains("tier3 input"))
         XCTAssertTrue(allMessageText.contains("tier4 input"))
         XCTAssertFalse(allMessageText.contains("tier1 input"))
+    }
+
+    func testConciseModeAlwaysUsesTier1Examples() async {
+        let examples = [
+            FewShotExample(input: "tier1 input", output: "tier1 output", tier: .tier1),
+            FewShotExample(input: "tier2 input", output: "tier2 output", tier: .tier2),
+            FewShotExample(input: "tier3 input", output: "tier3 output", tier: .tier3),
+            FewShotExample(input: "tier4 input", output: "tier4 output", tier: .tier4),
+        ]
+
+        let style = TestData.sampleStyle(systemInstruction: "{{TIER_CALIBRATION}}\n\n{{LEARNED_CONTEXT}}", fewShotExamples: examples)
+
+        let result = await assembler.assemble(
+            rawInput: "design auth and redesign api and add observability and migrate storage and define rollback and add runbook",
+            style: style,
+            providerType: .openAI,
+            verbosity: .concise
+        )
+
+        let allMessageText = result.messages.map(\.content).joined(separator: "\n")
+        XCTAssertTrue(allMessageText.contains("tier1 input"))
+        XCTAssertFalse(allMessageText.contains("tier2 input"))
+        XCTAssertFalse(allMessageText.contains("tier3 input"))
+        XCTAssertFalse(allMessageText.contains("tier4 input"))
+    }
+
+    func testDetailedModeUsesTier3AndTier4ExamplesEvenForSimpleInput() async {
+        let examples = [
+            FewShotExample(input: "tier1 input", output: "tier1 output", tier: .tier1),
+            FewShotExample(input: "tier2 input", output: "tier2 output", tier: .tier2),
+            FewShotExample(input: "tier3 input", output: "tier3 output", tier: .tier3),
+            FewShotExample(input: "tier4 input", output: "tier4 output", tier: .tier4),
+        ]
+
+        let style = TestData.sampleStyle(systemInstruction: "{{TIER_CALIBRATION}}\n\n{{LEARNED_CONTEXT}}", fewShotExamples: examples)
+
+        let result = await assembler.assemble(
+            rawInput: "fix login bug",
+            style: style,
+            providerType: .openAI,
+            verbosity: .detailed
+        )
+
+        let allMessageText = result.messages.map(\.content).joined(separator: "\n")
+        XCTAssertTrue(allMessageText.contains("tier3 input") || allMessageText.contains("tier4 input"))
+        XCTAssertFalse(allMessageText.contains("tier1 input"))
+        XCTAssertFalse(allMessageText.contains("tier2 input"))
+    }
+
+    func testBalancedAndDetailedModeCalibrationDirectivesInjected() async {
+        let style = TestData.sampleStyle(systemInstruction: "{{TIER_CALIBRATION}}\n\n{{LEARNED_CONTEXT}}", fewShotExamples: [])
+
+        let balanced = await assembler.assemble(
+            rawInput: "fix login bug",
+            style: style,
+            providerType: .openAI,
+            verbosity: .balanced
+        )
+        let detailed = await assembler.assemble(
+            rawInput: "fix login bug",
+            style: style,
+            providerType: .openAI,
+            verbosity: .detailed
+        )
+
+        XCTAssertTrue(balanced.systemMessage.contains("ADDITIONAL BALANCED GUIDANCE"))
+        XCTAssertTrue(detailed.systemMessage.contains("ADDITIONAL DETAILED GUIDANCE"))
     }
 
     func testAntiReverseEngineeringDirectiveIncluded() async {

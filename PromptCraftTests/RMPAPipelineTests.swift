@@ -54,7 +54,7 @@ final class RMPAPipelineTests: XCTestCase {
         XCTAssertTrue(result.formattingStripped)
     }
 
-    func testDetailedVerbosityForcesTier4() {
+    func testDetailedVerbosityUsesTier3ForSingleIntentSimpleInput() {
         let raw = "fix the typo in readme"
         let intent = IntentDecomposer.shared.analyze(raw)
         let entities = EntityExtractor.shared.analyze(raw)
@@ -67,6 +67,40 @@ final class RMPAPipelineTests: XCTestCase {
             verbosity: .detailed
         )
 
+        XCTAssertEqual(result.tier, .moderate)
+        XCTAssertGreaterThanOrEqual(result.maxOutputWords, 150)
+    }
+
+    func testDetailedVerbosityUsesTier4ForMultiIntentInput() {
+        let raw = "fix login bug and add retries"
+        let intent = IntentDecomposer.shared.analyze(raw)
+        let entities = EntityExtractor.shared.analyze(raw)
+
+        let result = ComplexityClassifier.shared.classify(
+            intentAnalysis: intent,
+            entityAnalysis: entities,
+            contextMatches: [],
+            totalContextEntries: 0,
+            verbosity: .detailed
+        )
+
         XCTAssertEqual(result.tier, .complex)
+    }
+
+    func testConciseVerbosityCapsTierAtSimple() {
+        let raw = "design auth service and migrate database and add runbook and add rollback plan and add monitoring"
+        let intent = IntentDecomposer.shared.analyze(raw)
+        let entities = EntityExtractor.shared.analyze(raw)
+
+        let result = ComplexityClassifier.shared.classify(
+            intentAnalysis: intent,
+            entityAnalysis: entities,
+            contextMatches: [],
+            totalContextEntries: 0,
+            verbosity: .concise
+        )
+
+        XCTAssertLessThanOrEqual(result.tier.tierNumber, 2)
+        XCTAssertLessThanOrEqual(result.maxOutputWords, 100)
     }
 }

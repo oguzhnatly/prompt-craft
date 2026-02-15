@@ -22,6 +22,9 @@ struct SettingsView: View {
     @ObservedObject private var accessibilityService = AccessibilityService.shared
 
     @State private var selectedTab: SettingsTab = .general
+    @State private var showAllDetectedProjects = false
+    @State private var editingClusterID: UUID?
+    @State private var pendingClusterName: String = ""
     @Namespace private var segmentedAnimation
 
     private var config: AppConfiguration { configService.configuration }
@@ -174,6 +177,40 @@ struct SettingsView: View {
             .foregroundStyle(.secondary)
             .tracking(0.5)
             .padding(.bottom, 8)
+    }
+
+    private var displayableClusters: [ProjectCluster] {
+        contextEngine.displayableClusters
+            .filter { $0.entryCount > 0 }
+    }
+
+    private var visibleProjectPills: [ProjectCluster] {
+        Array(displayableClusters.prefix(5))
+    }
+
+    private var hiddenProjectPillCount: Int {
+        max(0, displayableClusters.count - visibleProjectPills.count)
+    }
+
+    private func projectDisplayName(_ cluster: ProjectCluster, maxLength: Int = 25) -> String {
+        contextEngine.sanitizedClusterName(for: cluster, maxLength: maxLength)
+    }
+
+    private func beginClusterRename(_ cluster: ProjectCluster) {
+        editingClusterID = cluster.id
+        pendingClusterName = projectDisplayName(cluster)
+    }
+
+    private func cancelClusterRename() {
+        editingClusterID = nil
+        pendingClusterName = ""
+    }
+
+    private func saveClusterRename(_ clusterID: UUID) {
+        let success = viewModel.renameContextProject(clusterID: clusterID, to: pendingClusterName)
+        if success {
+            cancelClusterRename()
+        }
     }
 
     private func settingToggle(
@@ -2106,8 +2143,51 @@ struct SettingsView: View {
                         Text("Detected projects")
                             .font(.system(size: 12))
                         Spacer()
-                        Text("\(contextEngine.clusters.count)")
+                        Text("\(displayableClusters.count)")
                             .font(.system(size: 12, design: .monospaced))
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if !displayableClusters.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 6) {
+                                    ForEach(visibleProjectPills) { cluster in
+                                        projectPill(cluster)
+                                    }
+
+                                    if hiddenProjectPillCount > 0 && !showAllDetectedProjects {
+                                        Button(action: {
+                                            withAnimation(.easeInOut(duration: 0.15)) {
+                                                showAllDetectedProjects = true
+                                            }
+                                        }) {
+                                            Text("+\(hiddenProjectPillCount) more")
+                                                .font(.system(size: 11, weight: .medium))
+                                                .padding(.horizontal, 10)
+                                                .padding(.vertical, 5)
+                                                .background(Color(nsColor: .controlBackgroundColor))
+                                                .clipShape(Capsule())
+                                                .overlay(
+                                                    Capsule()
+                                                        .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 0.5)
+                                                )
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                }
+                                .padding(.vertical, 2)
+                            }
+
+                            VStack(alignment: .leading, spacing: 6) {
+                                ForEach(showAllDetectedProjects ? displayableClusters : visibleProjectPills) { cluster in
+                                    projectEditableRow(cluster)
+                                }
+                            }
+                        }
+                    } else {
+                        Text("Projects appear after a cluster reaches at least 5 entries.")
+                            .font(.system(size: 10))
                             .foregroundStyle(.secondary)
                     }
 
@@ -2181,6 +2261,77 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+
+    private func projectPill(_ cluster: ProjectCluster) -> some View {
+        HStack(spacing: 5) {
+            Circle()
+                .fill(Color(hex: cluster.color))
+                .frame(width: 6, height: 6)
+
+            Text("\(projectDisplayName(cluster, maxLength: 20)) (\(cluster.entryCount))")
+                .font(.system(size: 11, weight: .medium))
+                .lineLimit(1)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(Color(hex: cluster.color).opacity(0.12))
+        .foregroundStyle(Color(hex: cluster.color))
+        .clipShape(Capsule())
+    }
+
+    private func projectEditableRow(_ cluster: ProjectCluster) -> some View {
+        HStack(spacing: 8) {
+            Circle()
+                .fill(Color(hex: cluster.color))
+                .frame(width: 7, height: 7)
+
+            if editingClusterID == cluster.id {
+                TextField("Project name", text: $pendingClusterName)
+                    .textFieldStyle(.roundedBorder)
+                    .font(.system(size: 12))
+                    .onSubmit { saveClusterRename(cluster.id) }
+                    .onExitCommand { cancelClusterRename() }
+            } else {
+                Text(projectDisplayName(cluster))
+                    .font(.system(size: 12, weight: .medium))
+                    .lineLimit(1)
+            }
+
+            Spacer()
+
+            Text("\(cluster.entryCount)")
+                .font(.system(size: 10, design: .monospaced))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(Color(nsColor: .controlBackgroundColor))
+                .clipShape(Capsule())
+
+            if editingClusterID == cluster.id {
+                Button(action: { saveClusterRename(cluster.id) }) {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 11, weight: .semibold))
+                }
+                .buttonStyle(.plain)
+                .help("Save name")
+
+                Button(action: { cancelClusterRename() }) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 11, weight: .semibold))
+                }
+                .buttonStyle(.plain)
+                .help("Cancel")
+            } else {
+                Button(action: { beginClusterRename(cluster) }) {
+                    Image(systemName: "pencil")
+                        .font(.system(size: 11))
+                }
+                .buttonStyle(.plain)
+                .help("Rename project")
+            }
+        }
+        .padding(.vertical, 2)
     }
 
     // MARK: - Appearance Section
