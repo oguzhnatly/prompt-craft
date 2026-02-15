@@ -1,0 +1,24 @@
+name = "promptcraft-cloud-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-12-05"
+compatibility_flags = ["nodejs_compat"]
+
+# KV namespace for license cache and rate limiting
+[[kv_namespaces]]
+binding = "KV"
+id = "0f2dffa03f374d7181b0f83b78a91314"
+
+# Environment variables (set via `wrangler secret put <NAME>`)
+# CLAUDE_API_KEY        - Anthropic API key
+# DEEPSEEK_API_KEY      - DeepSeek API key
+# OPENAI_API_KEY        - OpenAI API key
+# KEYGEN_ACCOUNT_ID     - Keygen.sh account ID
+# KEYGEN_PRODUCT_TOKEN  - Keygen.sh product token for license validation
+# KEYGEN_PRO_POLICY_ID  - Keygen.sh policy ID for Pro licenses
+# KEYGEN_CLOUD_POLICY_ID - Keygen.sh policy ID for Cloud licenses
+# STRIPE_WEBHOOK_SECRET - Stripe webhook signing secret
+# STRIPE_SECRET_KEY     - Stripe secret key for customer lookups
+# RESEND_API_KEY        - Resend API key for transactional emails
+
+[vars]
+PROXY_VERSION = "1.0.0"

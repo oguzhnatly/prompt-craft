@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>PromptCraft Updates</title>
+    <link>https://updates.promptcraft.app/appcast.xml</link>
+    <description>Most recent changes with links to updates.</description>
+    <language>en</language>
+
+    <!-- Latest release -->
+    <item>
+      <title>Version 1.0.0</title>
+      <sparkle:version>1</sparkle:version>
+      <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[
+        <h2>PromptCraft 1.0.0</h2>
+        <p>Initial release.</p>
+        <ul>
+          <li>Multi-provider LLM support: Claude, OpenAI, Ollama</li>
+          <li>6 built-in prompt optimization styles</li>
+          <li>Custom style editor</li>
+          <li>Prompt history with search and favorites</li>
+          <li>Quick Optimize mode</li>
+          <li>Global keyboard shortcut</li>
+        </ul>
+      ]]></description>
+      <pubDate>Fri, 14 Feb 2026 12:00:00 +0000</pubDate>
+      <enclosure
+        url="https://updates.promptcraft.app/releases/PromptCraft-1.0.0.dmg"
+        sparkle:edSignature="PLACEHOLDER_EDDSA_SIGNATURE"
+        length="0"
+        type="application/octet-stream" />
+    </item>
+
+  </channel>
+</rss>

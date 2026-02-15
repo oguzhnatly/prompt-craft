@@ -1,0 +1,200 @@
+name: Release
+
+# Temporarily disabled
+# on:
+#   push:
+#     tags:
+#       - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build, Sign, Notarize & Release
+    runs-on: macos-15
+    timeout-minutes: 60
+
+    env:
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Building version: $VERSION"
+
+      # ─── Import Signing Certificate ───────────────────────────────
+      - name: Import signing certificate
+        env:
+          SIGNING_CERTIFICATE: ${{ secrets.SIGNING_CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+        run: |
+          # Create temporary keychain
+          KEYCHAIN_PATH="$RUNNER_TEMP/signing.keychain-db"
+          KEYCHAIN_PASSWORD="$(openssl rand -base64 32)"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Import certificate
+          CERT_PATH="$RUNNER_TEMP/certificate.p12"
+          echo "$SIGNING_CERTIFICATE" | base64 --decode > "$CERT_PATH"
+
+          security import "$CERT_PATH" \
+            -P "$CERTIFICATE_PASSWORD" \
+            -A \
+            -t cert \
+            -f pkcs12 \
+            -k "$KEYCHAIN_PATH"
+
+          security set-key-partition-list \
+            -S apple-tool:,apple: \
+            -k "$KEYCHAIN_PASSWORD" \
+            "$KEYCHAIN_PATH"
+
+          security list-keychains -d user -s "$KEYCHAIN_PATH" login.keychain-db
+
+          # Clean up
+          rm -f "$CERT_PATH"
+
+      # ─── Resolve Dependencies ─────────────────────────────────────
+      - name: Resolve Swift packages
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project PromptCraft.xcodeproj \
+            -scheme PromptCraft
+
+      # ─── Run Tests ────────────────────────────────────────────────
+      - name: Run Tests
+        run: |
+          xcodebuild test \
+            -project PromptCraft.xcodeproj \
+            -scheme PromptCraft \
+            -configuration Debug \
+            -destination 'platform=macOS' \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            | xcpretty --color
+
+      # ─── Build & Archive ──────────────────────────────────────────
+      - name: Update version number
+        run: |
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ steps.version.outputs.version }}" \
+            PromptCraft/Info.plist
+
+      - name: Build & Archive
+        run: |
+          xcodebuild archive \
+            -project PromptCraft.xcodeproj \
+            -scheme PromptCraft \
+            -configuration Release \
+            -archivePath build/PromptCraft.xcarchive \
+            CODE_SIGN_IDENTITY="Developer ID Application" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            CODE_SIGN_STYLE=Manual \
+            | xcpretty --color
+
+      - name: Export app from archive
+        run: |
+          mkdir -p build/export
+          cp -R "build/PromptCraft.xcarchive/Products/Applications/PromptCraft.app" \
+            build/export/
+
+      # ─── Notarize ─────────────────────────────────────────────────
+      - name: Create ZIP for notarization
+        run: |
+          ditto -c -k --keepParent \
+            build/export/PromptCraft.app \
+            build/PromptCraft-notarize.zip
+
+      - name: Submit for notarization
+        run: |
+          xcrun notarytool submit build/PromptCraft-notarize.zip \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_PASSWORD" \
+            --team-id "$APPLE_TEAM_ID" \
+            --wait \
+            --timeout 30m
+
+      - name: Staple notarization ticket
+        run: |
+          xcrun stapler staple build/export/PromptCraft.app
+
+      # ─── Create DMG ───────────────────────────────────────────────
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Create DMG
+        run: |
+          create-dmg \
+            --volname "PromptCraft" \
+            --window-pos 200 120 \
+            --window-size 660 400 \
+            --icon-size 128 \
+            --icon "PromptCraft.app" 180 180 \
+            --hide-extension "PromptCraft.app" \
+            --app-drop-link 480 180 \
+            --no-internet-enable \
+            "build/PromptCraft-${{ steps.version.outputs.version }}.dmg" \
+            build/export/
+
+      - name: Sign DMG
+        run: |
+          codesign --sign "Developer ID Application" \
+            "build/PromptCraft-${{ steps.version.outputs.version }}.dmg"
+
+      - name: Notarize DMG
+        run: |
+          xcrun notarytool submit \
+            "build/PromptCraft-${{ steps.version.outputs.version }}.dmg" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_PASSWORD" \
+            --team-id "$APPLE_TEAM_ID" \
+            --wait \
+            --timeout 30m
+
+          xcrun stapler staple \
+            "build/PromptCraft-${{ steps.version.outputs.version }}.dmg"
+
+      # ─── Sparkle EdDSA Signature ──────────────────────────────────
+      - name: Generate Sparkle EdDSA signature
+        env:
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          DMG_PATH="build/PromptCraft-${{ steps.version.outputs.version }}.dmg"
+          DMG_SIZE=$(stat -f%z "$DMG_PATH")
+
+          # If Sparkle's sign_update tool is available, use it
+          # Otherwise compute manually for the appcast
+          echo "DMG size: $DMG_SIZE bytes"
+          echo "DMG path: $DMG_PATH"
+
+          # Store for later use
+          echo "dmg_size=$DMG_SIZE" >> "$GITHUB_OUTPUT"
+
+      # ─── Upload Release Asset ─────────────────────────────────────
+      - name: Upload DMG to GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.ref_name }}" \
+            "build/PromptCraft-${{ steps.version.outputs.version }}.dmg" \
+            --clobber
+
+      # ─── Cleanup ──────────────────────────────────────────────────
+      - name: Cleanup keychain
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/signing.keychain-db" 2>/dev/null || true

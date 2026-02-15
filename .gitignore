@@ -1,0 +1,11 @@
+.DS_Store
+Pods/
+build/
+DerivedData/
+node_modules/
+*.xcworkspace
+*.xcuserdatad
+*.xcuserstate
+*.swp
+*.log
+.swiftpm/
