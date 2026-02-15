@@ -1,49 +1,49 @@
 # Changelog
 
-All notable changes to PromptCraft will be documented in this file.
+All notable changes to PromptCraft are documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [1.0.0] - 2026-02-14
+## 1.1.0 2026/02/15
 
 ### Added
-- Menu bar app with global keyboard shortcut (Cmd+Shift+P) for instant access.
-- Multi-provider LLM support: Anthropic Claude, OpenAI GPT, and local Ollama.
-- Streaming response display with real-time token output.
-- 6 built-in prompt optimization styles: Professional, Technical, Creative, Concise, Academic, and Friendly.
-- Custom style editor with full control over system instructions, few-shot examples, tone, and output sections.
-- Style management: create, edit, duplicate, reorder, enable/disable, import/export.
-- AI-assisted style generation from natural language descriptions.
-- Prompt history with search, filtering by style, favorites, and date grouping.
-- Re-optimize from history with one click.
-- Clipboard integration: auto-capture on shortcut, auto-copy results.
-- Quick Optimize mode: capture clipboard, optimize, copy result, auto-close.
-- Selected text capture via simulated Cmd+C (requires accessibility access).
-- Secure API key storage in macOS Keychain.
-- API key validation with provider-specific error messages.
-- Configurable LLM parameters: temperature, max output tokens, model selection.
-- Dynamic model listing from each provider's API.
-- Network connectivity monitoring with offline state handling.
-- Comprehensive error handling with actionable suggestions and provider fallback hints.
-- Long input warning (50k+ characters) with user confirmation.
-- Partial response recovery on stream interruption.
-- Task cancellation during optimization.
-- Launch at login via ServiceManagement.
-- Theme support: System, Light, and Dark modes.
-- Sound on completion (optional).
-- Character count display (optional).
-- Guided onboarding flow for first-time users.
-- Contextual hints for discovering features.
-- Configuration export/import as JSON.
-- Debug log viewer with copy-to-clipboard.
-- Full test suite: models, services, view models, and provider integration.
-- Accessibility labels and keyboard navigation throughout.
+
+1. IntentDecomposer service for verb object intent extraction, emotional marker detection, urgency scoring, and cleaned input generation.
+2. EntityExtractor service for persons, projects, environments, technical terms, temporal markers, and organizations.
+3. PostProcessor service for word budget enforcement, simple tier structure cleanup, and meta leakage suppression.
+4. Structured entity metadata fields in context entries for persons, projects, environments, and technical terms.
+5. New test coverage for the full Recursive Meta Prompt Architecture pipeline.
+
+### Changed
+
+1. Complexity classification now uses intent count and ambiguity scoring instead of simple word count heuristics.
+2. Prompt assembly now follows staged Recursive Meta Prompt Architecture flow with tier calibration injection and tier matched examples.
+3. Context engine now stores structured entity metadata, applies stop phrase filtering, and prioritizes entity based cluster naming.
+4. Default style system instructions were rewritten around density first behavior, strict forbidden constraints, urgency reflection, and verification checks.
+5. Optimization flows in main, inline, and menu services now run through the new pipeline and post processing enforcement.
+
+### Documentation
+
+1. README was updated to describe the new architecture and runtime behavior.
+2. A new public technical white paper was added at `docs/RMPA_WHITEPAPER.md`.
+
+### Validation
+
+1. Full project tests pass with 123 passing tests and zero failures.
+
+## 1.0.0 2026/02/14
+
+### Added
+
+1. macOS menu bar app with global keyboard shortcut for fast access.
+2. Multi provider model support for cloud and local execution.
+3. Streaming optimized output view.
+4. Custom style editing and style management tools.
+5. Prompt history, clipboard integration, and quick optimize workflow.
+6. Secure credential storage, provider validation, and configurable model settings.
+7. Full onboarding, accessibility, and test coverage for core services.
 
 ### Technical
-- SwiftUI + AppKit hybrid architecture (NSPopover for menu bar).
-- MVVM pattern: Views, ViewModels, Services, Models.
-- Combine-based reactive state management.
-- macOS 14+ (Sonoma) deployment target.
-- Hardened Runtime enabled.
-- App Sandbox with network client entitlement.
+
+1. SwiftUI and AppKit hybrid architecture.
+2. MVVM separation across views, view models, services, and models.
+3. Combine based state flow.
+4. Hardened runtime and app sandbox support.

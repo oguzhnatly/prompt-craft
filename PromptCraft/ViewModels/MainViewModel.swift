@@ -74,6 +74,7 @@ final class MainViewModel: ObservableObject {
     private let licensingService: LicensingService
     private let contextEngine: ContextEngineService
     private let complexityClassifier: ComplexityClassifier
+    private let postProcessor: PostProcessor
     private let templateService: TemplateService
     private let exportService: ExportService
     private var cancellables = Set<AnyCancellable>()
@@ -107,6 +108,7 @@ final class MainViewModel: ObservableObject {
         licensingService: LicensingService = .shared,
         contextEngine: ContextEngineService = .shared,
         complexityClassifier: ComplexityClassifier = .shared,
+        postProcessor: PostProcessor = .shared,
         templateService: TemplateService = .shared,
         exportService: ExportService = .shared
     ) {
@@ -120,6 +122,7 @@ final class MainViewModel: ObservableObject {
         self.licensingService = licensingService
         self.contextEngine = contextEngine
         self.complexityClassifier = complexityClassifier
+        self.postProcessor = postProcessor
         self.templateService = templateService
         self.exportService = exportService
 
@@ -230,36 +233,21 @@ final class MainViewModel: ObservableObject {
             guard let self else { return }
 
             do {
-                // Retrieve context from the context engine
-                let (contextBlock, matchedEntries) = await contextEngine.retrieveContext(for: inputText)
-                if let contextBlock {
-                    self.contextUsed = true
-                    self.contextEntryCount = matchedEntries.count
-                }
-
-                // Classify complexity with full context signals
-                let complexity = complexityClassifier.classify(
-                    input: inputText,
-                    contextMatches: matchedEntries,
-                    totalContextEntries: contextEngine.entryCount,
+                let assembled = await promptAssembler.assemble(
+                    rawInput: inputText,
+                    style: style,
+                    providerType: config.selectedProvider,
                     verbosity: config.outputVerbosity
                 )
+
+                let complexity = assembled.complexity
+                self.contextUsed = assembled.contextBlock != nil
+                self.contextEntryCount = assembled.contextEntryCount
                 self.detectedComplexityTier = complexity.tier
                 self.complexityContextBoosted = complexity.contextBoosted
                 self.detectedMaxOutputWords = complexity.maxOutputWords
 
                 Logger.shared.info("Complexity: tier=\(complexity.tier.rawValue), boosted=\(complexity.contextBoosted), words=\(complexity.wordCount), intents=\(complexity.actionCount), maxOutput=\(complexity.maxOutputWords)")
-
-                // Assemble the prompt with complexity tier and max output words
-                let assembled = promptAssembler.assemble(
-                    rawInput: inputText,
-                    style: style,
-                    providerType: config.selectedProvider,
-                    contextBlock: contextBlock,
-                    contextEntryCount: matchedEntries.count,
-                    complexityTier: complexity.tier,
-                    maxOutputWords: complexity.maxOutputWords
-                )
 
                 // Build the full message array with system message
                 var messages: [LLMMessage] = [
@@ -273,27 +261,44 @@ final class MainViewModel: ObservableObject {
                     maxTokens: config.maxOutputTokens
                 )
 
-                // Stream the response
-                let stream = provider.streamCompletion(messages: messages, parameters: parameters)
-                for try await chunk in stream {
-                    if Task.isCancelled { break }
-                    outputText += chunk
-                }
+                outputText = try await streamCompletion(
+                    provider: provider,
+                    messages: messages,
+                    parameters: parameters
+                )
 
                 if Task.isCancelled {
                     wasCancelled = true
                 } else {
-                    // Post-processing: Tier 1 auto-strip formatting
-                    if complexity.tier == .trivial {
-                        outputText = self.stripFormatting(from: outputText)
+                    var post = postProcessor.process(
+                        outputText: outputText,
+                        tier: complexity.tier,
+                        maxOutputWords: complexity.maxOutputWords
+                    )
+
+                    // Meta leakage fallback: one retry with explicit hard line.
+                    if post.shouldRetryForMetaLeak {
+                        var retryMessages = messages
+                        if let first = retryMessages.first, first.role == .system {
+                            retryMessages[0] = LLMMessage(
+                                role: .system,
+                                content: first.content + "\n\nOutput ONLY the prompt. Zero meta-commentary."
+                            )
+                        }
+                        let retryOutput = try await streamCompletion(
+                            provider: provider,
+                            messages: retryMessages,
+                            parameters: parameters
+                        )
+                        post = postProcessor.process(
+                            outputText: retryOutput,
+                            tier: complexity.tier,
+                            maxOutputWords: complexity.maxOutputWords
+                        )
                     }
 
-                    // Verbose detection: check if output exceeds word limit
-                    let outputWordCount = outputText.split(separator: " ", omittingEmptySubsequences: true).count
-                    if (complexity.tier == .trivial || complexity.tier == .simple) &&
-                       outputWordCount > Int(Double(complexity.maxOutputWords) * 1.3) {
-                        self.isOutputVerbose = true
-                    }
+                    outputText = post.cleanedOutput
+                    self.isOutputVerbose = post.isVerbose
 
                     // Save history entry
                     let duration = Int(Date().timeIntervalSince(startTime) * 1000)
@@ -311,7 +316,8 @@ final class MainViewModel: ObservableObject {
                     contextEngine.indexOptimization(
                         inputText: inputText,
                         outputText: outputText,
-                        promptID: entry.id
+                        promptID: entry.id,
+                        entityAnalysis: assembled.entityAnalysis
                     )
 
                     // Record calibration analytics
@@ -322,7 +328,7 @@ final class MainViewModel: ObservableObject {
                         maxOutputWords: complexity.maxOutputWords,
                         actualOutputWords: finalOutputWordCount,
                         compressionTriggered: false,
-                        formattingStripped: complexity.tier == .trivial,
+                        formattingStripped: post.formattingStripped,
                         verbositySetting: config.outputVerbosity
                     )
 
@@ -445,42 +451,6 @@ final class MainViewModel: ObservableObject {
         styleService.getById(styleID)?.iconName ?? "questionmark"
     }
 
-    // MARK: - Post-Processing
-
-    /// Strip structural formatting from output (used for Tier 1 outputs).
-    private func stripFormatting(from text: String) -> String {
-        var result = text
-
-        // Remove ## headers
-        if let headerRegex = try? NSRegularExpression(pattern: "^#{1,6}\\s+", options: .anchorsMatchLines) {
-            let range = NSRange(result.startIndex..., in: result)
-            result = headerRegex.stringByReplacingMatches(in: result, range: range, withTemplate: "")
-        }
-
-        // Remove **bold** markers
-        result = result.replacingOccurrences(of: "**", with: "")
-
-        // Remove numbered list prefixes (e.g., "1. ", "2. ")
-        if let numberedRegex = try? NSRegularExpression(pattern: "^\\d+\\.\\s+", options: .anchorsMatchLines) {
-            let range = NSRange(result.startIndex..., in: result)
-            result = numberedRegex.stringByReplacingMatches(in: result, range: range, withTemplate: "")
-        }
-
-        // Remove bullet points (- or *)
-        if let bulletRegex = try? NSRegularExpression(pattern: "^[-*]\\s+", options: .anchorsMatchLines) {
-            let range = NSRange(result.startIndex..., in: result)
-            result = bulletRegex.stringByReplacingMatches(in: result, range: range, withTemplate: "")
-        }
-
-        // Collapse multiple newlines into single newline
-        if let multiNewlineRegex = try? NSRegularExpression(pattern: "\\n{2,}", options: []) {
-            let range = NSRange(result.startIndex..., in: result)
-            result = multiNewlineRegex.stringByReplacingMatches(in: result, range: range, withTemplate: "\n")
-        }
-
-        return result.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
     /// User-triggered compression. Sends compressed version request to LLM.
     func compressOutput() {
         guard !outputText.isEmpty, !isCompressing else { return }
@@ -496,8 +466,8 @@ final class MainViewModel: ObservableObject {
             guard let self else { return }
 
             do {
-                let systemMsg = "You are a text compressor. Compress the following to under \(maxWords) words while preserving all meaning. Output ONLY the compressed text, nothing else."
-                let userMsg = textToCompress
+                let systemMsg = "The previous output was too verbose. Compress to under \(maxWords) words while preserving all meaning."
+                let userMsg = "The previous output was too verbose. Compress to under \(maxWords) words while preserving all meaning: \(textToCompress)"
 
                 let messages: [LLMMessage] = [
                     LLMMessage(role: .system, content: systemMsg),
@@ -542,6 +512,20 @@ final class MainViewModel: ObservableObject {
             self.isCompressing = false
             self.currentTask = nil
         }
+    }
+
+    private func streamCompletion(
+        provider: LLMProviderProtocol,
+        messages: [LLMMessage],
+        parameters: LLMRequestParameters
+    ) async throws -> String {
+        var output = ""
+        let stream = provider.streamCompletion(messages: messages, parameters: parameters)
+        for try await chunk in stream {
+            if Task.isCancelled { break }
+            output += chunk
+        }
+        return output
     }
 
     // MARK: - Private — Error Handling
@@ -713,22 +697,11 @@ final class MainViewModel: ObservableObject {
                         }
                     }
 
-                    let (contextBlock, matchedEntries) = await self.contextEngine.retrieveContext(for: inputSnapshot)
-                    let complexity = self.complexityClassifier.classify(
-                        input: inputSnapshot,
-                        contextMatches: matchedEntries,
-                        totalContextEntries: self.contextEngine.entryCount,
-                        verbosity: config.outputVerbosity
-                    )
-
-                    let assembled = self.promptAssembler.assemble(
+                    let assembled = await self.promptAssembler.assemble(
                         rawInput: inputSnapshot,
                         style: style,
                         providerType: providerType,
-                        contextBlock: contextBlock,
-                        contextEntryCount: matchedEntries.count,
-                        complexityTier: complexity.tier,
-                        maxOutputWords: complexity.maxOutputWords
+                        verbosity: config.outputVerbosity
                     )
 
                     var messages: [LLMMessage] = [
@@ -746,10 +719,17 @@ final class MainViewModel: ObservableObject {
                         maxTokens: config.maxOutputTokens
                     )
 
-                    let stream = provider.streamCompletion(messages: messages, parameters: parameters)
-                    for try await chunk in stream {
-                        self.compareResults[index].outputText += chunk
-                    }
+                    let rawOutput = try await self.streamCompletion(
+                        provider: provider,
+                        messages: messages,
+                        parameters: parameters
+                    )
+                    let post = self.postProcessor.process(
+                        outputText: rawOutput,
+                        tier: assembled.complexity.tier,
+                        maxOutputWords: assembled.complexity.maxOutputWords
+                    )
+                    self.compareResults[index].outputText = post.cleanedOutput
 
                     let duration = Int(Date().timeIntervalSince(startTime) * 1000)
                     self.compareResults[index].durationMs = duration

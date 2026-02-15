@@ -1,29 +1,61 @@
 # PromptCraft
 
-A macOS menu bar app that converts casual text into AI-optimized prompts. Type naturally, get perfectly structured prompts for any LLM.
+PromptCraft is a macOS menu bar app that turns casual requests into precise AI directives.
+The current system uses Recursive Meta Prompt Architecture, a staged pipeline that favors semantic density over unnecessary structure.
 
-## Features
+## What PromptCraft Delivers
 
-- **Menu Bar Access** -- Global keyboard shortcut (Cmd+Shift+P) opens instantly from anywhere.
-- **Multi-Provider** -- Works with Anthropic Claude, OpenAI GPT, and local Ollama models.
-- **Streaming Output** -- Watch optimized prompts generate in real time.
-- **Custom Styles** -- Build your own optimization styles with system instructions, few-shot examples, and tone controls.
-- **Quick Optimize** -- Capture clipboard, optimize, copy result, and auto-close in one shortcut press.
-- **History** -- Search, filter, favorite, and re-optimize past prompts.
-- **Secure** -- API keys stored in macOS Keychain. Hardened Runtime. App Sandbox.
+1. Intent aware optimization instead of single pass rewriting.
+2. Entity aware context injection that improves specificity without inflating length.
+3. Complexity calibrated output that scales from compact prose to full structured specification.
+4. Programmatic post processing that enforces strict output constraints for simple requests.
+
+## Recursive Meta Prompt Architecture
+
+PromptCraft now runs through seven runtime steps.
+
+1. Intent Decomposer
+Parses raw input into distinct action intents and urgency markers.
+
+2. Entity Extractor
+Finds people, projects, environments, technical terms, organizations, and time markers from raw input.
+
+3. Complexity Classifier
+Assigns a tier from intent count, ambiguity score, and context signal.
+
+4. Context Engine
+Retrieves semantic matches and injects learned context for specificity.
+
+5. Prompt Assembler
+Builds system and user messages with tier calibration, context block injection, and tier matched few shot examples.
+
+6. Model Execution
+Sends assembled messages to the selected provider.
+
+7. Post Processor
+Enforces word budget, removes forbidden structure in simple tiers, and blocks meta leakage.
+
+## Key Product Behaviors
+
+1. Simple requests remain simple.
+Single intent tasks produce compact prose with no forced headers or padded sections.
+
+2. Complex requests receive structure only when earned.
+High intent count and high ambiguity inputs unlock deeper structure and broader coverage.
+
+3. Emotional noise does not inflate complexity.
+Urgency is preserved as signal while profanity and frustration are filtered from core analysis.
+
+4. Context adds precision, not length.
+Learned project and environment details are inserted into existing sentences instead of creating extra sections.
 
 ## System Requirements
 
-- macOS 14.0 (Sonoma) or later
-- An API key for Anthropic Claude or OpenAI, or a local Ollama installation
+1. macOS 14 or later.
+2. A supported model provider configuration.
+3. Valid provider credentials when required by the selected provider.
 
-## Installation
-
-### Download
-
-Download the latest `PromptCraft-x.x.x.dmg` from the [Releases](https://github.com/promptcraft/promptcraft/releases) page. Open the DMG and drag PromptCraft to your Applications folder.
-
-### Build from Source
+## Quick Start
 
 ```bash
 git clone https://github.com/promptcraft/promptcraft.git
@@ -31,89 +63,22 @@ cd promptcraft
 open PromptCraft.xcodeproj
 ```
 
-Select the **PromptCraft** scheme, then Build & Run (Cmd+R).
+Build and run from Xcode using the PromptCraft scheme.
 
-## Configuration
+## Testing
 
-### API Keys
-
-1. Open PromptCraft from the menu bar.
-2. Click the gear icon to open Settings.
-3. Select your LLM provider (Claude, OpenAI, or Ollama).
-4. Enter your API key and click the validation checkmark.
-
-API keys are stored securely in the macOS Keychain.
-
-### Ollama (Local)
-
-1. Install Ollama: `brew install ollama`
-2. Start the server: `ollama serve`
-3. Pull a model: `ollama pull llama3`
-4. Select "Ollama" in PromptCraft Settings and test the connection.
-
-### Keyboard Shortcut
-
-The default global shortcut is **Cmd+Shift+P**. You can change it in Settings > Keyboard Shortcut. Accessibility access is required for global shortcuts.
-
-## Architecture
-
-```
-PromptCraft/
-  App/                  # App entry point, AppDelegate (NSPopover + status item)
-  Views/                # SwiftUI views (MainPopoverView, SettingsView, etc.)
-  ViewModels/           # MVVM view models (MainViewModel, SettingsViewModel, etc.)
-  Services/             # Business logic (LLM providers, history, styles, keychain, etc.)
-  Models/               # Data models (PromptStyle, AppConfiguration, PromptHistoryEntry)
-  Utilities/            # Constants, shared UI components
-PromptCraftTests/       # Unit tests for models, services, and view models
-scripts/                # Build and distribution scripts
-docs/                   # Distribution and signing documentation
-```
-
-**Pattern**: App -> Views -> ViewModels -> Services -> Models
-
-- **Views** are pure SwiftUI. They bind to ViewModels via `@ObservedObject`.
-- **ViewModels** hold `@Published` state and call into Services.
-- **Services** are singletons managing persistence, network, and system APIs.
-- **Models** are `Codable` structs.
-
-## Building for Distribution
-
-See [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) for the complete guide on code signing, notarization, and release.
-
-Quick build:
+Run the test suite from project root.
 
 ```bash
-# Debug build
-./scripts/build.sh --debug
-
-# Release DMG (unsigned)
-./scripts/build.sh
-
-# Signed + notarized DMG
-export APPLE_ID="your@apple.id"
-export APPLE_PASSWORD="xxxx-xxxx-xxxx-xxxx"
-export APPLE_TEAM_ID="XXXXXXXXXX"
-./scripts/build.sh --notarize
+xcodebuild test
 ```
 
-## Contributing
+## Documentation
 
-1. Fork the repository.
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Make your changes and add tests.
-4. Run the test suite: `xcodebuild test -scheme PromptCraft -destination 'platform=macOS'`
-5. Commit with a clear message describing the change.
-6. Open a pull request against `main`.
-
-### Code Style
-
-- Follow existing patterns in the codebase.
-- Use MVVM: views should not contain business logic.
-- Add `@Published` properties for observable state.
-- Use Combine for reactive data flow.
-- Write tests for new services and view model logic.
+1. Public architecture white paper: `docs/RMPA_WHITEPAPER.md`
+2. Distribution guide: `docs/DISTRIBUTION.md`
 
 ## License
 
-PromptCraft is proprietary commercial software. All rights reserved. See [LICENSE](LICENSE) for the full license agreement. Unauthorized copying, distribution, or reverse engineering is strictly prohibited.
+PromptCraft is proprietary commercial software.
+See `LICENSE` for license terms and usage restrictions.

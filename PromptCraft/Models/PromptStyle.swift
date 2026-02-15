@@ -54,9 +54,45 @@ struct StyleExportEnvelope: Codable {
     }
 }
 
+enum ExampleTier: String, Codable, CaseIterable {
+    case tier1
+    case tier2
+    case tier3
+    case tier4
+}
+
 struct FewShotExample: Codable, Equatable {
     let input: String
     let output: String
+    let tier: ExampleTier?
+    let isNegative: Bool
+
+    init(
+        input: String,
+        output: String,
+        tier: ExampleTier? = nil,
+        isNegative: Bool = false
+    ) {
+        self.input = input
+        self.output = output
+        self.tier = tier
+        self.isNegative = isNegative
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case input
+        case output
+        case tier
+        case isNegative
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        input = try container.decode(String.self, forKey: .input)
+        output = try container.decode(String.self, forKey: .output)
+        tier = try container.decodeIfPresent(ExampleTier.self, forKey: .tier)
+        isNegative = try container.decodeIfPresent(Bool.self, forKey: .isNegative) ?? false
+    }
 }
 
 // MARK: - PromptStyle

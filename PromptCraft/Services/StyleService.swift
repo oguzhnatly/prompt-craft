@@ -107,7 +107,6 @@ final class StyleService: ObservableObject {
     }
 
     func disable(_ id: UUID) {
-        guard id != DefaultStyles.defaultStyleID else { return }
         guard let index = styles.firstIndex(where: { $0.id == id }) else { return }
         styles[index].isEnabled = false
         styles[index].modifiedAt = Date()

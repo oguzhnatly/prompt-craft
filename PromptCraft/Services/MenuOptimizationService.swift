@@ -11,6 +11,7 @@ final class MenuOptimizationService {
     private let historyService = HistoryService.shared
     private let contextEngine = ContextEngineService.shared
     private let notificationService = NotificationService.shared
+    private let postProcessor = PostProcessor.shared
 
     private init() {}
 
@@ -56,23 +57,11 @@ final class MenuOptimizationService {
         Task.detached(priority: .utility) { [weak self] in
             guard let self else { return }
             do {
-                let (contextBlock, matchedEntries) = await self.contextEngine.retrieveContext(for: text)
-
-                let complexity = ComplexityClassifier.shared.classify(
-                    input: text,
-                    contextMatches: matchedEntries,
-                    totalContextEntries: self.contextEngine.entryCount,
-                    verbosity: config.outputVerbosity
-                )
-
-                let assembled = self.promptAssembler.assemble(
+                let assembled = await self.promptAssembler.assemble(
                     rawInput: text,
                     style: style,
                     providerType: config.selectedProvider,
-                    contextBlock: contextBlock,
-                    contextEntryCount: matchedEntries.count,
-                    complexityTier: complexity.tier,
-                    maxOutputWords: complexity.maxOutputWords
+                    verbosity: config.outputVerbosity
                 )
 
                 var messages: [LLMMessage] = [
@@ -91,6 +80,35 @@ final class MenuOptimizationService {
                 for try await chunk in stream {
                     output += chunk
                 }
+
+                var post = self.postProcessor.process(
+                    outputText: output,
+                    tier: assembled.complexity.tier,
+                    maxOutputWords: assembled.complexity.maxOutputWords
+                )
+
+                if post.shouldRetryForMetaLeak {
+                    var retryMessages = messages
+                    if let first = retryMessages.first, first.role == .system {
+                        retryMessages[0] = LLMMessage(
+                            role: .system,
+                            content: first.content + "\n\nOutput ONLY the prompt. Zero meta-commentary."
+                        )
+                    }
+
+                    var retriedOutput = ""
+                    let retryStream = provider.streamCompletion(messages: retryMessages, parameters: parameters)
+                    for try await chunk in retryStream {
+                        retriedOutput += chunk
+                    }
+                    post = self.postProcessor.process(
+                        outputText: retriedOutput,
+                        tier: assembled.complexity.tier,
+                        maxOutputWords: assembled.complexity.maxOutputWords
+                    )
+                }
+
+                output = post.cleanedOutput
 
                 guard !output.isEmpty else {
                     await MainActor.run {
@@ -120,7 +138,8 @@ final class MenuOptimizationService {
                     self.contextEngine.indexOptimization(
                         inputText: text,
                         outputText: output,
-                        promptID: entry.id
+                        promptID: entry.id,
+                        entityAnalysis: assembled.entityAnalysis
                     )
                     self.notificationService.notifyOptimizationComplete(
                         style: style.displayName,

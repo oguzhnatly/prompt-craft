@@ -18,6 +18,7 @@ final class ContextEngineService: ObservableObject {
     private var store: SQLiteStore?
     private let embeddingEngine = EmbeddingEngine()
     private let clusterEngine = ClusterEngine()
+    private let entityExtractor = EntityExtractor.shared
     private let configService = ConfigurationService.shared
     private var cancellables = Set<AnyCancellable>()
     private var indexedSinceLastCluster: Int = 0
@@ -50,21 +51,33 @@ final class ContextEngineService: ObservableObject {
     // MARK: - Public API
 
     /// Index an optimization (input + output) for future context retrieval.
-    func indexOptimization(inputText: String, outputText: String, promptID: UUID) {
+    func indexOptimization(
+        inputText: String,
+        outputText: String,
+        promptID: UUID,
+        entityAnalysis: EntityAnalysis? = nil
+    ) {
         guard isAvailable, configService.configuration.contextEngineEnabled, let store else { return }
 
         Task.detached(priority: .utility) { [weak self] in
             guard let self else { return }
 
-            // Embed ONLY the user's raw input text — never the assembled prompt or LLM output
-            guard let embedding = self.embeddingEngine.embed(inputText) else { return }
+            let filteredInput = self.applyStopPhraseFilter(to: inputText)
+            let entities = entityAnalysis ?? self.entityExtractor.analyze(filteredInput)
 
-            let tokenCount = max(1, Int(ceil(Double(inputText.count) / self.charsPerToken)))
+            // Embed only the filtered raw user input text.
+            guard let embedding = self.embeddingEngine.embed(filteredInput) else { return }
+
+            let tokenCount = max(1, Int(ceil(Double(filteredInput.count) / self.charsPerToken)))
 
             let entry = ContextEntry(
-                text: inputText,
+                text: filteredInput,
                 outputText: outputText,
                 embedding: embedding,
+                persons: entities.persons,
+                projects: entities.projects,
+                environments: entities.environments,
+                technicalTerms: entities.technicalTerms,
                 sourceType: .optimization,
                 sourcePromptID: promptID,
                 tokenCount: tokenCount
@@ -92,17 +105,41 @@ final class ContextEngineService: ObservableObject {
 
     /// Retrieve relevant context for a query text, respecting a token budget.
     func retrieveContext(for queryText: String, maxTokenBudget: Int = 500) async -> (contextBlock: String?, matchedEntries: [ContextSearchResult]) {
-        guard isAvailable, configService.configuration.contextEngineEnabled, let store else {
-            return (nil, [])
+        let matches = await similarityResults(for: queryText)
+        guard !matches.isEmpty else { return (nil, []) }
+
+        let selected = selectEntriesWithinBudget(matches, maxTokenBudget: maxTokenBudget)
+        guard !selected.isEmpty else { return (nil, []) }
+
+        if let store {
+            for result in selected {
+                try? store.updateAccess(entryID: result.entry.id)
+            }
         }
 
-        guard let queryEmbedding = embeddingEngine.embed(queryText) else {
-            return (nil, [])
+        let contextBlock = buildContextBlock(from: selected)
+        return (contextBlock, selected)
+    }
+
+    /// RMPA entry point for context retrieval by raw input.
+    func getContext(rawInput: String, maxTokenBudget: Int = 500) async -> (contextBlock: String?, matchedEntries: [ContextSearchResult]) {
+        await retrieveContext(for: rawInput, maxTokenBudget: maxTokenBudget)
+    }
+
+    /// Returns sorted similarity results without constructing the context block.
+    func similarityResults(for queryText: String) async -> [ContextSearchResult] {
+        guard isAvailable, configService.configuration.contextEngineEnabled, let store else {
+            return []
+        }
+
+        let filteredQuery = applyStopPhraseFilter(to: queryText)
+        guard let queryEmbedding = embeddingEngine.embed(filteredQuery) else {
+            return []
         }
 
         do {
             let allEntries = try store.allEntries()
-            guard !allEntries.isEmpty else { return (nil, []) }
+            guard !allEntries.isEmpty else { return [] }
 
             let threshold = configService.configuration.contextRelevanceThreshold
             let now = Date()
@@ -122,38 +159,20 @@ final class ContextEngineService: ObservableObject {
             }
 
             results.sort { $0.boostedScore > $1.boostedScore }
-
-            // Select entries that fit within token budget
-            var selectedResults: [ContextSearchResult] = []
-            var usedTokens = 0
-            let overhead = 80 // XML wrapper tokens
-
-            for result in results {
-                let entryTokens = result.entry.tokenCount
-                if usedTokens + entryTokens + overhead > maxTokenBudget {
-                    // If we haven't added any yet, try adding a truncated version
-                    if selectedResults.isEmpty {
-                        selectedResults.append(result)
-                    }
-                    break
-                }
-                selectedResults.append(result)
-                usedTokens += entryTokens
-            }
-
-            guard !selectedResults.isEmpty else { return (nil, []) }
-
-            // Update access counts
-            for result in selectedResults {
-                try? store.updateAccess(entryID: result.entry.id)
-            }
-
-            let contextBlock = buildContextXML(entries: selectedResults, now: now)
-            return (contextBlock, selectedResults)
+            return results
         } catch {
-            Logger.shared.error("ContextEngineService: Failed to retrieve context", error: error)
-            return (nil, [])
+            Logger.shared.error("ContextEngineService: Failed to compute similarity results", error: error)
+            return []
         }
+    }
+
+    /// Build XML context block from precomputed matches.
+    func buildContextBlock(from matches: [ContextSearchResult], maxEntries: Int = 5, maxTokenBudget: Int = 500) -> String? {
+        guard !matches.isEmpty else { return nil }
+        let limited = Array(matches.prefix(maxEntries))
+        let budgeted = selectEntriesWithinBudget(limited, maxTokenBudget: maxTokenBudget)
+        guard !budgeted.isEmpty else { return nil }
+        return buildContextXML(entries: budgeted, now: Date())
     }
 
     /// Trigger DBSCAN reclustering of all entries.
@@ -322,6 +341,28 @@ final class ContextEngineService: ObservableObject {
         return score
     }
 
+    private func selectEntriesWithinBudget(_ matches: [ContextSearchResult], maxTokenBudget: Int) -> [ContextSearchResult] {
+        guard !matches.isEmpty else { return [] }
+
+        var selected: [ContextSearchResult] = []
+        var usedTokens = 0
+        let overhead = 80
+
+        for result in matches {
+            let entryTokens = result.entry.tokenCount
+            if usedTokens + entryTokens + overhead > maxTokenBudget {
+                if selected.isEmpty {
+                    selected.append(result)
+                }
+                break
+            }
+            selected.append(result)
+            usedTokens += entryTokens
+        }
+
+        return selected
+    }
+
     private func buildContextXML(entries: [ContextSearchResult], now: Date) -> String {
         var xml = "<user_context relevance=\"high\" entries=\"\(entries.count)\">\n"
 
@@ -339,8 +380,13 @@ final class ContextEngineService: ObservableObject {
                 text = result.entry.text
             }
 
-            xml += "  <context_entry source=\"\(sourceType)\" similarity=\"\(similarityStr)\" age=\"\(ageString)\">\n"
-            xml += "    \(text.replacingOccurrences(of: "\n", with: " "))\n"
+             let filteredText = applyStopPhraseFilter(to: text)
+             let project = result.entry.projects.first ?? ""
+             let environment = result.entry.environments.first ?? ""
+             let technical = result.entry.technicalTerms.prefix(2).joined(separator: ",")
+
+            xml += "  <context_entry source=\"\(sourceType)\" similarity=\"\(similarityStr)\" age=\"\(ageString)\" project=\"\(project.xmlEscaped)\" environment=\"\(environment.xmlEscaped)\" technical=\"\(technical.xmlEscaped)\">\n"
+            xml += "    \(filteredText.replacingOccurrences(of: "\n", with: " ").xmlEscaped)\n"
             xml += "  </context_entry>\n"
         }
 
@@ -392,6 +438,16 @@ final class ContextEngineService: ObservableObject {
         "take casual unstructured text",
     ]
 
+    private var dynamicStopPhrases: [String] {
+        let builtIns = DefaultStyles.all + [DefaultStyles.shorten]
+        return builtIns.compactMap { style in
+            let head = String(style.systemInstruction.prefix(50))
+                .lowercased()
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return head.isEmpty ? nil : head
+        }
+    }
+
     /// Common English stop words to exclude from project naming.
     private static let stopWords: Set<String> = [
         "the", "a", "an", "is", "are", "was", "were", "be", "been", "being",
@@ -410,16 +466,38 @@ final class ContextEngineService: ObservableObject {
     ]
 
     private func generateClusterName(from entries: [ContextEntry]) -> String {
-        // Extract terms from input text only (never output or system prompt text)
-        let allInputText = entries.map(\.text).joined(separator: " ").lowercased()
+        // Primary source: structured entities.
+        let projects = entries.flatMap(\.projects).map { normalizeEntityToken($0) }.filter { !$0.isEmpty }
+        let environments = entries.flatMap(\.environments).map { normalizeEntityToken($0) }.filter { !$0.isEmpty }
+        let technicalTerms = entries.flatMap(\.technicalTerms).map { normalizeEntityToken($0) }.filter { !$0.isEmpty }
+        let persons = entries.flatMap(\.persons).map { normalizeEntityToken($0) }.filter { !$0.isEmpty }
 
-        // Strip any stop phrases from system prompts
-        var cleaned = allInputText
-        for phrase in Self.stopPhrases {
-            cleaned = cleaned.replacingOccurrences(of: phrase, with: " ")
+        if !projects.isEmpty || !environments.isEmpty || !technicalTerms.isEmpty || !persons.isEmpty {
+            let topProject = mostFrequentToken(in: projects)
+            let topEnvironment = mostFrequentToken(in: environments)
+            let topTechnical = mostFrequentToken(in: technicalTerms)
+            let topPerson = mostFrequentToken(in: persons)
+
+            var parts: [String] = []
+            if let env = topEnvironment { parts.append(env) }
+            if let project = topProject {
+                parts.append(project)
+            } else if let technical = topTechnical {
+                parts.append(technical)
+            } else if let person = topPerson {
+                parts.append(person)
+            }
+
+            let entityName = parts.joined(separator: "-")
+            if !entityName.isEmpty {
+                return String(entityName.prefix(30))
+            }
         }
 
-        // Tokenize and count frequencies, excluding stop words
+        // Fallback source: text term extraction.
+        let allInputText = entries.map(\.text).joined(separator: " ").lowercased()
+        let cleaned = applyStopPhraseFilter(to: allInputText)
+
         let words = cleaned.components(separatedBy: .alphanumerics.inverted)
             .filter { $0.count > 2 && !Self.stopWords.contains($0) }
 
@@ -428,18 +506,38 @@ final class ContextEngineService: ObservableObject {
             frequency[word, default: 0] += 1
         }
 
-        // Take top 2-3 most frequent meaningful terms
         let topTerms = frequency.sorted { $0.value > $1.value }
             .prefix(3)
             .map(\.key)
 
         guard !topTerms.isEmpty else { return "Project" }
+        return String(topTerms.joined(separator: "-").prefix(30))
+    }
 
-        let name = topTerms.joined(separator: "-")
-        if name.count > 30 {
-            return String(name.prefix(30))
+    private func mostFrequentToken(in tokens: [String]) -> String? {
+        guard !tokens.isEmpty else { return nil }
+        var counts: [String: Int] = [:]
+        for token in tokens where token.count > 1 {
+            counts[token, default: 0] += 1
         }
-        return name
+        return counts.max(by: { $0.value < $1.value })?.key
+    }
+
+    private func normalizeEntityToken(_ token: String) -> String {
+        token
+            .lowercased()
+            .trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+            .replacingOccurrences(of: " ", with: "-")
+    }
+
+    private func applyStopPhraseFilter(to text: String) -> String {
+        var cleaned = text
+        let phrases = Self.stopPhrases + dynamicStopPhrases
+        for phrase in phrases where !phrase.isEmpty {
+            cleaned = cleaned.replacingOccurrences(of: phrase, with: " ", options: [.caseInsensitive, .diacriticInsensitive], range: nil)
+        }
+        return cleaned.replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
@@ -673,6 +771,10 @@ private final class SQLiteStore {
             text TEXT NOT NULL,
             output_text TEXT NOT NULL DEFAULT '',
             embedding BLOB NOT NULL,
+            persons TEXT NOT NULL DEFAULT '[]',
+            projects TEXT NOT NULL DEFAULT '[]',
+            environments TEXT NOT NULL DEFAULT '[]',
+            technical_terms TEXT NOT NULL DEFAULT '[]',
             source_type TEXT NOT NULL,
             source_prompt_id TEXT,
             cluster_id TEXT,
@@ -720,6 +822,31 @@ private final class SQLiteStore {
         guard sqlite3_exec(db, analyticsSQL, nil, nil, nil) == SQLITE_OK else {
             throw ContextStoreError.queryFailed("Failed to create calibration_analytics table")
         }
+
+        try migrateEntityColumnsIfNeeded()
+    }
+
+    private func migrateEntityColumnsIfNeeded() throws {
+        let requiredColumns: [(name: String, definition: String)] = [
+            ("persons", "TEXT NOT NULL DEFAULT '[]'"),
+            ("projects", "TEXT NOT NULL DEFAULT '[]'"),
+            ("environments", "TEXT NOT NULL DEFAULT '[]'"),
+            ("technical_terms", "TEXT NOT NULL DEFAULT '[]'")
+        ]
+
+        var migratedColumns: [String] = []
+        for column in requiredColumns {
+            guard !Self.columnExists(column.name, inTable: "context_entries", db: db) else { continue }
+            let sql = "ALTER TABLE context_entries ADD COLUMN \(column.name) \(column.definition)"
+            guard sqlite3_exec(db, sql, nil, nil, nil) == SQLITE_OK else {
+                throw ContextStoreError.queryFailed("Failed to add \(column.name) column")
+            }
+            migratedColumns.append(column.name)
+        }
+
+        if !migratedColumns.isEmpty {
+            Logger.shared.info("ContextEngineService: Migrated context_entries with entity columns: \(migratedColumns.joined(separator: ", "))")
+        }
     }
 
     // MARK: - Entry Operations
@@ -727,8 +854,8 @@ private final class SQLiteStore {
     func insertEntry(_ entry: ContextEntry) throws {
         let sql = """
         INSERT OR REPLACE INTO context_entries
-        (id, text, output_text, embedding, source_type, source_prompt_id, cluster_id, created_at, last_accessed_at, access_count, token_count)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (id, text, output_text, embedding, persons, projects, environments, technical_terms, source_type, source_prompt_id, cluster_id, created_at, last_accessed_at, access_count, token_count)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
 
         var stmt: OpaquePointer?
@@ -746,24 +873,28 @@ private final class SQLiteStore {
         embeddingData.withUnsafeBytes { ptr in
             sqlite3_bind_blob(stmt, 4, ptr.baseAddress, Int32(embeddingData.count), nil)
         }
-        sqlite3_bind_text(stmt, 5, (entry.sourceType.rawValue as NSString).utf8String, -1, nil)
+        sqlite3_bind_text(stmt, 5, (jsonArray(entry.persons) as NSString).utf8String, -1, nil)
+        sqlite3_bind_text(stmt, 6, (jsonArray(entry.projects) as NSString).utf8String, -1, nil)
+        sqlite3_bind_text(stmt, 7, (jsonArray(entry.environments) as NSString).utf8String, -1, nil)
+        sqlite3_bind_text(stmt, 8, (jsonArray(entry.technicalTerms) as NSString).utf8String, -1, nil)
+        sqlite3_bind_text(stmt, 9, (entry.sourceType.rawValue as NSString).utf8String, -1, nil)
 
         if let promptID = entry.sourcePromptID {
-            sqlite3_bind_text(stmt, 6, (promptID.uuidString as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(stmt, 10, (promptID.uuidString as NSString).utf8String, -1, nil)
         } else {
-            sqlite3_bind_null(stmt, 6)
+            sqlite3_bind_null(stmt, 10)
         }
 
         if let clusterID = entry.clusterID {
-            sqlite3_bind_text(stmt, 7, (clusterID.uuidString as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(stmt, 11, (clusterID.uuidString as NSString).utf8String, -1, nil)
         } else {
-            sqlite3_bind_null(stmt, 7)
+            sqlite3_bind_null(stmt, 11)
         }
 
-        sqlite3_bind_double(stmt, 8, entry.createdAt.timeIntervalSince1970)
-        sqlite3_bind_double(stmt, 9, entry.lastAccessedAt.timeIntervalSince1970)
-        sqlite3_bind_int(stmt, 10, Int32(entry.accessCount))
-        sqlite3_bind_int(stmt, 11, Int32(entry.tokenCount))
+        sqlite3_bind_double(stmt, 12, entry.createdAt.timeIntervalSince1970)
+        sqlite3_bind_double(stmt, 13, entry.lastAccessedAt.timeIntervalSince1970)
+        sqlite3_bind_int(stmt, 14, Int32(entry.accessCount))
+        sqlite3_bind_int(stmt, 15, Int32(entry.tokenCount))
 
         guard sqlite3_step(stmt) == SQLITE_DONE else {
             throw ContextStoreError.queryFailed("Failed to insert entry")
@@ -771,7 +902,7 @@ private final class SQLiteStore {
     }
 
     func allEntries() throws -> [ContextEntry] {
-        let sql = "SELECT id, text, output_text, embedding, source_type, source_prompt_id, cluster_id, created_at, last_accessed_at, access_count, token_count FROM context_entries ORDER BY created_at DESC"
+        let sql = "SELECT id, text, output_text, embedding, persons, projects, environments, technical_terms, source_type, source_prompt_id, cluster_id, created_at, last_accessed_at, access_count, token_count FROM context_entries ORDER BY created_at DESC"
 
         var stmt: OpaquePointer?
         guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
@@ -789,7 +920,7 @@ private final class SQLiteStore {
     }
 
     func entryByPromptID(_ promptID: UUID) throws -> ContextEntry? {
-        let sql = "SELECT id, text, output_text, embedding, source_type, source_prompt_id, cluster_id, created_at, last_accessed_at, access_count, token_count FROM context_entries WHERE source_prompt_id = ? LIMIT 1"
+        let sql = "SELECT id, text, output_text, embedding, persons, projects, environments, technical_terms, source_type, source_prompt_id, cluster_id, created_at, last_accessed_at, access_count, token_count FROM context_entries WHERE source_prompt_id = ? LIMIT 1"
 
         var stmt: OpaquePointer?
         guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
@@ -997,13 +1128,13 @@ private final class SQLiteStore {
     private func readEntry(from stmt: OpaquePointer?) -> ContextEntry? {
         guard let stmt else { return nil }
 
-        // Column order: id(0), text(1), output_text(2), embedding(3), source_type(4),
-        //               source_prompt_id(5), cluster_id(6), created_at(7),
-        //               last_accessed_at(8), access_count(9), token_count(10)
+        // Column order: id(0), text(1), output_text(2), embedding(3), persons(4), projects(5),
+        //               environments(6), technical_terms(7), source_type(8), source_prompt_id(9),
+        //               cluster_id(10), created_at(11), last_accessed_at(12), access_count(13), token_count(14)
 
         guard let idCStr = sqlite3_column_text(stmt, 0),
               let textCStr = sqlite3_column_text(stmt, 1),
-              let sourceTypeCStr = sqlite3_column_text(stmt, 4),
+              let sourceTypeCStr = sqlite3_column_text(stmt, 8),
               let id = UUID(uuidString: String(cString: idCStr)),
               let sourceType = ContextEntry.SourceType(rawValue: String(cString: sourceTypeCStr))
         else { return nil }
@@ -1022,30 +1153,39 @@ private final class SQLiteStore {
         let blobSize = Int(sqlite3_column_bytes(stmt, 3))
         let embedding = dataToEmbedding(Data(bytes: blobPtr, count: blobSize))
 
+        let persons = readJSONArray(stmt: stmt, column: 4)
+        let projects = readJSONArray(stmt: stmt, column: 5)
+        let environments = readJSONArray(stmt: stmt, column: 6)
+        let technicalTerms = readJSONArray(stmt: stmt, column: 7)
+
         let sourcePromptID: UUID?
-        if let cStr = sqlite3_column_text(stmt, 5) {
+        if let cStr = sqlite3_column_text(stmt, 9) {
             sourcePromptID = UUID(uuidString: String(cString: cStr))
         } else {
             sourcePromptID = nil
         }
 
         let clusterID: UUID?
-        if let cStr = sqlite3_column_text(stmt, 6) {
+        if let cStr = sqlite3_column_text(stmt, 10) {
             clusterID = UUID(uuidString: String(cString: cStr))
         } else {
             clusterID = nil
         }
 
-        let createdAt = Date(timeIntervalSince1970: sqlite3_column_double(stmt, 7))
-        let lastAccessedAt = Date(timeIntervalSince1970: sqlite3_column_double(stmt, 8))
-        let accessCount = Int(sqlite3_column_int(stmt, 9))
-        let tokenCount = Int(sqlite3_column_int(stmt, 10))
+        let createdAt = Date(timeIntervalSince1970: sqlite3_column_double(stmt, 11))
+        let lastAccessedAt = Date(timeIntervalSince1970: sqlite3_column_double(stmt, 12))
+        let accessCount = Int(sqlite3_column_int(stmt, 13))
+        let tokenCount = Int(sqlite3_column_int(stmt, 14))
 
         return ContextEntry(
             id: id,
             text: text,
             outputText: outputText,
             embedding: embedding,
+            persons: persons,
+            projects: projects,
+            environments: environments,
+            technicalTerms: technicalTerms,
             sourceType: sourceType,
             sourcePromptID: sourcePromptID,
             clusterID: clusterID,
@@ -1094,6 +1234,24 @@ private final class SQLiteStore {
         }
     }
 
+    private func jsonArray(_ values: [String]) -> String {
+        guard let data = try? JSONEncoder().encode(values),
+              let json = String(data: data, encoding: .utf8) else {
+            return "[]"
+        }
+        return json
+    }
+
+    private func readJSONArray(stmt: OpaquePointer?, column: Int32) -> [String] {
+        guard let cStr = sqlite3_column_text(stmt, column) else { return [] }
+        let raw = String(cString: cStr)
+        guard let data = raw.data(using: .utf8),
+              let decoded = try? JSONDecoder().decode([String].self, from: data) else {
+            return []
+        }
+        return decoded
+    }
+
     private func dataToEmbedding(_ data: Data) -> [Float] {
         data.withUnsafeBytes { raw in
             let buffer = raw.bindMemory(to: Float.self)
@@ -1113,5 +1271,16 @@ private enum ContextStoreError: LocalizedError {
         case .openFailed(let msg): return "SQLite open failed: \(msg)"
         case .queryFailed(let msg): return "SQLite query failed: \(msg)"
         }
+    }
+}
+
+private extension String {
+    var xmlEscaped: String {
+        self
+            .replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
+            .replacingOccurrences(of: "'", with: "&apos;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
     }
 }

@@ -57,6 +57,9 @@
 		A10001010000000000000111 /* CloudProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000111 /* CloudProvider.swift */; };
 		A10001010000000000000112 /* UpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000112 /* UpgradeView.swift */; };
 		A10001010000000000000120 /* ComplexityClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000120 /* ComplexityClassifier.swift */; };
+		A10001010000000000000140 /* IntentDecomposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000140 /* IntentDecomposer.swift */; };
+		A10001010000000000000141 /* EntityExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000141 /* EntityExtractor.swift */; };
+		A10001010000000000000142 /* PostProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000142 /* PostProcessor.swift */; };
 		A10001010000000000000130 /* PromptTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000130 /* PromptTemplate.swift */; };
 		A10001010000000000000131 /* TemplateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000131 /* TemplateService.swift */; };
 		A10001010000000000000132 /* ClipboardHistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000132 /* ClipboardHistoryService.swift */; };
@@ -76,6 +79,7 @@
 		B10001010000000000000006 /* HistoryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002010000000000000006 /* HistoryServiceTests.swift */; };
 		B10001010000000000000007 /* MainViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002010000000000000007 /* MainViewModelTests.swift */; };
 		B10001010000000000000008 /* LLMProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002010000000000000008 /* LLMProviderTests.swift */; };
+		B10001010000000000000009 /* RMPAPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002010000000000000009 /* RMPAPipelineTests.swift */; };
 		C10001010000000000000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = C10002010000000000000001 /* Sparkle */; };
 /* End PBXBuildFile section */
 
@@ -143,6 +147,9 @@
 		A10002010000000000000111 /* CloudProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudProvider.swift; sourceTree = "<group>"; };
 		A10002010000000000000112 /* UpgradeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeView.swift; sourceTree = "<group>"; };
 		A10002010000000000000120 /* ComplexityClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplexityClassifier.swift; sourceTree = "<group>"; };
+		A10002010000000000000140 /* IntentDecomposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentDecomposer.swift; sourceTree = "<group>"; };
+		A10002010000000000000141 /* EntityExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityExtractor.swift; sourceTree = "<group>"; };
+		A10002010000000000000142 /* PostProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostProcessor.swift; sourceTree = "<group>"; };
 		A10002010000000000000130 /* PromptTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptTemplate.swift; sourceTree = "<group>"; };
 		A10002010000000000000131 /* TemplateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateService.swift; sourceTree = "<group>"; };
 		A10002010000000000000132 /* ClipboardHistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardHistoryService.swift; sourceTree = "<group>"; };
@@ -162,6 +169,7 @@
 		B10002010000000000000006 /* HistoryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryServiceTests.swift; sourceTree = "<group>"; };
 		B10002010000000000000007 /* MainViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModelTests.swift; sourceTree = "<group>"; };
 		B10002010000000000000008 /* LLMProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMProviderTests.swift; sourceTree = "<group>"; };
+		B10002010000000000000009 /* RMPAPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMPAPipelineTests.swift; sourceTree = "<group>"; };
 		B10002010000000000000010 /* PromptCraftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PromptCraftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -296,6 +304,9 @@
 				A10002010000000000000110 /* TrialService.swift */,
 				A10002010000000000000111 /* CloudProvider.swift */,
 				A10002010000000000000120 /* ComplexityClassifier.swift */,
+				A10002010000000000000140 /* IntentDecomposer.swift */,
+				A10002010000000000000141 /* EntityExtractor.swift */,
+				A10002010000000000000142 /* PostProcessor.swift */,
 				A10002010000000000000131 /* TemplateService.swift */,
 				A10002010000000000000132 /* ClipboardHistoryService.swift */,
 				A10002010000000000000133 /* ExportService.swift */,
@@ -347,6 +358,7 @@
 				B10002010000000000000006 /* HistoryServiceTests.swift */,
 				B10002010000000000000007 /* MainViewModelTests.swift */,
 				B10002010000000000000008 /* LLMProviderTests.swift */,
+				B10002010000000000000009 /* RMPAPipelineTests.swift */,
 			);
 			path = PromptCraftTests;
 			sourceTree = "<group>";
@@ -506,6 +518,9 @@
 				A10001010000000000000110 /* TrialService.swift in Sources */,
 				A10001010000000000000111 /* CloudProvider.swift in Sources */,
 				A10001010000000000000120 /* ComplexityClassifier.swift in Sources */,
+				A10001010000000000000140 /* IntentDecomposer.swift in Sources */,
+				A10001010000000000000141 /* EntityExtractor.swift in Sources */,
+				A10001010000000000000142 /* PostProcessor.swift in Sources */,
 				A10001010000000000000112 /* UpgradeView.swift in Sources */,
 				D1A2B3C4E5F6071829304051 /* DesktopWindowController.swift in Sources */,
 				D1A2B3C4E5F6071829304061 /* WindowModeEnvironment.swift in Sources */,
@@ -531,6 +546,7 @@
 				B10001010000000000000006 /* HistoryServiceTests.swift in Sources */,
 				B10001010000000000000007 /* MainViewModelTests.swift in Sources */,
 				B10001010000000000000008 /* LLMProviderTests.swift in Sources */,
+				B10001010000000000000009 /* RMPAPipelineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

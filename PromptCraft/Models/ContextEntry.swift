@@ -7,6 +7,10 @@ struct ContextEntry: Identifiable, Equatable {
     let text: String           // Raw user input text only
     let outputText: String     // Raw LLM output text only
     let embedding: [Float]
+    let persons: [String]
+    let projects: [String]
+    let environments: [String]
+    let technicalTerms: [String]
     let sourceType: SourceType
     let sourcePromptID: UUID?
     let clusterID: UUID?
@@ -26,6 +30,10 @@ struct ContextEntry: Identifiable, Equatable {
         text: String,
         outputText: String = "",
         embedding: [Float],
+        persons: [String] = [],
+        projects: [String] = [],
+        environments: [String] = [],
+        technicalTerms: [String] = [],
         sourceType: SourceType,
         sourcePromptID: UUID? = nil,
         clusterID: UUID? = nil,
@@ -38,6 +46,10 @@ struct ContextEntry: Identifiable, Equatable {
         self.text = text
         self.outputText = outputText
         self.embedding = embedding
+        self.persons = persons
+        self.projects = projects
+        self.environments = environments
+        self.technicalTerms = technicalTerms
         self.sourceType = sourceType
         self.sourcePromptID = sourcePromptID
         self.clusterID = clusterID

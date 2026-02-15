@@ -1,5 +1,4 @@
 import Foundation
-import NaturalLanguage
 
 // MARK: - Complexity Tier
 
@@ -19,6 +18,15 @@ enum ComplexityTier: String, CaseIterable {
     var isDetailed: Bool {
         self == .moderate || self == .complex
     }
+
+    var tierNumber: Int {
+        switch self {
+        case .trivial: return 1
+        case .simple: return 2
+        case .moderate: return 3
+        case .complex: return 4
+        }
+    }
 }
 
 // MARK: - Classification Result
@@ -29,12 +37,13 @@ struct ComplexityResult {
     let maxOutputWords: Int
     let emotionalMarkersStripped: Bool
 
-    // Raw signals (useful for debugging / tuning)
+    // Raw signals
     let wordCount: Int
     let actionCount: Int
     let ambiguityScore: Float
     let technicalDensity: Float
     let conjunctionCount: Int
+    let multiSystemDetected: Bool
 }
 
 // MARK: - ComplexityClassifier
@@ -42,441 +51,270 @@ struct ComplexityResult {
 final class ComplexityClassifier {
     static let shared = ComplexityClassifier()
 
-    private let vagueTerms: Set<String> = [
-        "improve", "better", "fix", "update", "change", "clean",
-        "optimize", "enhance", "refactor", "adjust", "tweak",
-        "modify", "rework", "redo", "revise", "polish"
+    private let vagueSingleTerms: Set<String> = [
+        "improve", "better", "fix", "update", "cleanup", "clean", "optimize"
     ]
 
-    /// Conjunction/additive words that signal multiple sub-tasks.
-    private let conjunctions: Set<String> = [
-        "and", "also", "plus", "then", "additionally", "moreover",
-        "furthermore", "besides", "meanwhile"
+    private let vaguePhrases: [String] = [
+        "make it better",
+        "clean up",
+        "make better"
     ]
 
-    /// Phrase-level conjunctions detected via substring.
-    private let phraseConjunctions = [
-        "after that", "as well as", "in addition", "on top of"
+    private let specificVerbs: Set<String> = [
+        "debug", "investigate", "profile", "validate", "implement", "refactor", "triage", "reproduce", "trace", "benchmark", "deploy", "rollback"
     ]
 
-    /// Urgency words to detect emotional markers.
-    private let urgencyWords: Set<String> = [
-        "asap", "urgent", "immediately", "now", "hurry",
-        "emergency", "critical", "deadline", "rush"
+    private let genericObjects: Set<String> = [
+        "it", "this", "that", "thing", "stuff", "task", "issue"
     ]
 
-    /// Common profanity terms for emotion detection.
-    private let profanityTerms: Set<String> = [
-        "fuck", "fucking", "shit", "shitty", "damn", "damned",
-        "hell", "crap", "crappy", "ass", "bullshit", "wtf"
+    private let conjunctionWords: Set<String> = [
+        "and", "also", "plus", "then", "after", "next"
     ]
+
+    private let intentDecomposer = IntentDecomposer.shared
+    private let entityExtractor = EntityExtractor.shared
 
     private init() {}
 
-    // MARK: - Emotion Detection
-
-    /// Strip emotional markers from text, returning sanitized text and whether emotion was detected.
-    func stripEmotionalMarkers(_ text: String) -> (sanitized: String, wasEmotional: Bool) {
-        var sanitized = text
-        var wasEmotional = false
-
-        // Strip 3+ consecutive ! → single .
-        let bangPattern = try! NSRegularExpression(pattern: "!{3,}", options: [])
-        let bangRange = NSRange(sanitized.startIndex..., in: sanitized)
-        if bangPattern.numberOfMatches(in: sanitized, range: bangRange) > 0 {
-            wasEmotional = true
-            sanitized = bangPattern.stringByReplacingMatches(in: sanitized, range: bangRange, withTemplate: ".")
-        }
-
-        // Lowercase ALL-CAPS words (3+ chars with letters)
-        let capsPattern = try! NSRegularExpression(pattern: "\\b([A-Z]{3,})\\b", options: [])
-        let capsRange = NSRange(sanitized.startIndex..., in: sanitized)
-        let capsMatches = capsPattern.matches(in: sanitized, range: capsRange)
-        if !capsMatches.isEmpty {
-            var result = sanitized
-            for match in capsMatches.reversed() {
-                guard let range = Range(match.range, in: result) else { continue }
-                let word = String(result[range])
-                // Only lowercase if it contains letters (not acronyms like "API")
-                if word.rangeOfCharacter(from: .lowercaseLetters) == nil && word.count >= 3 {
-                    result.replaceSubrange(range, with: word.lowercased())
-                    wasEmotional = true
-                }
-            }
-            sanitized = result
-        }
-
-        // Detect urgency words
-        let lowerWords = sanitized.lowercased().split(separator: " ").map {
-            $0.trimmingCharacters(in: .punctuationCharacters)
-        }
-        for word in lowerWords {
-            if urgencyWords.contains(word) {
-                wasEmotional = true
-                break
-            }
-        }
-
-        // Detect profanity
-        for word in lowerWords {
-            if profanityTerms.contains(word) {
-                wasEmotional = true
-                break
-            }
-        }
-
-        return (sanitized, wasEmotional)
-    }
-
     // MARK: - Public API
 
-    /// Classify input text complexity, optionally incorporating context engine signals.
+    func classify(
+        intentAnalysis: IntentAnalysis,
+        entityAnalysis: EntityAnalysis,
+        contextMatches: [ContextSearchResult] = [],
+        totalContextEntries: Int = 0,
+        verbosity: OutputVerbosity = .concise
+    ) -> ComplexityResult {
+        let cleaned = intentAnalysis.cleanedInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        let words = cleaned.split(separator: " ", omittingEmptySubsequences: true).map(String.init)
+        let inputWordCount = words.count
+
+        let ambiguityScore = computeAmbiguityScore(intentAnalysis: intentAnalysis)
+        let conjunctionCount = words.reduce(0) { partial, word in
+            let token = word.lowercased().trimmingCharacters(in: .punctuationCharacters)
+            return partial + (conjunctionWords.contains(token) ? 1 : 0)
+        }
+
+        let technicalSignalCount = entityAnalysis.technicalTerms.count + entityAnalysis.projects.count + entityAnalysis.environments.count
+        let technicalDensity: Float
+        if inputWordCount == 0 {
+            technicalDensity = 0
+        } else {
+            technicalDensity = min(1.0, Float(technicalSignalCount) / Float(max(1, inputWordCount)))
+        }
+
+        let multiSystemDetected = detectMultiSystem(entityAnalysis: entityAnalysis, text: cleaned)
+
+        var baseTier = determineBaseTier(
+            intentCount: intentAnalysis.intentCount,
+            ambiguityScore: ambiguityScore,
+            multiSystemDetected: multiSystemDetected
+        )
+
+        let shouldBoost = shouldApplyContextBoost(
+            baseTier: baseTier,
+            matches: contextMatches,
+            totalContextEntries: totalContextEntries
+        )
+
+        if shouldBoost && baseTier == .trivial {
+            baseTier = .simple
+        }
+
+        let adjustedTier = adjustTierForVerbosity(baseTier, verbosity: verbosity)
+        let maxOutputWords = computeMaxOutputWords(tier: adjustedTier, inputWords: inputWordCount)
+
+        return ComplexityResult(
+            tier: adjustedTier,
+            contextBoosted: shouldBoost,
+            maxOutputWords: maxOutputWords,
+            emotionalMarkersStripped: !intentAnalysis.emotionalMarkers.isEmpty,
+            wordCount: inputWordCount,
+            actionCount: intentAnalysis.intentCount,
+            ambiguityScore: ambiguityScore,
+            technicalDensity: technicalDensity,
+            conjunctionCount: conjunctionCount,
+            multiSystemDetected: multiSystemDetected
+        )
+    }
+
+    /// Compatibility wrapper for older call sites.
     func classify(
         input: String,
         contextMatches: [ContextSearchResult] = [],
         totalContextEntries: Int = 0,
         verbosity: OutputVerbosity = .concise
     ) -> ComplexityResult {
-        let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else {
-            return ComplexityResult(tier: .trivial, contextBoosted: false,
-                                   maxOutputWords: 10, emotionalMarkersStripped: false,
-                                   wordCount: 0, actionCount: 0, ambiguityScore: 0,
-                                   technicalDensity: 0, conjunctionCount: 0)
-        }
-
-        // Apply emotion stripping before all signal computation
-        let (sanitized, wasEmotional) = stripEmotionalMarkers(trimmed)
-
-        let words = sanitized.split(separator: " ", omittingEmptySubsequences: true)
-        let wordCount = words.count
-        let lowercased = sanitized.lowercased()
-        let lowercasedWords = words.map { $0.lowercased() }
-
-        // 1. Intent count (verb-based intent clusters)
-        let intentCount = countIntents(in: sanitized)
-
-        // 2. Ambiguity score
-        let ambiguityScore = computeAmbiguity(words: lowercasedWords, fullText: lowercased)
-
-        // 3. Technical density
-        let technicalDensity = computeTechnicalDensity(in: sanitized, wordCount: wordCount)
-
-        // 4. Conjunction count
-        let conjunctionCount = countConjunctions(words: lowercasedWords, fullText: lowercased)
-
-        // 5. Context engine boost (capped: trivial→simple only)
-        let (contextBoost, contextBoosted) = computeContextBoost(
-            matches: contextMatches,
-            totalEntries: totalContextEntries
-        )
-
-        // 6. Determine base tier from intent-based boundaries
-        let baseTier = determineTier(
-            wordCount: wordCount,
-            intentCount: intentCount,
-            ambiguityScore: ambiguityScore,
-            technicalDensity: technicalDensity,
-            conjunctionCount: conjunctionCount
-        )
-
-        // 7. Apply context boost (max +1, trivial→simple only)
-        let boostedTier = applyContextBoost(baseTier: baseTier, boost: contextBoost)
-
-        // 8. Apply verbosity adjustment
-        let finalTier: ComplexityTier
-        switch verbosity {
-        case .concise:
-            finalTier = boostedTier
-        case .balanced:
-            let tiers: [ComplexityTier] = [.trivial, .simple, .moderate, .complex]
-            if let idx = tiers.firstIndex(of: boostedTier) {
-                finalTier = tiers[min(idx + 1, tiers.count - 1)]
-            } else {
-                finalTier = boostedTier
-            }
-        case .detailed:
-            finalTier = .complex
-        }
-
-        // 9. Compute max output words
-        let maxOutputWords = computeMaxOutputWords(tier: finalTier, inputWords: wordCount)
-
-        return ComplexityResult(
-            tier: finalTier,
-            contextBoosted: contextBoosted,
-            maxOutputWords: maxOutputWords,
-            emotionalMarkersStripped: wasEmotional,
-            wordCount: wordCount,
-            actionCount: intentCount,
-            ambiguityScore: ambiguityScore,
-            technicalDensity: technicalDensity,
-            conjunctionCount: conjunctionCount
+        let intent = intentDecomposer.analyze(input)
+        let entities = entityExtractor.analyze(input)
+        return classify(
+            intentAnalysis: intent,
+            entityAnalysis: entities,
+            contextMatches: contextMatches,
+            totalContextEntries: totalContextEntries,
+            verbosity: verbosity
         )
     }
 
-    /// Lightweight classification that skips context signals. Used for the real-time UI chip.
+    /// Lightweight preview classification for the live UI chip.
     func classifyForPreview(input: String) -> ComplexityTier {
-        let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return .trivial }
-
-        let (sanitized, _) = stripEmotionalMarkers(trimmed)
-
-        let words = sanitized.split(separator: " ", omittingEmptySubsequences: true)
-        let wordCount = words.count
-        let lowercased = sanitized.lowercased()
-        let lowercasedWords = words.map { $0.lowercased() }
-
-        let intentCount = countIntents(in: sanitized)
-        let ambiguityScore = computeAmbiguity(words: lowercasedWords, fullText: lowercased)
-        let technicalDensity = computeTechnicalDensity(in: sanitized, wordCount: wordCount)
-        let conjunctionCount = countConjunctions(words: lowercasedWords, fullText: lowercased)
-
-        return determineTier(
-            wordCount: wordCount,
-            intentCount: intentCount,
-            ambiguityScore: ambiguityScore,
-            technicalDensity: technicalDensity,
-            conjunctionCount: conjunctionCount
+        let intent = intentDecomposer.analyze(input)
+        let entities = entityExtractor.analyze(input)
+        let result = classify(
+            intentAnalysis: intent,
+            entityAnalysis: entities,
+            contextMatches: [],
+            totalContextEntries: 0,
+            verbosity: .concise
         )
+        return result.tier
     }
 
-    // MARK: - Intent Counting
+    // MARK: - Ambiguity
 
-    /// Count distinct intent clusters — groups of action verbs separated by conjunctions or sentence boundaries.
-    private func countIntents(in text: String) -> Int {
-        let tagger = NLTagger(tagSchemes: [.lexicalClass])
-        tagger.string = text
-        let range = text.startIndex..<text.endIndex
+    private func computeAmbiguityScore(intentAnalysis: IntentAnalysis) -> Float {
+        let cleaned = intentAnalysis.cleanedInput.lowercased()
+        var score: Float = 0
 
-        let auxiliaries: Set<String> = [
-            "is", "are", "was", "were", "be", "been", "being",
-            "have", "has", "had", "do", "does", "did",
-            "will", "would", "could", "should", "can", "may",
-            "might", "shall", "must", "need"
-        ]
-
-        // Collect verbs and conjunctions in order
-        struct Token {
-            let word: String
-            let isVerb: Bool
-            let isConjunction: Bool
-            let isSentenceBoundary: Bool
+        for phrase in vaguePhrases where cleaned.contains(phrase) {
+            score += 0.2
         }
 
-        var tokens: [Token] = []
-        tagger.enumerateTags(in: range, unit: .word, scheme: .lexicalClass) { tag, tokenRange in
-            let word = String(text[tokenRange]).lowercased()
-            let clean = word.trimmingCharacters(in: .punctuationCharacters)
+        for intent in intentAnalysis.intents {
+            let verb = intent.verb.lowercased()
+            let object = intent.object.lowercased()
 
-            let isVerb = tag == .verb && !auxiliaries.contains(clean)
-            let isConj = self.conjunctions.contains(clean)
-
-            // Check for sentence boundary (period, question mark, exclamation, semicolon)
-            let rawWord = String(text[tokenRange])
-            let hasBoundary = rawWord.contains(".") || rawWord.contains("?") ||
-                              rawWord.contains(";") || rawWord.contains("!")
-
-            tokens.append(Token(word: clean, isVerb: isVerb, isConjunction: isConj, isSentenceBoundary: hasBoundary))
-            return true
-        }
-
-        // Count intent clusters: a new intent starts after a conjunction or sentence boundary
-        // if followed by a verb
-        var intentCount = 0
-        var currentSegmentHasVerb = false
-
-        for token in tokens {
-            if token.isConjunction || token.isSentenceBoundary {
-                if currentSegmentHasVerb {
-                    intentCount += 1
-                    currentSegmentHasVerb = false
-                }
+            if vagueSingleTerms.contains(verb) && (object.isEmpty || genericObjects.contains(object) || object.count <= 2) {
+                score += 0.2
             }
-            if token.isVerb {
-                currentSegmentHasVerb = true
+
+            if specificVerbs.contains(verb) && !genericObjects.contains(object) && object.count > 2 {
+                score -= 0.1
+            }
+
+            if vagueSingleTerms.contains(verb) && !genericObjects.contains(object) && object.count > 2 {
+                score -= 0.05
             }
         }
 
-        // Count the last segment
-        if currentSegmentHasVerb {
-            intentCount += 1
+        if intentAnalysis.intents.isEmpty {
+            score += 0.2
         }
 
-        return max(1, intentCount) // At least 1 intent implied
+        return min(1.0, max(0.0, score))
     }
 
-    // MARK: - Signal Computation
+    // MARK: - Tier Decision Tree
 
-    private func computeAmbiguity(words: [String], fullText: String) -> Float {
-        guard !words.isEmpty else { return 0 }
-
-        var vagueCount: Float = 0
-        var hasSpecificTarget = false
-
-        for word in words {
-            // Check if word (without trailing punctuation) is vague
-            let clean = word.trimmingCharacters(in: .punctuationCharacters)
-            if vagueTerms.contains(clean) {
-                vagueCount += 1
-            }
-        }
-
-        // Check for specificity indicators: file paths, function names, endpoints, line numbers
-        let specificityPatterns = [
-            "/", ".", "::", "->", "()", "line ", "endpoint", "function ",
-            "class ", "method ", "variable ", "file ", "module ", "component ",
-            "table ", "column ", "field ", "parameter ", "argument ",
-            "route ", "api ", "url ", "port ", "version "
-        ]
-        for pattern in specificityPatterns {
-            if fullText.contains(pattern) {
-                hasSpecificTarget = true
-                break
-            }
-        }
-
-        if vagueCount == 0 { return 0.1 }
-
-        let vagueRatio = vagueCount / Float(words.count)
-        var score = min(1.0, vagueRatio * 5.0) // Scale up: 20% vague words = 1.0
-
-        // Reduce ambiguity if specific targets are present alongside vague terms
-        if hasSpecificTarget {
-            score *= 0.5
-        }
-
-        return score
-    }
-
-    private func computeTechnicalDensity(in text: String, wordCount: Int) -> Float {
-        guard wordCount > 0 else { return 0 }
-
-        let tagger = NLTagger(tagSchemes: [.lexicalClass, .nameType])
-        tagger.string = text
-        let range = text.startIndex..<text.endIndex
-
-        var technicalCount: Float = 0
-        tagger.enumerateTags(in: range, unit: .word, scheme: .lexicalClass) { tag, tokenRange in
-            if let tag {
-                let word = String(text[tokenRange])
-                // Technical indicators: nouns with camelCase, contains digits, all-caps abbreviations,
-                // or contains special chars like hyphens in compound terms
-                if tag == .noun || tag == .otherWord {
-                    if containsCamelCase(word) || containsDigits(word) ||
-                       (word.count >= 2 && word == word.uppercased() && word.rangeOfCharacter(from: .letters) != nil) ||
-                       word.contains("-") || word.contains("_") {
-                        technicalCount += 1
-                    }
-                }
-            }
-            return true
-        }
-
-        return min(1.0, technicalCount / Float(wordCount))
-    }
-
-    private func countConjunctions(words: [String], fullText: String) -> Int {
-        var count = 0
-        for word in words {
-            let clean = word.trimmingCharacters(in: .punctuationCharacters)
-            if conjunctions.contains(clean) {
-                count += 1
-            }
-        }
-        // Also check for phrase-level conjunctions
-        for phrase in phraseConjunctions {
-            if fullText.contains(phrase) {
-                count += 1
-            }
-        }
-        return count
-    }
-
-    // MARK: - Max Output Words
-
-    private func computeMaxOutputWords(tier: ComplexityTier, inputWords: Int) -> Int {
-        let raw: Double
-        switch tier {
-        case .trivial:
-            raw = min(Double(inputWords) * 2.0, 50)
-        case .simple:
-            raw = min(Double(inputWords) * 2.5, 150)
-        case .moderate:
-            raw = min(Double(inputWords) * 3.0, 400)
-        case .complex:
-            raw = min(Double(inputWords) * 4.0, 800)
-        }
-        return max(10, Int(raw)) // Floor: 10 words minimum
-    }
-
-    // MARK: - Context Boost (capped: trivial→simple only)
-
-    private func computeContextBoost(
-        matches: [ContextSearchResult],
-        totalEntries: Int
-    ) -> (boost: Int, boosted: Bool) {
-        guard !matches.isEmpty else { return (0, false) }
-
-        let highSimilarityMatches = matches.filter { $0.similarity > 0.75 }
-
-        // Only boost if 3+ high-similarity matches and 50+ total entries
-        if highSimilarityMatches.count >= 3 && totalEntries >= 50 {
-            return (1, true) // Max +1 boost, trivial→simple only
-        }
-
-        return (0, false)
-    }
-
-    // MARK: - Tier Determination (intent-based boundaries)
-
-    private func determineTier(
-        wordCount: Int,
-        intentCount: Int,
-        ambiguityScore: Float,
-        technicalDensity: Float,
-        conjunctionCount: Int
-    ) -> ComplexityTier {
-        // Tier 4 (complex): 5+ intents OR multi-system indicators
-        if intentCount >= 5 {
+    private func determineBaseTier(intentCount: Int, ambiguityScore: Float, multiSystemDetected: Bool) -> ComplexityTier {
+        if intentCount >= 5 || ambiguityScore > 0.7 || multiSystemDetected {
             return .complex
         }
 
-        // Tier 3 (moderate): 3-4 intents OR significant ambiguity
-        if intentCount >= 3 || (ambiguityScore >= 0.6 && wordCount >= 40) {
+        if (3...4).contains(intentCount) || (ambiguityScore >= 0.5 && ambiguityScore <= 0.7) {
             return .moderate
         }
 
-        // Tier 2 (simple): 2 intents OR 1 complex/ambiguous intent
-        if intentCount >= 2 || ambiguityScore >= 0.4 || (wordCount >= 30 && technicalDensity >= 0.3) {
+        if intentCount == 2 || (intentCount == 1 && ambiguityScore >= 0.3 && ambiguityScore <= 0.5) {
             return .simple
         }
 
-        // Tier 1 (trivial): 1 intent + <100 words
-        if intentCount <= 1 && wordCount < 100 {
+        if intentCount == 1 && ambiguityScore < 0.3 {
             return .trivial
         }
 
         return .simple
     }
 
-    private func applyContextBoost(baseTier: ComplexityTier, boost: Int) -> ComplexityTier {
-        guard boost > 0, baseTier == .trivial else { return baseTier }
-        // Only boost trivial→simple (max +1, never higher)
-        return .simple
+    private func detectMultiSystem(entityAnalysis: EntityAnalysis, text: String) -> Bool {
+        if entityAnalysis.environments.count >= 2 { return true }
+
+        let uniqueProjects = Set(entityAnalysis.projects.map { $0.lowercased() })
+        if uniqueProjects.count >= 3 { return true }
+        if uniqueProjects.count >= 2 && entityAnalysis.environments.count >= 2 { return true }
+
+        let lowered = text.lowercased()
+        let multiSystemPhrases = [
+            "frontend and backend",
+            "api and database",
+            "client and server",
+            "mobile and web",
+            "service and worker"
+        ]
+
+        return multiSystemPhrases.contains(where: lowered.contains)
     }
 
-    // MARK: - Helpers
+    // MARK: - Context Boost
 
-    private func containsCamelCase(_ word: String) -> Bool {
-        // Has both lower and uppercase letters with an uppercase not at start
-        let hasLower = word.rangeOfCharacter(from: .lowercaseLetters) != nil
-        let middleAndEnd = word.dropFirst()
-        let hasUpperAfterFirst = middleAndEnd.rangeOfCharacter(from: .uppercaseLetters) != nil
-        return hasLower && hasUpperAfterFirst
+    private func shouldApplyContextBoost(
+        baseTier: ComplexityTier,
+        matches: [ContextSearchResult],
+        totalContextEntries: Int
+    ) -> Bool {
+        guard baseTier == .trivial else { return false }
+        guard totalContextEntries >= 50 else { return false }
+
+        let strongMatches = matches.filter { $0.similarity > 0.75 }
+        guard strongMatches.count >= 3 else { return false }
+
+        let groupedByCluster = Dictionary(grouping: strongMatches) { $0.entry.clusterID }
+        for (clusterID, grouped) in groupedByCluster {
+            guard clusterID != nil else { continue }
+            if grouped.count >= 3 {
+                return true
+            }
+        }
+
+        // Fallback when cluster assignments are not present yet.
+        return strongMatches.count >= 3
     }
 
-    private func containsDigits(_ word: String) -> Bool {
-        word.rangeOfCharacter(from: .decimalDigits) != nil
+    // MARK: - Verbosity
+
+    private func adjustTierForVerbosity(_ tier: ComplexityTier, verbosity: OutputVerbosity) -> ComplexityTier {
+        switch verbosity {
+        case .concise:
+            return tier
+
+        case .balanced:
+            switch tier {
+            case .trivial: return .simple
+            case .simple: return .moderate
+            case .moderate, .complex: return .complex
+            }
+
+        case .detailed:
+            return .complex
+        }
+    }
+
+    // MARK: - 2x Rule Output Budget
+
+    private func computeMaxOutputWords(tier: ComplexityTier, inputWords: Int) -> Int {
+        guard inputWords > 0 else {
+            switch tier {
+            case .trivial: return 20
+            case .simple: return 40
+            case .moderate: return 120
+            case .complex: return 250
+            }
+        }
+
+        let maxWords: Double
+        switch tier {
+        case .trivial:
+            maxWords = min(Double(inputWords) * 2.0, 50)
+        case .simple:
+            maxWords = min(Double(inputWords) * 2.5, 150)
+        case .moderate:
+            maxWords = min(Double(inputWords) * 3.0, 400)
+        case .complex:
+            maxWords = min(Double(inputWords) * 4.0, 800)
+        }
+
+        return max(8, Int(ceil(maxWords)))
     }
 }

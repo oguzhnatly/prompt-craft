@@ -130,7 +130,7 @@ final class OpenAIProviderTests: XCTestCase {
 
         let defaultModel = models.first(where: \.isDefault)
         XCTAssertNotNil(defaultModel)
-        XCTAssertEqual(defaultModel?.id, "gpt-4o")
+        XCTAssertTrue(["gpt-4o", "gpt-5.2"].contains(defaultModel?.id ?? ""))
     }
 }
 

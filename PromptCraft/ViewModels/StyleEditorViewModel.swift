@@ -528,7 +528,7 @@ final class StyleEditorViewModel: ObservableObject {
                 let config = self.configurationService.configuration
                 let provider = self.providerManager.activeProvider
 
-                let assembled = self.promptAssembler.assemble(
+                let assembled = await self.promptAssembler.assemble(
                     rawInput: testInput,
                     style: tempStyle,
                     providerType: config.selectedProvider
