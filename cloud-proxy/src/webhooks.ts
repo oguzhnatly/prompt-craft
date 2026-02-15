@@ -396,10 +396,10 @@ async function sendLicenseEmail(
 
 // ─── Types ──────────────────────────────────────────────────────────
 
-interface StripeEvent {
+interface StripeEvent<T = StripeCheckoutSession | StripeSubscription | StripeCharge> {
   type: string;
   data: {
-    object: Record<string, unknown>;
+    object: T;
   };
 }
 
