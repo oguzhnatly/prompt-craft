@@ -1,4 +1,5 @@
 name = "promptcraft-cloud-proxy"
+account_id = "5ec6ef2910644610a123117a837e6f46"
 main = "src/index.ts"
 compatibility_date = "2024-12-05"
 compatibility_flags = ["nodejs_compat"]
