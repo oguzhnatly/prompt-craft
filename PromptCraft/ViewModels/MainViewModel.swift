@@ -69,6 +69,9 @@ final class MainViewModel: ObservableObject {
     /// The last optimized output stored independently from the clipboard.
     private(set) var lastOptimizedOutput: String = ""
 
+    /// The ID of the most recent history entry (set after each optimization).
+    private(set) var lastHistoryEntryID: UUID?
+
     private let styleService: StyleService
     private let configurationService: ConfigurationService
     private let historyService: HistoryService
@@ -320,6 +323,7 @@ final class MainViewModel: ObservableObject {
                         durationMilliseconds: duration
                     )
                     historyService.save(entry)
+                    self.lastHistoryEntryID = entry.id
 
                     // Index for context engine
                     contextEngine.indexOptimization(
@@ -802,6 +806,38 @@ final class MainViewModel: ObservableObject {
                 object: nil,
                 userInfo: ["locked": locked]
             )
+        }
+    }
+
+    func exportAsSystemPrompt(destination: SystemPromptDestination) {
+        let config = configurationService.configuration
+        let styleName = selectedStyle?.displayName ?? "Unknown"
+        let verbosity = (outputVerbosityUsed ?? config.outputVerbosity).displayName
+        let tier = detectedComplexityTier.displayLabel
+
+        let metadata = SystemPromptMetadata(
+            styleName: styleName,
+            verbosity: verbosity,
+            tier: tier
+        )
+
+        let lockPopover: (Bool) -> Void = { locked in
+            NotificationCenter.default.post(
+                name: AppConstants.Notifications.lockPopover,
+                object: nil,
+                userInfo: ["locked": locked]
+            )
+        }
+
+        let saved = exportService.exportAsSystemPrompt(
+            outputText,
+            destination: destination,
+            metadata: metadata,
+            lockPopover: lockPopover
+        )
+
+        if saved, let entryID = lastHistoryEntryID {
+            historyService.markAsExportedSystemPrompt(entryID)
         }
     }
 

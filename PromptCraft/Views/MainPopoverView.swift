@@ -1433,7 +1433,7 @@ struct MainPopoverView: View {
 
                     // Export dropdown
                     Menu {
-                        ForEach(ExportFormat.allCases, id: \.self) { format in
+                        ForEach(ExportFormat.clipboardFormats, id: \.self) { format in
                             Button(action: { exportOutput(as: format) }) {
                                 Label(format.menuLabel, systemImage: format.iconName)
                             }
@@ -1441,6 +1441,14 @@ struct MainPopoverView: View {
                         Divider()
                         Button(action: { viewModel.saveOutputToFile() }) {
                             Label("Save to File...", systemImage: "square.and.arrow.down")
+                        }
+                        Divider()
+                        Section("Save as System Prompt") {
+                            ForEach(SystemPromptDestination.allCases, id: \.self) { destination in
+                                Button(action: { viewModel.exportAsSystemPrompt(destination: destination) }) {
+                                    Label(destination.menuLabel, systemImage: destination.iconName)
+                                }
+                            }
                         }
                     } label: {
                         Image(systemName: "square.and.arrow.up")

@@ -67,6 +67,15 @@ enum ExportFormat: String, Codable, CaseIterable {
     case claude
     case chatGPT
     case githubIssue
+    case cursorRules
+    case claudeProject
+    case chatGPTInstructions
+    case systemPromptRaw
+
+    /// The original clipboard-copy formats used by the export menu.
+    static let clipboardFormats: [ExportFormat] = [
+        .plainText, .markdown, .claude, .chatGPT, .githubIssue,
+    ]
 
     var displayName: String {
         switch self {
@@ -75,6 +84,10 @@ enum ExportFormat: String, Codable, CaseIterable {
         case .claude: return "Claude (XML)"
         case .chatGPT: return "ChatGPT"
         case .githubIssue: return "GitHub Issue"
+        case .cursorRules: return "Cursor Rules"
+        case .claudeProject: return "Claude Project"
+        case .chatGPTInstructions: return "ChatGPT Instructions"
+        case .systemPromptRaw: return "Raw System Prompt"
         }
     }
 
@@ -85,6 +98,10 @@ enum ExportFormat: String, Codable, CaseIterable {
         case .claude: return "Copy for Claude"
         case .chatGPT: return "Copy for ChatGPT"
         case .githubIssue: return "Copy for GitHub Issue"
+        case .cursorRules: return "Cursor Rules (.cursorrules)"
+        case .claudeProject: return "Claude Project Instructions"
+        case .chatGPTInstructions: return "ChatGPT Custom Instructions"
+        case .systemPromptRaw: return "Raw System Prompt (.txt)"
         }
     }
 
@@ -95,6 +112,10 @@ enum ExportFormat: String, Codable, CaseIterable {
         case .claude: return "chevron.left.forwardslash.chevron.right"
         case .chatGPT: return "bubble.left.and.text.bubble.right"
         case .githubIssue: return "arrow.triangle.branch"
+        case .cursorRules: return "cursorarrow.rays"
+        case .claudeProject: return "doc.text.fill"
+        case .chatGPTInstructions: return "text.bubble.fill"
+        case .systemPromptRaw: return "doc.plaintext"
         }
     }
 }

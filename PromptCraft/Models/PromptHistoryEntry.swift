@@ -18,6 +18,7 @@ struct PromptHistoryEntry: Codable, Identifiable, Equatable {
     let durationMilliseconds: Int
     var isFavorited: Bool
     let sourceType: PromptSourceType
+    var exportedAsSystemPrompt: Bool
 
     init(
         id: UUID = UUID(),
@@ -29,7 +30,8 @@ struct PromptHistoryEntry: Codable, Identifiable, Equatable {
         modelName: String,
         durationMilliseconds: Int,
         isFavorited: Bool = false,
-        sourceType: PromptSourceType = .manual
+        sourceType: PromptSourceType = .manual,
+        exportedAsSystemPrompt: Bool = false
     ) {
         self.id = id
         self.inputText = inputText
@@ -41,6 +43,7 @@ struct PromptHistoryEntry: Codable, Identifiable, Equatable {
         self.durationMilliseconds = durationMilliseconds
         self.isFavorited = isFavorited
         self.sourceType = sourceType
+        self.exportedAsSystemPrompt = exportedAsSystemPrompt
     }
 
     init(from decoder: Decoder) throws {
@@ -55,5 +58,6 @@ struct PromptHistoryEntry: Codable, Identifiable, Equatable {
         durationMilliseconds = try container.decode(Int.self, forKey: .durationMilliseconds)
         isFavorited = try container.decode(Bool.self, forKey: .isFavorited)
         sourceType = try container.decodeIfPresent(PromptSourceType.self, forKey: .sourceType) ?? .manual
+        exportedAsSystemPrompt = try container.decodeIfPresent(Bool.self, forKey: .exportedAsSystemPrompt) ?? false
     }
 }

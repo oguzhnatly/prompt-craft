@@ -80,6 +80,12 @@ final class HistoryService: ObservableObject {
         persistEntries()
     }
 
+    func markAsExportedSystemPrompt(_ entryID: UUID) {
+        guard let index = entries.firstIndex(where: { $0.id == entryID }) else { return }
+        entries[index].exportedAsSystemPrompt = true
+        persistEntries()
+    }
+
     func delete(_ entryID: UUID) {
         entries.removeAll { $0.id == entryID }
         persistEntries()
