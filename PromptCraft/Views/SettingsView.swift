@@ -26,6 +26,8 @@ struct SettingsView: View {
     @State private var editingClusterID: UUID?
     @State private var pendingClusterName: String = ""
     @Namespace private var segmentedAnimation
+    @ObservedObject private var styleService = StyleService.shared
+    @ObservedObject private var watchFolderService = WatchFolderService.shared
 
     private var config: AppConfiguration { configService.configuration }
 
@@ -125,6 +127,8 @@ struct SettingsView: View {
             keyboardShortcutSection
             sectionDivider
             inlineOverlaySection
+            sectionDivider
+            watchFolderSection
         case .contextEngine:
             contextEngineSection
                 .padding(.top, 12)
@@ -2102,6 +2106,144 @@ struct SettingsView: View {
             return name
         }
         return bundleID
+    }
+
+    // MARK: - Watch Folder Section
+
+    private var watchFolderSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            sectionHeader("Watch Folder")
+
+            settingToggle(
+                "Enable Watch Folder",
+                description: "Monitor a folder for .txt files and auto-optimize them in the background.",
+                binding: configBinding(\.watchFolderEnabled)
+            )
+
+            if config.watchFolderEnabled {
+                // Folder path
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Watch path")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(.secondary)
+
+                    HStack(spacing: 6) {
+                        Text(config.watchFolderPath)
+                            .font(.system(size: 12, design: .monospaced))
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 5)
+                            .background(Color(nsColor: .controlBackgroundColor))
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 0.5)
+                            )
+
+                        Button(action: pickWatchFolder) {
+                            Image(systemName: "folder")
+                                .font(.system(size: 12))
+                        }
+                        .buttonStyle(.plain)
+                        .help("Choose folder")
+
+                        Button(action: revealWatchFolderInFinder) {
+                            Image(systemName: "arrow.right.circle")
+                                .font(.system(size: 12))
+                        }
+                        .buttonStyle(.plain)
+                        .help("Reveal in Finder")
+                    }
+                }
+
+                // Style picker
+                HStack {
+                    Text("Optimization style")
+                        .font(.system(size: 13))
+                    Spacer()
+                    Picker("", selection: watchFolderStyleBinding) {
+                        Text("Default (first enabled)").tag(nil as UUID?)
+                        ForEach(styleService.getEnabled(), id: \.id) { style in
+                            Text(style.displayName).tag(style.id as UUID?)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(width: 180)
+                }
+
+                settingToggle(
+                    "Auto-copy result to clipboard",
+                    description: "Copy the optimized text to clipboard when processing completes.",
+                    binding: configBinding(\.watchFolderAutoClipboard)
+                )
+
+                // Status indicator
+                HStack(spacing: 6) {
+                    Circle()
+                        .fill(watchFolderService.isWatching ? Color.green : Color.orange)
+                        .frame(width: 6, height: 6)
+                    Text("Watch folder:")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                    Text(watchFolderService.isWatching ? "Active" : "Inactive")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(watchFolderService.isWatching ? .green : .orange)
+                }
+            }
+        }
+    }
+
+    private var watchFolderStyleBinding: Binding<UUID?> {
+        Binding(
+            get: { self.configService.configuration.watchFolderStyleID },
+            set: { newValue in self.configService.update { $0.watchFolderStyleID = newValue } }
+        )
+    }
+
+    private func pickWatchFolder() {
+        // Lock popover so it doesn't dismiss when the panel opens
+        NotificationCenter.default.post(
+            name: AppConstants.Notifications.lockPopover,
+            object: nil,
+            userInfo: ["locked": true]
+        )
+
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.canCreateDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.prompt = "Select"
+        panel.message = "Choose a folder to monitor for .txt files"
+
+        panel.begin { [weak configService] response in
+            defer {
+                NotificationCenter.default.post(
+                    name: AppConstants.Notifications.lockPopover,
+                    object: nil,
+                    userInfo: ["locked": false]
+                )
+            }
+            if response == .OK, let url = panel.url {
+                let path = url.path
+                configService?.update { $0.watchFolderPath = path }
+            }
+        }
+    }
+
+    private func revealWatchFolderInFinder() {
+        let expandedPath = (config.watchFolderPath as NSString).expandingTildeInPath
+        let url = URL(fileURLWithPath: expandedPath, isDirectory: true)
+
+        // Create directory if it doesn't exist yet
+        let fm = FileManager.default
+        if !fm.fileExists(atPath: expandedPath) {
+            try? fm.createDirectory(at: url, withIntermediateDirectories: true)
+        }
+
+        NSWorkspace.shared.open(url)
     }
 
     // MARK: - Context Engine Section

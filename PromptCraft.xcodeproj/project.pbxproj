@@ -67,6 +67,7 @@
 		A10001010000000000000134 /* TemplateEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000134 /* TemplateEditorViewModel.swift */; };
 		A10001010000000000000135 /* TemplateManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000135 /* TemplateManagementView.swift */; };
 		A10001010000000000000136 /* TemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000136 /* TemplateEditorView.swift */; };
+		A10001010000000000000150 /* WatchFolderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000150 /* WatchFolderService.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F3 /* OnboardingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F2 /* OnboardingManager.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F5 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F4 /* OnboardingView.swift */; };
 		D1A2B3C4E5F6071829304051 /* DesktopWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A2B3C4E5F6071829304050 /* DesktopWindowController.swift */; };
@@ -157,6 +158,7 @@
 		A10002010000000000000134 /* TemplateEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateEditorViewModel.swift; sourceTree = "<group>"; };
 		A10002010000000000000135 /* TemplateManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateManagementView.swift; sourceTree = "<group>"; };
 		A10002010000000000000136 /* TemplateEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateEditorView.swift; sourceTree = "<group>"; };
+		A10002010000000000000150 /* WatchFolderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFolderService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* OnboardingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingManager.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A7B8C9D0E1F4 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		D1A2B3C4E5F6071829304050 /* DesktopWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesktopWindowController.swift; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 				A10002010000000000000131 /* TemplateService.swift */,
 				A10002010000000000000132 /* ClipboardHistoryService.swift */,
 				A10002010000000000000133 /* ExportService.swift */,
+				A10002010000000000000150 /* WatchFolderService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -531,6 +534,7 @@
 				A10001010000000000000134 /* TemplateEditorViewModel.swift in Sources */,
 				A10001010000000000000135 /* TemplateManagementView.swift in Sources */,
 				A10001010000000000000136 /* TemplateEditorView.swift in Sources */,
+				A10001010000000000000150 /* WatchFolderService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

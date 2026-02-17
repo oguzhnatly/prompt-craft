@@ -45,6 +45,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         _ = InlineOverlayController.shared
         _ = TrialService.shared
         _ = LicensingService.shared
+        _ = WatchFolderService.shared
 
         setupStatusItem()
         setupPopover()
@@ -118,6 +119,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Check for restart state restoration
         handleRestartStateRestoration()
+
+        // Start watch folder if enabled
+        WatchFolderService.shared.startIfEnabled()
 
         Logger.shared.info("Initialization complete")
     }

@@ -240,6 +240,12 @@ struct AppConfiguration: Codable, Equatable {
     // Ollama
     var ollamaPort: Int
 
+    // Watch Folder
+    var watchFolderEnabled: Bool
+    var watchFolderPath: String
+    var watchFolderAutoClipboard: Bool
+    var watchFolderStyleID: UUID?
+
     static let `default` = AppConfiguration(
         selectedProvider: .anthropicClaude,
         selectedModelName: LLMProvider.anthropicClaude.defaultModelName,
@@ -272,7 +278,11 @@ struct AppConfiguration: Codable, Equatable {
         clipboardHistoryEnabled: true,
         defaultExportFormat: .plainText,
         outputVerbosity: .concise,
-        ollamaPort: 11434
+        ollamaPort: 11434,
+        watchFolderEnabled: false,
+        watchFolderPath: "~/PromptCraft/inbox/",
+        watchFolderAutoClipboard: true,
+        watchFolderStyleID: nil
     )
 
     // Support decoding configs saved before new fields were added.
@@ -310,6 +320,10 @@ struct AppConfiguration: Codable, Equatable {
         defaultExportFormat = try container.decodeIfPresent(ExportFormat.self, forKey: .defaultExportFormat) ?? .plainText
         outputVerbosity = try container.decodeIfPresent(OutputVerbosity.self, forKey: .outputVerbosity) ?? .concise
         ollamaPort = try container.decodeIfPresent(Int.self, forKey: .ollamaPort) ?? 11434
+        watchFolderEnabled = try container.decodeIfPresent(Bool.self, forKey: .watchFolderEnabled) ?? false
+        watchFolderPath = try container.decodeIfPresent(String.self, forKey: .watchFolderPath) ?? "~/PromptCraft/inbox/"
+        watchFolderAutoClipboard = try container.decodeIfPresent(Bool.self, forKey: .watchFolderAutoClipboard) ?? true
+        watchFolderStyleID = try container.decodeIfPresent(UUID.self, forKey: .watchFolderStyleID)
     }
 
     init(
@@ -344,7 +358,11 @@ struct AppConfiguration: Codable, Equatable {
         clipboardHistoryEnabled: Bool = true,
         defaultExportFormat: ExportFormat = .plainText,
         outputVerbosity: OutputVerbosity = .concise,
-        ollamaPort: Int = 11434
+        ollamaPort: Int = 11434,
+        watchFolderEnabled: Bool = false,
+        watchFolderPath: String = "~/PromptCraft/inbox/",
+        watchFolderAutoClipboard: Bool = true,
+        watchFolderStyleID: UUID? = nil
     ) {
         self.selectedProvider = selectedProvider
         self.selectedModelName = selectedModelName
@@ -378,5 +396,9 @@ struct AppConfiguration: Codable, Equatable {
         self.defaultExportFormat = defaultExportFormat
         self.outputVerbosity = outputVerbosity
         self.ollamaPort = ollamaPort
+        self.watchFolderEnabled = watchFolderEnabled
+        self.watchFolderPath = watchFolderPath
+        self.watchFolderAutoClipboard = watchFolderAutoClipboard
+        self.watchFolderStyleID = watchFolderStyleID
     }
 }

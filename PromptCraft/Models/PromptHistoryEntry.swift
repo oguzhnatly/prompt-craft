@@ -1,5 +1,12 @@
 import Foundation
 
+enum PromptSourceType: String, Codable, Equatable {
+    case manual
+    case watchFolder
+    case inline
+    case contextMenu
+}
+
 struct PromptHistoryEntry: Codable, Identifiable, Equatable {
     let id: UUID
     let inputText: String
@@ -10,6 +17,7 @@ struct PromptHistoryEntry: Codable, Identifiable, Equatable {
     let modelName: String
     let durationMilliseconds: Int
     var isFavorited: Bool
+    let sourceType: PromptSourceType
 
     init(
         id: UUID = UUID(),
@@ -20,7 +28,8 @@ struct PromptHistoryEntry: Codable, Identifiable, Equatable {
         providerName: String,
         modelName: String,
         durationMilliseconds: Int,
-        isFavorited: Bool = false
+        isFavorited: Bool = false,
+        sourceType: PromptSourceType = .manual
     ) {
         self.id = id
         self.inputText = inputText
@@ -31,5 +40,20 @@ struct PromptHistoryEntry: Codable, Identifiable, Equatable {
         self.modelName = modelName
         self.durationMilliseconds = durationMilliseconds
         self.isFavorited = isFavorited
+        self.sourceType = sourceType
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        inputText = try container.decode(String.self, forKey: .inputText)
+        outputText = try container.decode(String.self, forKey: .outputText)
+        styleID = try container.decode(UUID.self, forKey: .styleID)
+        timestamp = try container.decode(Date.self, forKey: .timestamp)
+        providerName = try container.decode(String.self, forKey: .providerName)
+        modelName = try container.decode(String.self, forKey: .modelName)
+        durationMilliseconds = try container.decode(Int.self, forKey: .durationMilliseconds)
+        isFavorited = try container.decode(Bool.self, forKey: .isFavorited)
+        sourceType = try container.decodeIfPresent(PromptSourceType.self, forKey: .sourceType) ?? .manual
     }
 }

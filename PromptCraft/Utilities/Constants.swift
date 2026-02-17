@@ -45,6 +45,9 @@ enum AppConstants {
         static let licenseCachedResult = "com.promptcraft.licenseCachedResult"
         static let machineID = "com.promptcraft.machineID"
         static let offlineGraceStart = "com.promptcraft.offlineGraceStart"
+
+        // Watch Folder
+        static let watchFolderProcessedFiles = "com.promptcraft.watchFolderProcessedFiles"
     }
 
     /// Clipboard limits
