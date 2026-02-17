@@ -46,6 +46,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         _ = TrialService.shared
         _ = LicensingService.shared
         _ = WatchFolderService.shared
+        _ = LocalAPIService.shared
 
         setupStatusItem()
         setupPopover()
@@ -122,6 +123,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Start watch folder if enabled
         WatchFolderService.shared.startIfEnabled()
+
+        // Start local API server if enabled
+        LocalAPIService.shared.startIfEnabled()
 
         Logger.shared.info("Initialization complete")
     }

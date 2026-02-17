@@ -270,6 +270,10 @@ struct AppConfiguration: Codable, Equatable {
     // Explain mode
     var explainModeEnabled: Bool
 
+    // Local API
+    var localAPIEnabled: Bool
+    var localAPIPort: Int
+
     static let `default` = AppConfiguration(
         selectedProvider: .anthropicClaude,
         selectedModelName: LLMProvider.anthropicClaude.defaultModelName,
@@ -307,7 +311,9 @@ struct AppConfiguration: Codable, Equatable {
         watchFolderPath: "~/PromptCraft/inbox/",
         watchFolderAutoClipboard: true,
         watchFolderStyleID: nil,
-        explainModeEnabled: false
+        explainModeEnabled: false,
+        localAPIEnabled: false,
+        localAPIPort: 9847
     )
 
     // Support decoding configs saved before new fields were added.
@@ -350,6 +356,8 @@ struct AppConfiguration: Codable, Equatable {
         watchFolderAutoClipboard = try container.decodeIfPresent(Bool.self, forKey: .watchFolderAutoClipboard) ?? true
         watchFolderStyleID = try container.decodeIfPresent(UUID.self, forKey: .watchFolderStyleID)
         explainModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .explainModeEnabled) ?? false
+        localAPIEnabled = try container.decodeIfPresent(Bool.self, forKey: .localAPIEnabled) ?? false
+        localAPIPort = try container.decodeIfPresent(Int.self, forKey: .localAPIPort) ?? 9847
     }
 
     init(
@@ -389,7 +397,9 @@ struct AppConfiguration: Codable, Equatable {
         watchFolderPath: String = "~/PromptCraft/inbox/",
         watchFolderAutoClipboard: Bool = true,
         watchFolderStyleID: UUID? = nil,
-        explainModeEnabled: Bool = false
+        explainModeEnabled: Bool = false,
+        localAPIEnabled: Bool = false,
+        localAPIPort: Int = 9847
     ) {
         self.selectedProvider = selectedProvider
         self.selectedModelName = selectedModelName
@@ -428,5 +438,7 @@ struct AppConfiguration: Codable, Equatable {
         self.watchFolderAutoClipboard = watchFolderAutoClipboard
         self.watchFolderStyleID = watchFolderStyleID
         self.explainModeEnabled = explainModeEnabled
+        self.localAPIEnabled = localAPIEnabled
+        self.localAPIPort = localAPIPort
     }
 }

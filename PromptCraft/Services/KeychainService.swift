@@ -107,6 +107,73 @@ final class KeychainService {
         return getAPIKey(for: provider) != nil
     }
 
+    // MARK: - Generic Account Methods
+
+    @discardableResult
+    func saveGenericSecret(account: String, value: String) -> Result<Void, KeychainError> {
+        guard let data = value.data(using: .utf8) else {
+            Logger.shared.error("Keychain: failed to encode secret for account \(account)")
+            return .failure(.encodingFailed)
+        }
+
+        _ = deleteGenericSecret(account: account)
+
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: serviceName,
+            kSecAttrAccount as String: account,
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlocked,
+        ]
+
+        let status = SecItemAdd(query as CFDictionary, nil)
+        if status == errSecSuccess {
+            Logger.shared.info("Keychain: saved secret for account \(account)")
+            return .success(())
+        } else {
+            let err = classifyStatus(status)
+            Logger.shared.error("Keychain: failed to save secret for account \(account), status \(status)")
+            return .failure(err)
+        }
+    }
+
+    func getGenericSecret(account: String) -> String? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: serviceName,
+            kSecAttrAccount as String: account,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne,
+        ]
+
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+
+        if status == errSecItemNotFound {
+            return nil
+        }
+        if status != errSecSuccess {
+            Logger.shared.warning("Keychain: failed to read secret for account \(account), status \(status)")
+            return nil
+        }
+        guard let data = result as? Data else {
+            return nil
+        }
+        return String(data: data, encoding: .utf8)
+    }
+
+    @discardableResult
+    func deleteGenericSecret(account: String) -> Bool {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: serviceName,
+            kSecAttrAccount as String: account,
+        ]
+
+        let status = SecItemDelete(query as CFDictionary)
+        return status == errSecSuccess || status == errSecItemNotFound
+    }
+
     // MARK: - Private
 
     private func classifyStatus(_ status: OSStatus) -> KeychainError {

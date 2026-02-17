@@ -5,6 +5,7 @@ enum PromptSourceType: String, Codable, Equatable {
     case watchFolder
     case inline
     case contextMenu
+    case api
 }
 
 struct PromptHistoryEntry: Codable, Identifiable, Equatable {

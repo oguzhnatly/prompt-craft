@@ -1,0 +1,57 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "promptcraft",
+  "title": "PromptCraft",
+  "description": "Optimize prompts using your local PromptCraft app",
+  "icon": "command-icon.png",
+  "author": "promptcraft",
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "optimize",
+      "title": "Optimize Prompt",
+      "subtitle": "PromptCraft",
+      "description": "Open a form to optimize a prompt with style and verbosity options",
+      "mode": "view"
+    },
+    {
+      "name": "quick-optimize",
+      "title": "Quick Optimize",
+      "subtitle": "PromptCraft",
+      "description": "Optimize the currently selected text and copy the result to clipboard",
+      "mode": "no-view"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "apiToken",
+      "title": "API Token",
+      "description": "Bearer token from PromptCraft Settings > Behavior > Local API Server",
+      "type": "password",
+      "required": true
+    },
+    {
+      "name": "port",
+      "title": "Port",
+      "description": "Local API server port (default: 9847)",
+      "type": "textfield",
+      "required": false,
+      "default": "9847"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.62.0"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^1.0.8",
+    "@types/node": "20.8.10",
+    "@types/react": "18.2.27",
+    "eslint": "^8.51.0",
+    "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "lint": "ray lint"
+  }
+}

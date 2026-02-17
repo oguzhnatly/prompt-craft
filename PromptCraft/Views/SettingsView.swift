@@ -28,6 +28,8 @@ struct SettingsView: View {
     @Namespace private var segmentedAnimation
     @ObservedObject private var styleService = StyleService.shared
     @ObservedObject private var watchFolderService = WatchFolderService.shared
+    @ObservedObject private var localAPIService = LocalAPIService.shared
+    @State private var localAPITokenCopied: Bool = false
 
     private var config: AppConfiguration { configService.configuration }
 
@@ -129,6 +131,8 @@ struct SettingsView: View {
             inlineOverlaySection
             sectionDivider
             watchFolderSection
+            sectionDivider
+            localAPISection
         case .contextEngine:
             contextEngineSection
                 .padding(.top, 12)
@@ -2206,6 +2210,92 @@ struct SettingsView: View {
             get: { self.configService.configuration.watchFolderStyleID },
             set: { newValue in self.configService.update { $0.watchFolderStyleID = newValue } }
         )
+    }
+
+    // MARK: - Local API Section
+
+    private var localAPISection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            sectionHeader("Local API Server")
+
+            settingToggle(
+                "Enable Local API",
+                description: "Run a localhost HTTP server so external tools (Raycast, Alfred, curl) can optimize prompts.",
+                binding: configBinding(\.localAPIEnabled)
+            )
+
+            if config.localAPIEnabled {
+                // Port
+                HStack {
+                    Text("Port")
+                        .font(.system(size: 13))
+                    Spacer()
+                    TextField("9847", value: configBinding(\.localAPIPort), format: .number)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 80)
+                        .multilineTextAlignment(.trailing)
+                }
+
+                // Token display + actions
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Bearer token")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(.secondary)
+
+                    HStack(spacing: 6) {
+                        Text(localAPIService.getOrCreateToken())
+                            .font(.system(size: 12, design: .monospaced))
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 5)
+                            .background(Color(nsColor: .controlBackgroundColor))
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 0.5)
+                            )
+
+                        Button(action: {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString(localAPIService.getOrCreateToken(), forType: .string)
+                            localAPITokenCopied = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                localAPITokenCopied = false
+                            }
+                        }) {
+                            Image(systemName: localAPITokenCopied ? "checkmark" : "doc.on.doc")
+                                .font(.system(size: 12))
+                        }
+                        .buttonStyle(.plain)
+                        .help("Copy token")
+
+                        Button(action: {
+                            localAPIService.regenerateToken()
+                        }) {
+                            Image(systemName: "arrow.clockwise")
+                                .font(.system(size: 12))
+                        }
+                        .buttonStyle(.plain)
+                        .help("Regenerate token")
+                    }
+                }
+
+                // Status indicator
+                HStack(spacing: 6) {
+                    Circle()
+                        .fill(localAPIService.isRunning ? Color.green : Color.orange)
+                        .frame(width: 6, height: 6)
+                    Text("API server:")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                    Text(localAPIService.isRunning ? "Active on port \(config.localAPIPort)" : "Inactive")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(localAPIService.isRunning ? .green : .orange)
+                }
+            }
+        }
     }
 
     private func pickWatchFolder() {
