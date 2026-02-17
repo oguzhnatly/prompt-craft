@@ -82,6 +82,8 @@
 		B10001010000000000000008 /* LLMProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002010000000000000008 /* LLMProviderTests.swift */; };
 		B10001010000000000000009 /* RMPAPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002010000000000000009 /* RMPAPipelineTests.swift */; };
 		C10001010000000000000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = C10002010000000000000001 /* Sparkle */; };
+		E1F2A3B4C5D6E7F8A9B0C1D3 /* PromptExplanation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F2A3B4C5D6E7F8A9B0C1D2 /* PromptExplanation.swift */; };
+		E1F2A3B4C5D6E7F8A9B0C1D5 /* ExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F2A3B4C5D6E7F8A9B0C1D4 /* ExplanationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -173,6 +175,8 @@
 		B10002010000000000000008 /* LLMProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMProviderTests.swift; sourceTree = "<group>"; };
 		B10002010000000000000009 /* RMPAPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMPAPipelineTests.swift; sourceTree = "<group>"; };
 		B10002010000000000000010 /* PromptCraftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PromptCraftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1F2A3B4C5D6E7F8A9B0C1D2 /* PromptExplanation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptExplanation.swift; sourceTree = "<group>"; };
+		E1F2A3B4C5D6E7F8A9B0C1D4 /* ExplanationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplanationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,6 +250,7 @@
 				A10002010000000000000112 /* UpgradeView.swift */,
 				A10002010000000000000135 /* TemplateManagementView.swift */,
 				A10002010000000000000136 /* TemplateEditorView.swift */,
+				E1F2A3B4C5D6E7F8A9B0C1D4 /* ExplanationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -272,6 +277,7 @@
 				A10002010000000000000095 /* ContextEntry.swift */,
 				A10002010000000000000096 /* ProjectCluster.swift */,
 				A10002010000000000000130 /* PromptTemplate.swift */,
+				E1F2A3B4C5D6E7F8A9B0C1D2 /* PromptExplanation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -535,6 +541,8 @@
 				A10001010000000000000135 /* TemplateManagementView.swift in Sources */,
 				A10001010000000000000136 /* TemplateEditorView.swift in Sources */,
 				A10001010000000000000150 /* WatchFolderService.swift in Sources */,
+				E1F2A3B4C5D6E7F8A9B0C1D3 /* PromptExplanation.swift in Sources */,
+				E1F2A3B4C5D6E7F8A9B0C1D5 /* ExplanationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

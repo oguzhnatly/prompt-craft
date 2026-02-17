@@ -498,6 +498,12 @@ struct SettingsView: View {
                 .labelsHidden()
                 .frame(width: 140)
             }
+
+            settingToggle(
+                "Explain mode",
+                description: "Show a pipeline breakdown after each optimization, revealing how RMPA processed your prompt.",
+                binding: configBinding(\.explainModeEnabled)
+            )
         }
         .padding(.top, 12)
     }

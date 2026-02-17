@@ -1385,6 +1385,12 @@ struct MainPopoverView: View {
                 compareResultsView
             }
 
+            // Explanation panel
+            if viewModel.showExplanation, let explanation = viewModel.currentExplanation {
+                ExplanationView(explanation: explanation)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+
             if !viewModel.outputText.isEmpty && !viewModel.isProcessing {
                 HStack(spacing: 8) {
                     if viewModel.clipboardCopiedNotification && !showCopyToast {
@@ -1407,6 +1413,23 @@ struct MainPopoverView: View {
                     }
 
                     Spacer()
+
+                    // Explain toggle
+                    if configService.configuration.explainModeEnabled {
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.15)) {
+                                viewModel.showExplanation.toggle()
+                            }
+                        }) {
+                            Image(systemName: "info.circle")
+                                .font(.system(size: 12))
+                                .foregroundStyle(viewModel.showExplanation ? Color.accentColor : .secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .focusEffectDisabled()
+                        .help("Toggle pipeline explanation")
+                        .accessibilityLabel(viewModel.showExplanation ? "Hide explanation" : "Show explanation")
+                    }
 
                     // Export dropdown
                     Menu {

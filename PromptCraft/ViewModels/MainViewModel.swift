@@ -62,6 +62,10 @@ final class MainViewModel: ObservableObject {
     // Keyboard shortcuts overlay
     @Published var showShortcutsOverlay: Bool = false
 
+    // Explain mode
+    @Published var showExplanation: Bool = false
+    @Published var currentExplanation: PromptExplanation?
+
     /// The last optimized output stored independently from the clipboard.
     private(set) var lastOptimizedOutput: String = ""
 
@@ -227,6 +231,8 @@ final class MainViewModel: ObservableObject {
         isCompressing = false
         detectedMaxOutputWords = 0
         outputVerbosityUsed = nil
+        currentExplanation = nil
+        showExplanation = false
 
         let startTime = Date()
 
@@ -341,6 +347,17 @@ final class MainViewModel: ObservableObject {
                     // Store the output independently.
                     lastOptimizedOutput = outputText
                     outputVerbosityUsed = selectedVerbosity
+
+                    // Build explanation from pipeline data (no extra LLM calls).
+                    self.currentExplanation = self.buildExplanation(
+                        assembled: assembled,
+                        post: post,
+                        verbosity: selectedVerbosity,
+                        config: config
+                    )
+                    if config.explainModeEnabled {
+                        self.showExplanation = true
+                    }
 
                     Logger.shared.info("Optimization complete: \(duration)ms, \(outputText.count) chars")
 
@@ -868,6 +885,75 @@ final class MainViewModel: ObservableObject {
         return items
     }
 
+    // MARK: - Explanation Builder
+
+    private func buildExplanation(
+        assembled: PromptAssembler.AssembledPrompt,
+        post: PostProcessResult,
+        verbosity: OutputVerbosity,
+        config: AppConfiguration
+    ) -> PromptExplanation {
+        let complexity = assembled.complexity
+        let intentAnalysis = assembled.intentAnalysis
+        let entityAnalysis = assembled.entityAnalysis
+
+        // Build tier reason
+        let tierReason = "\(intentAnalysis.intentCount) intent\(intentAnalysis.intentCount == 1 ? "" : "s") detected, ambiguity score \(String(format: "%.2f", complexity.ambiguityScore))"
+
+        // Build entity summary
+        var entityParts: [String] = []
+        if !entityAnalysis.projects.isEmpty {
+            entityParts.append("Projects: \(entityAnalysis.projects.joined(separator: ", "))")
+        }
+        if !entityAnalysis.environments.isEmpty {
+            entityParts.append("Environments: \(entityAnalysis.environments.joined(separator: ", "))")
+        }
+        if !entityAnalysis.persons.isEmpty {
+            entityParts.append("Persons: \(entityAnalysis.persons.joined(separator: ", "))")
+        }
+        if !entityAnalysis.technicalTerms.isEmpty {
+            entityParts.append("Technical: \(entityAnalysis.technicalTerms.joined(separator: ", "))")
+        }
+        let entitySummary = entityParts.isEmpty ? "None detected" : entityParts.joined(separator: ". ")
+
+        // Count few-shot examples (messages minus the final user message, divided by 2 for user/assistant pairs)
+        let fewShotCount = max(0, (assembled.messages.count - 1) / 2)
+
+        // Build post-process actions list
+        var postActions: [String] = []
+        if post.metaLeakDetected {
+            postActions.append("Meta-commentary removed")
+        }
+        if post.formattingStripped {
+            postActions.append("Formatting stripped for Tier 1")
+        }
+        if post.isVerbose {
+            postActions.append("Output flagged as verbose")
+        }
+        if postActions.isEmpty {
+            postActions.append("No post-processing actions taken")
+        }
+
+        return PromptExplanation(
+            detectedTier: complexity.tier,
+            tierReason: tierReason,
+            intentCount: intentAnalysis.intentCount,
+            intents: intentAnalysis.intents,
+            entitySummary: entitySummary,
+            contextEntriesUsed: assembled.contextEntryCount,
+            contextBoosted: complexity.contextBoosted,
+            maxOutputWords: complexity.maxOutputWords,
+            verbosityMode: verbosity,
+            fewShotExamplesIncluded: fewShotCount,
+            emotionalMarkersDetected: intentAnalysis.emotionalMarkers,
+            urgencyLevel: intentAnalysis.urgencyLevel,
+            postProcessActions: postActions,
+            estimatedTokenCount: assembled.estimatedTokenCount,
+            providerUsed: config.selectedProvider.displayName,
+            modelUsed: config.selectedModelName
+        )
+    }
+
     // MARK: - Clear Output
 
     func clearOutput() {
@@ -884,6 +970,8 @@ final class MainViewModel: ObservableObject {
         contextUsed = false
         contextEntryCount = 0
         outputVerbosityUsed = nil
+        currentExplanation = nil
+        showExplanation = false
     }
 
     // MARK: - Clear All
@@ -901,6 +989,8 @@ final class MainViewModel: ObservableObject {
         activeTemplate = nil
         templatePlaceholderValues = [:]
         outputVerbosityUsed = nil
+        currentExplanation = nil
+        showExplanation = false
     }
 
     // MARK: - Select Style by Index

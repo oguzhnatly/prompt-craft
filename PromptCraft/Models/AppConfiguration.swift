@@ -246,6 +246,9 @@ struct AppConfiguration: Codable, Equatable {
     var watchFolderAutoClipboard: Bool
     var watchFolderStyleID: UUID?
 
+    // Explain mode
+    var explainModeEnabled: Bool
+
     static let `default` = AppConfiguration(
         selectedProvider: .anthropicClaude,
         selectedModelName: LLMProvider.anthropicClaude.defaultModelName,
@@ -282,7 +285,8 @@ struct AppConfiguration: Codable, Equatable {
         watchFolderEnabled: false,
         watchFolderPath: "~/PromptCraft/inbox/",
         watchFolderAutoClipboard: true,
-        watchFolderStyleID: nil
+        watchFolderStyleID: nil,
+        explainModeEnabled: false
     )
 
     // Support decoding configs saved before new fields were added.
@@ -324,6 +328,7 @@ struct AppConfiguration: Codable, Equatable {
         watchFolderPath = try container.decodeIfPresent(String.self, forKey: .watchFolderPath) ?? "~/PromptCraft/inbox/"
         watchFolderAutoClipboard = try container.decodeIfPresent(Bool.self, forKey: .watchFolderAutoClipboard) ?? true
         watchFolderStyleID = try container.decodeIfPresent(UUID.self, forKey: .watchFolderStyleID)
+        explainModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .explainModeEnabled) ?? false
     }
 
     init(
@@ -362,7 +367,8 @@ struct AppConfiguration: Codable, Equatable {
         watchFolderEnabled: Bool = false,
         watchFolderPath: String = "~/PromptCraft/inbox/",
         watchFolderAutoClipboard: Bool = true,
-        watchFolderStyleID: UUID? = nil
+        watchFolderStyleID: UUID? = nil,
+        explainModeEnabled: Bool = false
     ) {
         self.selectedProvider = selectedProvider
         self.selectedModelName = selectedModelName
@@ -400,5 +406,6 @@ struct AppConfiguration: Codable, Equatable {
         self.watchFolderPath = watchFolderPath
         self.watchFolderAutoClipboard = watchFolderAutoClipboard
         self.watchFolderStyleID = watchFolderStyleID
+        self.explainModeEnabled = explainModeEnabled
     }
 }
