@@ -116,6 +116,7 @@ const stages = [
                 <p class="plp-headline">{s.headline}</p>
               </div>
               <p class="plp-body">{s.body}</p>
+              <div class="plp-spacer" aria-hidden="true"></div>
               <div class="plp-io">
                 <div class="plp-io-pane">
                   <span class="plp-io-label mono">input</span>
@@ -203,7 +204,8 @@ const stages = [
   .pl-stage {
     display: grid; grid-template-columns: 44px 1fr 4px;
     align-items: center; gap: 10px;
-    padding: 14px 16px;
+    padding: 0 16px;
+    flex: 1;
     border: none; border-bottom: 1px solid var(--bdr);
     background: var(--bg); text-align: left;
     cursor: pointer;
@@ -234,8 +236,8 @@ const stages = [
   }
   .pl-panel {
     position: absolute; inset: 0;
-    padding: 38px 44px;
-    display: flex; flex-direction: column; gap: 18px;
+    padding: 32px 44px 28px;
+    display: flex; flex-direction: column; gap: 16px;
     opacity: 0;
     transform: translateY(10px);
     transition: opacity .42s var(--out), transform .42s var(--out);
@@ -243,6 +245,8 @@ const stages = [
     overflow-y: auto;
     scrollbar-width: none;
   }
+  .pl-panel .plp-spacer { flex: 1; }
+  .pl-panel.active .plp-spacer + .plp-io { margin-top: 0; }
   .pl-panel::-webkit-scrollbar { display: none; }
   .pl-panel.active {
     opacity: 1;
@@ -254,12 +258,12 @@ const stages = [
   .plp-n { font-size: 10px; color: var(--dim); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
   .plp-name { font-size: 24px; font-weight: 700; letter-spacing: -0.035em; color: var(--ink); line-height: 1.2; }
   .plp-headline { font-size: 15px; font-weight: 500; color: var(--acc); line-height: 1.45; }
-  .plp-body { font-size: 14px; line-height: 1.8; color: var(--mid); max-width: 640px; }
+  .plp-body { font-size: 14px; line-height: 1.8; color: var(--mid); }
 
   .plp-io {
     display: flex; flex-direction: column;
     border: 1px solid var(--bdr); border-radius: 10px;
-    overflow: hidden; max-width: 620px;
+    overflow: hidden;
   }
   .plp-io-pane { padding: 12px 16px; display: flex; flex-direction: column; gap: 5px; }
   .plp-io-out { background: rgba(26,107,64,0.03); }
