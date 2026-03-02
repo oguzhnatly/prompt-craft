@@ -67,17 +67,15 @@ const stages = [
 ---
 
 <section id="pipeline" aria-labelledby="pipeline-heading">
-  <div id="pl-inner">
+  <div class="pl-header-wrap">
+    <div class="pl-header">
+      <span class="eyebrow"><span class="eyebrow-dot"></span>Under the hood</span>
+      <h2 id="pipeline-heading" class="pl-h2">The pipeline, in full.</h2>
+      <p class="pl-sub">Scroll to step through each stage. At 01 and 07 normal scrolling resumes.</p>
+    </div>
+  </div>
 
-      <div class="wrap">
-        <div class="pl-header">
-          <span class="eyebrow"><span class="eyebrow-dot"></span>Under the hood</span>
-          <h2 id="pipeline-heading" class="pl-h2">The pipeline, in full.</h2>
-          <p class="pl-sub">Scroll to step through each stage. At 01 and 07 normal scrolling resumes.</p>
-        </div>
-      </div>
-
-      <div class="pl-ide" id="pl-ide" role="tablist" aria-label="Pipeline stage inspector">
+  <div class="pl-ide" id="pl-ide" role="tablist" aria-label="Pipeline stage inspector">
 
         <div class="pl-stages">
           {stages.map((s, i) => (
@@ -114,7 +112,6 @@ const stages = [
                 <p class="plp-headline">{s.headline}</p>
               </div>
               <p class="plp-body">{s.body}</p>
-              <div class="plp-spacer" aria-hidden="true"></div>
               <div class="plp-io">
                 <div class="plp-io-pane">
                   <span class="plp-io-label mono">input</span>
@@ -134,37 +131,39 @@ const stages = [
 
       </div>
 
-      <div class="pl-progress" aria-hidden="true">
+  <div class="pl-progress" aria-hidden="true">
         <div class="pl-progress-track">
           <div class="pl-progress-bar" id="pl-progress-bar"></div>
         </div>
         <span class="pl-progress-label mono" id="pl-progress-label">01 / 07</span>
       </div>
 
-      <div class="pl-footer-row">
-        <span class="plf-acc mono">pipeline.execute(input)</span>
-        <iconify-icon icon="lucide:arrow-right" style="font-size:11px;vertical-align:middle;color:var(--mid);" aria-hidden="true"></iconify-icon>
-        <span class="plf-meta mono">optimized, model-ready · avg <strong>140ms</strong></span>
-      </div>
-
+  <div class="pl-footer-row">
+    <span class="plf-acc mono">pipeline.execute(input)</span>
+    <iconify-icon icon="lucide:arrow-right" style="font-size:11px;vertical-align:middle;color:var(--mid);" aria-hidden="true"></iconify-icon>
+    <span class="plf-meta mono">optimized, model-ready · avg <strong>140ms</strong></span>
   </div>
+
 </section>
 
 <style>
-  #pipeline { height: 100vh; position: relative; overflow: hidden; }
+  #pipeline {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-top: clamp(64px, 18vh, 200px);
+    box-sizing: border-box;
+  }
 
-  #pl-inner {
-    position: absolute; inset: 0;
-    display: grid;
-    /* header | IDE(fills all middle) | progress | footer */
-    grid-template-rows: auto 1fr auto auto;
-    padding: clamp(140px, 20vh, 210px) 0 18px;
+  .pl-header-wrap {
+    flex-shrink: 0;
+    padding-bottom: 12px;
   }
 
   .pl-header {
     max-width: 700px; padding: 0 40px;
     display: flex; flex-direction: column; gap: 8px;
-    align-self: end;
   }
   .pl-h2 {
     font-size: clamp(28px, 4vw, 52px);
@@ -176,8 +175,9 @@ const stages = [
 
 
   .pl-ide {
-    width: 100%;
+    flex: 1;
     min-height: 0;
+    width: 100%;
     display: grid; grid-template-columns: 300px 1fr; grid-template-rows: 1fr;
     border-top: 1px solid var(--bdr);
     border-bottom: 1px solid var(--bdr);
@@ -236,7 +236,7 @@ const stages = [
     overflow-y: auto;
     scrollbar-width: none;
   }
-  .pl-panel .plp-spacer { flex: 1; }
+  /* plp-spacer removed */
   .pl-panel.active .plp-spacer + .plp-io { margin-top: 0; }
   .pl-panel::-webkit-scrollbar { display: none; }
   .pl-panel.active {
@@ -252,6 +252,7 @@ const stages = [
   .plp-body { font-size: 14px; line-height: 1.8; color: var(--mid); }
 
   .plp-io {
+    margin-top: 20px;
     display: flex; flex-direction: column;
     border: 1px solid var(--bdr); border-radius: 10px;
     overflow: hidden;
@@ -269,10 +270,9 @@ const stages = [
   }
 
   .pl-progress {
-    margin-top: 0;
-    display: flex; align-items: center; gap: 8px;
-    padding: 4px 14px;
     flex-shrink: 0;
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 14px;
   }
   .pl-progress-track {
     flex: 1; height: 8px; background: var(--bdr);
@@ -308,21 +308,25 @@ const stages = [
   .pl-footer strong { color: var(--ink2); }
 
   .pl-footer-row {
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 14px;
     flex-shrink: 0;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px 18px;
   }
   .plf-acc { color: var(--acc); font-size: 12px; }
   .plf-meta { font-size: 12px; color: var(--dim); }
   .plf-meta strong { color: var(--ink2); }
 
   @media (max-width: 900px) {
-    #pipeline { height: auto; overflow: visible; }
-    #pl-inner { position: relative; inset: auto; padding-top: 72px; padding-bottom: 16px; }
-    .pl-ide { grid-template-columns: 1fr; min-height: 520px; flex: none; }
-    .pl-stages { border-right: none; border-bottom: 1px solid var(--bdr); display: grid; grid-template-columns: 1fr 1fr; flex: none; }
+    #pipeline { height: auto; overflow: visible; padding-top: 72px; }
+    .pl-header-wrap { padding: 0; }
+    .pl-header { padding: 0 20px 16px; }
+    .pl-ide { flex: none; }
+    .pl-ide { grid-template-columns: 1fr; min-height: 520px; }
+    .pl-stages { border-right: none; border-bottom: 1px solid var(--bdr); display: grid; grid-template-columns: 1fr 1fr; }
     .pl-panel-wrap { min-height: 380px; }
     .pl-panel { padding: 24px 20px; }
+    .pl-progress { margin: 12px 0 0; }
+    .pl-footer-row { padding: 12px 20px 24px; }
   }
 </style>
 
