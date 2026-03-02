@@ -67,15 +67,13 @@ const stages = [
 ---
 
 <section id="pipeline" aria-labelledby="pipeline-heading">
-
-  <div id="pl-scroll-wrapper">
-    <div id="pl-sticky">
+  <div id="pl-inner">
 
       <div class="wrap">
         <div class="pl-header">
           <span class="eyebrow"><span class="eyebrow-dot"></span>Under the hood</span>
           <h2 id="pipeline-heading" class="pl-h2">The pipeline, in full.</h2>
-          <p class="pl-sub">Scroll through 01 to 07 to explore each stage. Above 01 and below 07 normal scrolling resumes.</p>
+          <p class="pl-sub">Scroll to step through each stage. At 01 and 07 normal scrolling resumes.</p>
         </div>
       </div>
 
@@ -142,11 +140,11 @@ const stages = [
         </div>
         <span class="pl-progress-label mono" id="pl-progress-label">01 / 07</span>
       </div>
-    </div>
   </div>
+</section>
 
-  <div class="wrap">
-    <div class="pl-footer mono" data-reveal>
+<div class="wrap">
+  <div class="pl-footer mono" data-reveal>
       <span class="plf-acc">pipeline.execute(input)</span>
       <iconify-icon icon="lucide:arrow-right" style="font-size:12px;vertical-align:middle;" aria-hidden="true"></iconify-icon>
       optimized, model-ready · avg <strong>140ms</strong>
@@ -155,11 +153,18 @@ const stages = [
 </section>
 
 <style>
-  #pipeline { padding: 0 0 48px; }
+  #pipeline { height: 100vh; position: relative; overflow: hidden; }
+
+  #pl-inner {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    padding-top: 84px;
+  }
 
   .pl-header {
-    max-width: 620px; margin-bottom: 20px;
-    display: flex; flex-direction: column; gap: 10px;
+    max-width: 620px; margin-bottom: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    flex-shrink: 0;
   }
   .pl-h2 {
     font-size: clamp(28px, 4vw, 52px);
@@ -168,22 +173,7 @@ const stages = [
   }
   .pl-sub { font-size: 15px; color: var(--mid); line-height: 1.7; }
 
-  #pl-scroll-wrapper {
-    position: relative;
-    height: calc(100vh + 560px);
-    margin-bottom: 12px;
-  }
 
-  #pl-sticky {
-    position: sticky;
-    top: 0;
-    width: 100%;
-    height: 100vh;
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    justify-content: flex-start;
-    padding-top: 84px;
-  }
 
   .pl-ide {
     width: 100%;
@@ -317,31 +307,29 @@ const stages = [
   .pl-footer strong { color: var(--ink2); }
 
   @media (max-width: 900px) {
-    #pl-scroll-wrapper { height: auto; }
-    #pl-sticky {
-      position: relative;
-      top: auto;
-      min-height: auto;
-    }
-    .pl-ide { grid-template-columns: 1fr; min-height: 520px; }
-    .pl-stages { border-right: none; border-bottom: 1px solid var(--bdr); display: grid; grid-template-columns: 1fr 1fr; }
+    #pipeline { height: auto; overflow: visible; }
+    #pl-inner { position: relative; inset: auto; padding-top: 72px; padding-bottom: 16px; }
+    .pl-ide { grid-template-columns: 1fr; min-height: 520px; flex: none; }
+    .pl-stages { border-right: none; border-bottom: 1px solid var(--bdr); display: grid; grid-template-columns: 1fr 1fr; flex: none; }
     .pl-panel-wrap { min-height: 380px; }
     .pl-panel { padding: 24px 20px; }
   }
 </style>
 
 <script>
-  const tabs = Array.from(document.querySelectorAll('.pl-stage'));
-  const panels = Array.from(document.querySelectorAll('.pl-panel'));
-  const progressBar = document.getElementById('pl-progress-bar');
-  const progressLabel = document.getElementById('pl-progress-label');
-  const wrapper = document.getElementById('pl-scroll-wrapper');
+  const tabs    = Array.from(document.querySelectorAll('.pl-stage'));
+  const panels  = Array.from(document.querySelectorAll('.pl-panel'));
+  const bar     = document.getElementById('pl-progress-bar');
+  const label   = document.getElementById('pl-progress-label');
+  const section = document.getElementById('pipeline');
 
   const TOTAL = 7;
-  let currentStage = -1;
+  let currentStage = 0;
+  let cooldown = false;
+  const COOLDOWN_MS = 480;
 
-  function activateStage(index, force = false) {
-    const next = Math.max(0, Math.min(TOTAL - 1, index));
+  function setStage(idx, force = false) {
+    const next = Math.max(0, Math.min(TOTAL - 1, idx));
     if (!force && next === currentStage) return;
     currentStage = next;
 
@@ -351,84 +339,67 @@ const stages = [
       t.setAttribute('aria-selected', String(on));
       t.setAttribute('tabindex', on ? '0' : '-1');
     });
-
     panels.forEach((p, i) => {
       p.classList.toggle('active', i === currentStage);
     });
-
-    if (progressBar) {
-      progressBar.style.width = `${((currentStage + 1) / TOTAL) * 100}%`;
-    }
-    if (progressLabel) {
-      progressLabel.textContent = `${String(currentStage + 1).padStart(2, '0')} / 07`;
-    }
+    if (bar)   bar.style.width = `${((currentStage + 1) / TOTAL) * 100}%`;
+    if (label) label.textContent = `${String(currentStage + 1).padStart(2, '0')} / 07`;
   }
 
-  function syncStageFromScroll() {
-    if (!wrapper) {
-      activateStage(0, true);
-      return;
-    }
-
-    if (window.innerWidth < 900) {
-      if (currentStage < 0) activateStage(0, true);
-      return;
-    }
-
-    const totalScrollable = wrapper.offsetHeight - window.innerHeight;
-    if (totalScrollable <= 0) {
-      activateStage(0, true);
-      return;
-    }
-
-    const rect = wrapper.getBoundingClientRect();
-    const passed = Math.min(Math.max(-rect.top, 0), totalScrollable);
-    const progress = passed / totalScrollable;
-    const idx = Math.min(TOTAL - 1, Math.floor(progress * TOTAL));
-
-    activateStage(idx);
+  function inLock() {
+    if (!section || window.innerWidth < 900) return false;
+    const r = section.getBoundingClientRect();
+    return r.top <= 80 && r.bottom >= window.innerHeight * 0.7;
   }
 
+  function tryAdvance(dir) {
+    if (cooldown) return true; // block scroll but don't advance
+    const next = currentStage + dir;
+    if (next < 0 || next >= TOTAL) return false; // boundary: release scroll
+    setStage(next);
+    cooldown = true;
+    setTimeout(() => { cooldown = false; }, COOLDOWN_MS);
+    return true; // consumed
+  }
+
+  // Wheel interception
+  window.addEventListener('wheel', e => {
+    if (!inLock()) return;
+    const dir = e.deltaY > 0 ? 1 : -1;
+    const consumed = tryAdvance(dir);
+    if (consumed) e.preventDefault();
+  }, { passive: false });
+
+  // Touch interception
+  let touchY = 0;
+  let touchConsumed = false;
+  window.addEventListener('touchstart', e => {
+    if (!inLock()) return;
+    touchY = e.touches[0].clientY;
+    touchConsumed = false;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', e => {
+    if (!inLock()) return;
+    const delta = touchY - e.touches[0].clientY;
+    if (Math.abs(delta) < 28) return;
+    const dir = delta > 0 ? 1 : -1;
+    const consumed = tryAdvance(dir);
+    if (consumed) {
+      e.preventDefault();
+      touchY = e.touches[0].clientY;
+      touchConsumed = true;
+    }
+  }, { passive: false });
+
+  // Tab clicks
   tabs.forEach((tab, i) => {
-    tab.addEventListener('click', () => {
-      activateStage(i, true);
-      if (!wrapper || window.innerWidth < 900) return;
-
-      const totalScrollable = Math.max(1, wrapper.offsetHeight - window.innerHeight);
-      const segment = totalScrollable / (TOTAL - 1);
-      const targetY = wrapper.offsetTop + (segment * i);
-      window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
-    });
-
+    tab.addEventListener('click', () => setStage(i, true));
     tab.addEventListener('keydown', e => {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        const n = Math.min(TOTAL - 1, i + 1);
-        tabs[n].click();
-        tabs[n].focus();
-      }
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        const n = Math.max(0, i - 1);
-        tabs[n].click();
-        tabs[n].focus();
-      }
+      if (e.key === 'ArrowDown') { e.preventDefault(); tabs[Math.min(TOTAL-1, i+1)]?.click(); }
+      if (e.key === 'ArrowUp')   { e.preventDefault(); tabs[Math.max(0, i-1)]?.click(); }
     });
   });
 
-  let ticking = false;
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      syncStageFromScroll();
-      ticking = false;
-    });
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', syncStageFromScroll);
-
-  activateStage(0, true);
-  syncStageFromScroll();
+  setStage(0, true);
 </script>
