@@ -149,17 +149,17 @@
   <div class="aw-footer">
     <span class="aw-footer-shortcut">⌘⇧Space to toggle</span>
 
-    <!-- Trial pill (center) -->
-    <div class="aw-trial-pill">
-      <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5v3L7.5 8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
-      Trial: 14 days left
-    </div>
+    <div class="aw-footer-right">
+      <div class="aw-trial-pill">
+        <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5v3L7.5 8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+        Trial: 14 days left
+      </div>
 
-    <!-- Privacy (right) -->
-    <button class="aw-privacy-btn" tabindex="-1" aria-hidden="true">
-      <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M6 1L1.5 3v4c0 2.5 1.8 4.8 4.5 5.4C8.7 11.8 10.5 9.5 10.5 7V3L6 1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
-      Local &amp; Private
-    </button>
+      <button class="aw-privacy-btn" tabindex="-1" aria-hidden="true">
+        <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M6 1L1.5 3v4c0 2.5 1.8 4.8 4.5 5.4C8.7 11.8 10.5 9.5 10.5 7V3L6 1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
+        Local &amp; Private
+      </button>
+    </div>
   </div>
 </div>
 
@@ -317,7 +317,16 @@
   }
 
   .aw-templates-pill { color: rgba(235,235,245,0.5); }
-  .aw-plus-pill { padding: 5px 9px; font-size: 14px; font-weight: 400; }
+  .aw-plus-pill {
+    width: 26px; height: 26px;
+    padding: 0;
+    border-radius: 8px;
+    justify-content: center;
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 500;
+    flex: 0 0 26px;
+  }
 
   .aw-style-desc {
     font-size: 11px;
@@ -418,23 +427,35 @@
   .aw-live-strip {
     position: absolute;
     top: 10px; right: 10px;
-    width: 6px; height: calc(100% - 20px);
-    display: flex; flex-direction: column; justify-content: space-between;
+    width: 10px; height: calc(100% - 20px);
     pointer-events: none;
   }
-  .aw-live-strip span {
-    width: 100%;
-    height: 18%;
-    border-radius: 4px;
-    background: linear-gradient(to bottom, rgba(10,132,255,0.9), rgba(10,132,255,0.3));
-    animation: aw-live-pulse 1.2s ease-in-out infinite;
+  .aw-live-strip::before {
+    content: '';
+    position: absolute;
+    left: 4px; top: 0; bottom: 0;
+    width: 2px;
+    border-radius: 999px;
+    background: linear-gradient(to bottom, rgba(10,132,255,0.08), rgba(10,132,255,0.42), rgba(10,132,255,0.08));
   }
-  .aw-live-strip span:nth-child(2) { animation-delay: .12s; }
-  .aw-live-strip span:nth-child(3) { animation-delay: .24s; }
-  .aw-live-strip span:nth-child(4) { animation-delay: .36s; }
-  @keyframes aw-live-pulse {
-    0%,100% { opacity: .25; transform: scaleY(.7); }
-    50% { opacity: .95; transform: scaleY(1); }
+  .aw-live-strip span {
+    position: absolute;
+    left: 1px;
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(90,170,255,1) 0%, rgba(10,132,255,0.85) 50%, rgba(10,132,255,0.35) 100%);
+    box-shadow: 0 0 10px rgba(10,132,255,0.55), 0 0 18px rgba(10,132,255,0.28);
+    animation: aw-live-run 1.5s linear infinite;
+    opacity: 0;
+  }
+  .aw-live-strip span:nth-child(2) { animation-delay: .35s; }
+  .aw-live-strip span:nth-child(3) { animation-delay: .7s; }
+  .aw-live-strip span:nth-child(4) { animation-delay: 1.05s; }
+  @keyframes aw-live-run {
+    0% { top: 0; opacity: 0; transform: scale(.55); }
+    12% { opacity: 1; transform: scale(1); }
+    88% { opacity: 1; transform: scale(.9); }
+    100% { top: calc(100% - 8px); opacity: 0; transform: scale(.55); }
   }
 
   .aw-output-row {
@@ -457,18 +478,22 @@
   /* ── Footer ───────────────────────────────── */
   .aw-footer {
     height: 44px; flex-shrink: 0;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
+    display: flex; align-items: center;
     padding: 0 16px;
-    column-gap: 8px;
+    gap: 8px;
   }
 
   .aw-footer-shortcut {
     font-size: 9px;
     color: rgba(235,235,245,0.28);
-    justify-self: start;
     white-space: nowrap;
+    margin-right: auto;
+  }
+
+  .aw-footer-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .aw-trial-pill {
@@ -478,7 +503,6 @@
     padding: 3px 8px; border-radius: 999px;
     background: rgba(84,84,88,0.18);
     font-family: -apple-system, sans-serif;
-    justify-self: center;
     white-space: nowrap;
   }
 
@@ -489,7 +513,6 @@
     background: none; border: none; cursor: pointer;
     padding: 0;
     font-family: -apple-system, sans-serif;
-    justify-self: end;
     white-space: nowrap;
   }
 
@@ -638,9 +661,9 @@ This drives executive grade outputs instead of generic commentary.`
   };
 
   const verbModes = [
-    { key: 'concise',  label: 'Concise',  className: 'mode-concise',  dot: 'rgba(10,132,255,0.75)', typingMs: 7 },
-    { key: 'balanced', label: 'Balanced', className: 'mode-balanced', dot: 'rgba(48,209,88,0.75)', typingMs: 6 },
-    { key: 'detailed', label: 'Detailed', className: 'mode-detailed', dot: 'rgba(255,159,10,0.75)', typingMs: 4 },
+    { key: 'concise',  label: 'Concise',  className: 'mode-concise',  dot: 'rgba(10,132,255,0.75)', typingMs: 3 },
+    { key: 'balanced', label: 'Balanced', className: 'mode-balanced', dot: 'rgba(48,209,88,0.75)', typingMs: 3 },
+    { key: 'detailed', label: 'Detailed', className: 'mode-detailed', dot: 'rgba(255,159,10,0.75)', typingMs: 2 },
   ] as const;
 
   let currentStyle: keyof typeof outputByStyle = 'research';
@@ -743,7 +766,7 @@ This drives executive grade outputs instead of generic commentary.`
     optBtn.classList.add('processing');
     liveStrip.style.display = 'flex';
 
-    await sleep(820);
+    await sleep(520);
     if (token !== runToken) return;
 
     optBtn.classList.remove('processing');

@@ -71,7 +71,7 @@ const stages = [
     <div class="pl-header" data-reveal>
       <span class="eyebrow"><span class="eyebrow-dot"></span>Under the hood</span>
       <h2 id="pipeline-heading" class="pl-h2">The pipeline, in full.</h2>
-      <p class="pl-sub">When you scroll into this section, it walks through 01 to 07 automatically, then continues to the next section.</p>
+      <p class="pl-sub">Scroll drives the sequence from 01 to 07 with smooth transitions, and you can always keep scrolling manually.</p>
     </div>
   </div>
 
@@ -168,12 +168,16 @@ const stages = [
 
   #pl-scroll-wrapper {
     position: relative;
-    margin-bottom: 28px;
+    height: 120vh;
+    margin-bottom: 20px;
   }
 
   #pl-sticky {
+    position: sticky;
+    top: 72px;
     width: 100%;
-    min-height: calc(100vh - 84px);
+    height: calc(100vh - 88px);
+    min-height: calc(100vh - 88px);
     display: flex; flex-direction: column;
     justify-content: center;
   }
@@ -267,24 +271,30 @@ const stages = [
   }
 
   .pl-progress {
-    margin-top: 10px;
-    display: flex; align-items: center; gap: 14px;
-    padding: 8px 0;
+    margin-top: 12px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0;
   }
   .pl-progress-track {
-    flex: 1; height: 6px; background: var(--bdr);
+    flex: 1; height: 8px; background: var(--bdr);
     border-radius: 999px; overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
   }
   .pl-progress-bar {
     height: 100%;
     background: linear-gradient(90deg, var(--acc), var(--acc-hi));
     width: calc(1/7 * 100%);
     border-radius: 999px;
-    transition: width .5s var(--out);
+    transition: width .28s var(--out);
   }
   .pl-progress-label {
-    font-size: 11px; color: var(--ink2); letter-spacing: 0.08em;
-    width: 48px; text-align: right;
+    font-size: 10px; color: var(--ink2); letter-spacing: 0.08em;
+    min-width: 52px;
+    text-align: center;
+    padding: 3px 7px;
+    border-radius: 999px;
+    background: var(--bg2);
+    border: 1px solid var(--bdr);
   }
 
   .pl-footer {
@@ -297,7 +307,12 @@ const stages = [
   .pl-footer strong { color: var(--ink2); }
 
   @media (max-width: 900px) {
-    #pl-sticky { min-height: auto; }
+    #pl-scroll-wrapper { height: auto; }
+    #pl-sticky {
+      position: relative;
+      top: auto;
+      min-height: auto;
+    }
     .pl-ide { grid-template-columns: 1fr; min-height: 520px; }
     .pl-stages { border-right: none; border-bottom: 1px solid var(--bdr); display: grid; grid-template-columns: 1fr 1fr; }
     .pl-panel-wrap { min-height: 380px; }
@@ -311,118 +326,154 @@ const stages = [
   const progressBar = document.getElementById('pl-progress-bar');
   const progressLabel = document.getElementById('pl-progress-label');
   const wrapper = document.getElementById('pl-scroll-wrapper');
-  const nextSection = document.getElementById('features');
 
   const TOTAL = 7;
-  let currentStage = 0;
-  let isAutoPlaying = false;
-  let hasAutoPlayed = false;
-  let autoTimer = null;
+  const NAV_TOP = 72;
+  let currentStage = -1;
+  let wheelCooldownUntil = 0;
 
-  function activateStage(i) {
-    currentStage = Math.max(0, Math.min(TOTAL - 1, i));
+  function activateStage(index, force = false) {
+    const next = Math.max(0, Math.min(TOTAL - 1, index));
+    if (!force && next === currentStage) return;
+    currentStage = next;
 
-    tabs.forEach((t, ti) => {
-      const on = ti === currentStage;
+    tabs.forEach((t, i) => {
+      const on = i === currentStage;
       t.classList.toggle('active', on);
       t.setAttribute('aria-selected', String(on));
       t.setAttribute('tabindex', on ? '0' : '-1');
     });
 
-    panels.forEach((p, pi) => {
-      p.classList.toggle('active', pi === currentStage);
+    panels.forEach((p, i) => {
+      p.classList.toggle('active', i === currentStage);
     });
 
-    if (progressBar) progressBar.style.width = `${((currentStage + 1) / TOTAL) * 100}%`;
-    if (progressLabel) progressLabel.textContent = `${String(currentStage + 1).padStart(2, '0')} / 07`;
-  }
-
-  function stopAuto() {
-    if (autoTimer !== null) {
-      clearInterval(autoTimer);
-      autoTimer = null;
+    if (progressBar) {
+      progressBar.style.width = `${((currentStage + 1) / TOTAL) * 100}%`;
     }
-    isAutoPlaying = false;
+    if (progressLabel) {
+      progressLabel.textContent = `${String(currentStage + 1).padStart(2, '0')} / 07`;
+    }
   }
 
-  function startAutoSequence() {
-    if (isAutoPlaying || hasAutoPlayed || window.innerWidth < 900) return;
-
-    isAutoPlaying = true;
-    let stage = 0;
-    activateStage(0);
-
-    autoTimer = setInterval(() => {
-      stage += 1;
-      if (stage <= TOTAL - 1) activateStage(stage);
-      if (stage >= TOTAL - 1) {
-        stopAuto();
-        hasAutoPlayed = true;
-        if (nextSection) {
-          setTimeout(() => {
-            const target = Math.max(0, nextSection.offsetTop - 90);
-            window.scrollTo({ top: target, behavior: 'smooth' });
-          }, 420);
-        }
-      }
-    }, 820);
+  function inLockZone() {
+    if (!wrapper) return false;
+    const rect = wrapper.getBoundingClientRect();
+    return rect.top <= NAV_TOP + 8 && rect.bottom >= window.innerHeight * 0.55;
   }
 
-  tabs.forEach((t, i) => {
-    t.addEventListener('click', () => {
-      stopAuto();
-      hasAutoPlayed = true;
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
       activateStage(i);
+      if (!wrapper || window.innerWidth < 900) return;
+
+      const totalScroll = Math.max(1, wrapper.offsetHeight - window.innerHeight);
+      const segment = totalScroll / (TOTAL - 1);
+      const target = wrapper.offsetTop + (segment * i);
+      window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
     });
 
-    t.addEventListener('keydown', e => {
-      const key = e.key;
-      if (key === 'ArrowDown') {
+    tab.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown') {
         e.preventDefault();
         const n = Math.min(TOTAL - 1, i + 1);
-        stopAuto();
-        hasAutoPlayed = true;
-        activateStage(n);
+        tabs[n].click();
         tabs[n].focus();
       }
-      if (key === 'ArrowUp') {
+      if (e.key === 'ArrowUp') {
         e.preventDefault();
         const n = Math.max(0, i - 1);
-        stopAuto();
-        hasAutoPlayed = true;
-        activateStage(n);
+        tabs[n].click();
         tabs[n].focus();
       }
     });
   });
 
-  let lastY = window.scrollY;
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    const down = y > lastY;
-    const up = y < lastY;
-    lastY = y;
+  window.addEventListener('wheel', e => {
+    if (window.innerWidth < 900) return;
+    if (!inLockZone()) return;
 
-    if (!wrapper) return;
+    const abs = Math.abs(e.deltaY);
+    if (abs < 8) return;
 
-    if (up && isAutoPlaying) {
-      stopAuto();
-      hasAutoPlayed = false;
+    const now = performance.now();
+    if (now < wheelCooldownUntil) {
+      e.preventDefault();
       return;
     }
 
-    // Reset replay if user scrolls back above pipeline
-    if (y < wrapper.offsetTop - window.innerHeight * 0.4) {
-      hasAutoPlayed = false;
-      activateStage(0);
+    const dir = e.deltaY > 0 ? 1 : -1;
+
+    if (dir > 0 && currentStage < TOTAL - 1) {
+      e.preventDefault();
+      activateStage(currentStage + 1);
+      wheelCooldownUntil = now + 320;
+      return;
     }
 
-    if (!down || hasAutoPlayed || isAutoPlaying || window.innerWidth < 900) return;
+    if (dir < 0 && currentStage > 0) {
+      e.preventDefault();
+      activateStage(currentStage - 1);
+      wheelCooldownUntil = now + 320;
+      return;
+    }
 
-    const r = wrapper.getBoundingClientRect();
-    const inGate = r.top <= window.innerHeight * 0.34 && r.bottom >= window.innerHeight * 0.66;
-    if (inGate) startAutoSequence();
+    // boundary behavior: let normal page scroll happen
+  }, { passive: false });
+
+  // touch support for locked stepping
+  let touchStartY = 0;
+  window.addEventListener('touchstart', e => {
+    if (window.innerWidth < 900) return;
+    if (!inLockZone()) return;
+    touchStartY = e.touches[0]?.clientY || 0;
   }, { passive: true });
 
-  activateStage(0);
+  window.addEventListener('touchmove', e => {
+    if (window.innerWidth < 900) return;
+    if (!inLockZone()) return;
+
+    const y = e.touches[0]?.clientY || 0;
+    const delta = touchStartY - y;
+    if (Math.abs(delta) < 14) return;
+
+    const now = performance.now();
+    if (now < wheelCooldownUntil) {
+      e.preventDefault();
+      return;
+    }
+
+    const dir = delta > 0 ? 1 : -1;
+
+    if (dir > 0 && currentStage < TOTAL - 1) {
+      e.preventDefault();
+      activateStage(currentStage + 1);
+      wheelCooldownUntil = now + 340;
+      touchStartY = y;
+      return;
+    }
+
+    if (dir < 0 && currentStage > 0) {
+      e.preventDefault();
+      activateStage(currentStage - 1);
+      wheelCooldownUntil = now + 340;
+      touchStartY = y;
+      return;
+    }
+
+    // boundary behavior: allow native scroll
+  }, { passive: false });
+
+  // keep default state sane when user goes above section
+  window.addEventListener('scroll', () => {
+    if (!wrapper) return;
+    if (window.innerWidth < 900) return;
+
+    const y = window.scrollY;
+    if (y < wrapper.offsetTop - window.innerHeight * 0.35 && currentStage !== 0) {
+      activateStage(0, true);
+    }
+  }, { passive: true });
+
+  activateStage(0, true);
 </script>
