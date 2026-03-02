@@ -1,825 +1,721 @@
 ---
+// Hero — macOS menubar demo + 3D perspective window + cursor-reactive gradient
 ---
 
 <section id="hero">
-  <!-- Particle canvas background -->
-  <canvas id="particle-canvas"></canvas>
+  <!-- Gradient canvas background -->
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
 
-  <!-- Radial glow -->
-  <div class="hero-glow"></div>
+  <!-- Ambient orbs -->
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+  <div class="orb orb-3" aria-hidden="true"></div>
 
-  <!-- Corner engineering marks -->
-  <div class="corner tl"></div>
-  <div class="corner tr"></div>
-  <div class="corner bl"></div>
-  <div class="corner br"></div>
+  <!-- Floating coordinate labels -->
+  <span class="coord coord-tl font-mono" aria-hidden="true">x:0000 y:0000</span>
+  <span class="coord coord-tr font-mono" aria-hidden="true">∆T 0.00ms</span>
+  <span class="coord coord-bl font-mono" aria-hidden="true">v1.1.0 · macOS 14+</span>
+  <span class="coord coord-br font-mono" aria-hidden="true">7-STAGE RMPA</span>
 
-  <div class="hero-inner">
-
-    <!-- Status pill -->
-    <div class="status-pill reveal">
-      <span class="status-dot"></span>
-      <span class="mono" style="font-size:11px;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;">RMPA v1.1 · 7-Stage Pipeline · Live</span>
+  <!-- macOS Status Bar sim -->
+  <div id="macos-bar" aria-label="macOS menu bar simulation" role="img">
+    <div class="bar-left">
+      <span class="apple-logo">&#63743;</span>
+      <span class="bar-item">Finder</span>
+      <span class="bar-item">File</span>
+      <span class="bar-item">Edit</span>
+      <span class="bar-item">View</span>
     </div>
-
-    <!-- Main headline -->
-    <div class="headline-block">
-      <h1 class="headline reveal reveal-d1">
-        Your AI hears<br />what you type.
-      </h1>
-      <h1 class="headline headline-accent reveal reveal-d2">
-        Not what you mean.
-      </h1>
-      <p class="subheadline reveal reveal-d3">
-        PromptCraft engineers clarity from noise. Every request is analyzed,
-        decomposed, and rebuilt before it reaches the model.
-        Seven deterministic stages. Zero guesswork.
-      </p>
-    </div>
-
-    <!-- CTAs -->
-    <div class="hero-ctas reveal reveal-d4">
-      <a href="/download" class="cta-primary">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M8 2v9M4 8l4 4 4-4M1 13h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <div class="bar-right">
+      <span class="bar-item system" id="bar-time">14:07</span>
+      <svg class="bar-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="5" width="12" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M13.5 7.5h1.5v3H13.5" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="2.5" y="6.5" width="6" height="4" rx="0.5" fill="var(--teal)"/></svg>
+      <svg class="bar-icon" viewBox="0 0 16 16" fill="none"><path d="M8 3C5.24 3 2.88 4.56 1.5 6.88L3 8C4.02 6.22 5.88 5 8 5s3.98 1.22 5 3l1.5-1.12C13.12 4.56 10.76 3 8 3z" fill="currentColor" opacity="0.4"/><path d="M8 7C6.54 7 5.26 7.72 4.5 8.82L6 10c.48-.73 1.2-1.17 2-1.17s1.52.44 2 1.17l1.5-1.18C10.74 7.72 9.46 7 8 7z" fill="currentColor" opacity="0.7"/><circle cx="8" cy="13" r="1.5" fill="currentColor"/></svg>
+      <!-- PromptCraft icon in menubar -->
+      <button id="pc-menubar-btn" aria-label="Open PromptCraft" class="pc-icon-btn" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="2" fill="var(--teal)"/>
+          <line x1="12" y1="3" x2="12" y2="9"  stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="12" y1="15" x2="12" y2="21" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="3" y1="12" x2="9" y2="12"  stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="15" y1="12" x2="21" y2="12" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
         </svg>
-        Download for macOS
-        <span class="cta-badge">Free</span>
-      </a>
-      <a href="/pricing" class="cta-secondary">
-        Cloud Access
-        <span class="cta-price">$12/mo</span>
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-          <path d="M2.5 6.5h8M7.5 3.5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
-    </div>
-
-    <!-- Demo terminal -->
-    <div class="demo-container reveal reveal-d5">
-
-      <!-- Window chrome -->
-      <div class="window-chrome">
-        <div class="window-dots">
-          <div class="dot red"></div>
-          <div class="dot yellow"></div>
-          <div class="dot green"></div>
-        </div>
-        <div class="window-title mono">promptcraft — pipeline · v1.1.0</div>
-        <div class="window-status">
-          <span class="pulse-dot"></span>
-          <span class="mono" style="font-size:10px;color:rgba(0,229,160,0.6)">LIVE</span>
-        </div>
-      </div>
-
-      <!-- Demo split -->
-      <div class="demo-split">
-
-        <!-- Input -->
-        <div class="demo-pane demo-input-pane">
-          <div class="pane-label mono">// raw input</div>
-          <div class="input-area">
-            <span id="typed" class="mono demo-typed"></span><span id="cursor-blink" class="cursor-blink mono">|</span>
-          </div>
-
-          <!-- Scan line effect -->
-          <div class="scan-line"></div>
-        </div>
-
-        <!-- Pipeline -->
-        <div class="demo-pane demo-pipeline-pane">
-          <div class="pane-label mono">// rmpa pipeline</div>
-
-          <div id="stages-list" class="stages-list">
-            {[
-              { n: '01', label: 'Intent Decomposer',    color: '#00E5A0' },
-              { n: '02', label: 'Entity Extractor',     color: '#818CF8' },
-              { n: '03', label: 'Complexity Classifier', color: '#C084FC' },
-              { n: '04', label: 'Context Engine',       color: '#FCD34D' },
-              { n: '05', label: 'Prompt Assembler',     color: '#F472B6' },
-              { n: '06', label: 'Model Execution',      color: '#FB923C' },
-              { n: '07', label: 'Post Processor',       color: '#00E5A0' },
-            ].map(s => (
-              <div class="stage-row" data-stage={s.n} style={`--stage-color: ${s.color}`}>
-                <span class="stage-num mono">{s.n}</span>
-                <div class="stage-bar"></div>
-                <span class="stage-label mono">{s.label}</span>
-                <div class="stage-check">
-                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                    <path d="M1 4l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <!-- Output -->
-          <div id="demo-output" class="demo-output">
-            <div class="pane-label mono" style="margin-bottom:8px">// engineered directive</div>
-            <div id="output-text" class="mono demo-output-text"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Status bar -->
-      <div class="status-bar">
-        <div class="stat-group">
-          <span class="stat-label mono">Tier</span>
-          <span id="stat-tier" class="stat-value mono">—</span>
-        </div>
-        <div class="stat-group">
-          <span class="stat-label mono">Intents</span>
-          <span id="stat-intents" class="stat-value mono">—</span>
-        </div>
-        <div class="stat-group">
-          <span class="stat-label mono">Context</span>
-          <span id="stat-context" class="stat-value mono">—</span>
-        </div>
-        <div class="stat-group" style="margin-left:auto">
-          <span class="stat-label mono">Latency</span>
-          <span id="stat-latency" class="stat-value mono" style="color:var(--teal)">—</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Social proof -->
-    <div class="social-proof reveal reveal-d6">
-      <div class="avatars">
-        {['O','A','T','J','M'].map((l, i) => (
-          <div class="avatar" style={`z-index:${5-i}`}>{l}</div>
-        ))}
-      </div>
-      <p class="proof-text mono">
-        Trusted by engineers at <strong>Anthropic, OpenAI, Vercel</strong>
-      </p>
+      </button>
     </div>
   </div>
 
-  <!-- Scroll indicator -->
-  <div class="scroll-hint">
+  <!-- App popover window -->
+  <div id="app-popover" aria-label="PromptCraft app window" role="region">
+    <!-- Window chrome -->
+    <div class="win-chrome">
+      <div class="traffic">
+        <span class="tl-close"></span>
+        <span class="tl-min"></span>
+        <span class="tl-max"></span>
+      </div>
+      <span class="win-title font-mono">PromptCraft — Pipeline Active</span>
+      <div class="win-meta font-mono" id="win-stage-label">Stage 1/7</div>
+    </div>
+
+    <!-- Input pane -->
+    <div class="win-body">
+      <div class="input-pane">
+        <div class="input-label font-mono">RAW PROMPT</div>
+        <div class="input-area" id="demo-input" aria-live="polite"></div>
+        <div class="input-cursor" id="demo-cursor" aria-hidden="true"></div>
+      </div>
+
+      <!-- Pipeline stages -->
+      <div class="pipeline-pane">
+        <div class="stage-track">
+          <div class="stage-item" data-stage="1">
+            <div class="stage-dot"></div>
+            <span class="stage-name font-mono">Role Assignment</span>
+            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="stage-item" data-stage="2">
+            <div class="stage-dot"></div>
+            <span class="stage-name font-mono">Context Injection</span>
+            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="stage-item" data-stage="3">
+            <div class="stage-dot"></div>
+            <span class="stage-name font-mono">Constraint Binding</span>
+            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="stage-item" data-stage="4">
+            <div class="stage-dot"></div>
+            <span class="stage-name font-mono">Format Sculpting</span>
+            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="stage-item" data-stage="5">
+            <div class="stage-dot"></div>
+            <span class="stage-name font-mono">Chain Reasoning</span>
+            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="stage-item" data-stage="6">
+            <div class="stage-dot"></div>
+            <span class="stage-name font-mono">Tone Calibration</span>
+            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="stage-item" data-stage="7">
+            <div class="stage-dot"></div>
+            <span class="stage-name font-mono">Output Validation</span>
+            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+        <div class="stage-progress-bar"><div class="stage-progress-fill" id="stage-fill"></div></div>
+      </div>
+
+      <!-- Output pane -->
+      <div class="output-pane" id="output-pane">
+        <div class="output-label font-mono">ENGINEERED OUTPUT</div>
+        <div class="output-text" id="demo-output" aria-live="polite"></div>
+        <div class="output-footer">
+          <span class="font-mono" id="output-provider">→ claude-3-5-sonnet</span>
+          <span class="output-badge font-mono">+340% clarity</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Window footer -->
+    <div class="win-footer">
+      <span class="footer-stat font-mono"><span class="teal">7</span> stages active</span>
+      <span class="footer-stat font-mono">model: <span class="teal">claude-3-5-sonnet</span></span>
+      <span class="footer-stat font-mono">latency: <span id="win-latency" class="teal">0ms</span></span>
+      <div class="footer-dot-cluster" aria-hidden="true">
+        <span class="fdot active"></span><span class="fdot"></span><span class="fdot"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero copy — positioned bottom-left -->
+  <div class="hero-copy">
+    <div class="tag teal" style="margin-bottom:24px">
+      <span class="tag-dot"></span>
+      MENU BAR · MACOS · LIVE
+    </div>
+    <h1 id="hero-h1">
+      <span class="line" data-scramble>Precision prompt</span>
+      <span class="line accent" data-scramble>engineering.</span>
+    </h1>
+    <p class="hero-sub">
+      Every request refined through 7 engineered stages<br>
+      before reaching any AI. Measurably better output, every time.
+    </p>
+    <div class="hero-ctas">
+      <a href="/download" class="btn btn-primary" data-cursor="DOWNLOAD">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M3 8l5 5 5-5M1 14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download for Mac
+      </a>
+      <a href="/pricing" class="btn btn-ghost" data-cursor="PRICING">
+        See pricing
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <div class="hero-proof font-mono">
+      <span>macOS 14+</span>
+      <span class="dot">·</span>
+      <span>Developer ID Signed</span>
+      <span class="dot">·</span>
+      <span>Local + Cloud</span>
+    </div>
+  </div>
+
+  <!-- Scroll cue -->
+  <div class="scroll-cue" aria-hidden="true">
     <div class="scroll-line"></div>
-    <span class="mono" style="font-size:10px;color:rgba(0,229,160,0.25);letter-spacing:0.12em;text-transform:uppercase;margin-top:8px">Scroll</span>
+    <span class="font-mono">scroll</span>
   </div>
 </section>
 
 <style>
   #hero {
     position: relative;
-    min-height: 100vh;
+    width: 100%;
+    height: 100vh;
+    min-height: 700px;
+    overflow: hidden;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    padding: 120px 24px 80px;
   }
 
-  #particle-canvas {
+  /* ── Background canvas ──────── */
+  #hero-canvas {
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     z-index: 0;
   }
 
-  .hero-glow {
+  /* ── Orbs ───────────────────── */
+  .orb {
     position: absolute;
-    top: -20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 900px;
-    height: 600px;
-    background: radial-gradient(ellipse at center, rgba(0,229,160,0.065) 0%, transparent 65%);
+    border-radius: 50%;
+    filter: blur(80px);
     pointer-events: none;
     z-index: 1;
+    animation: drift 12s ease-in-out infinite alternate;
   }
+  .orb-1 { width: 500px; height: 500px; background: rgba(0,255,178,0.06); top: -100px; left: -100px; animation-delay: 0s; }
+  .orb-2 { width: 400px; height: 400px; background: rgba(123,97,255,0.08); bottom: -80px; right: -80px; animation-delay: 4s; }
+  .orb-3 { width: 300px; height: 300px; background: rgba(0,255,178,0.04); top: 40%; left: 55%; animation-delay: 8s; }
+  @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(40px,30px) scale(1.1); } }
 
-  .corner {
+  /* ── Coordinates ────────────── */
+  .coord {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    border-color: rgba(0,229,160,0.18);
-    border-style: solid;
-    z-index: 2;
-  }
-  .corner.tl { top: 80px; left: 24px; border-width: 1px 0 0 1px; }
-  .corner.tr { top: 80px; right: 24px; border-width: 1px 1px 0 0; }
-  .corner.bl { bottom: 24px; left: 24px; border-width: 0 0 1px 1px; }
-  .corner.br { bottom: 24px; right: 24px; border-width: 0 1px 1px 0; }
-
-  .hero-inner {
-    position: relative;
-    z-index: 3;
-    max-width: 900px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 7px 16px;
-    border: 1px solid rgba(0,229,160,0.2);
-    background: rgba(0,229,160,0.05);
-    border-radius: 100px;
-    margin-bottom: 40px;
-  }
-
-  .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--teal);
-    animation: pulse-dot 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,229,160,0.3); }
-    50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(0,229,160,0); }
-  }
-
-  .headline-block {
-    margin-bottom: 28px;
-  }
-
-  .headline {
-    font-size: clamp(52px, 7vw, 88px);
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    line-height: 1.0;
-    color: var(--text-primary);
-    margin-bottom: 4px;
-  }
-
-  .headline-accent {
-    color: transparent;
-    background: linear-gradient(135deg, var(--teal) 0%, #4ADE80 50%, var(--teal) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    background-size: 200% auto;
-    animation: shimmer 4s linear infinite;
-    margin-bottom: 32px;
-  }
-
-  .subheadline {
-    font-size: 18px;
-    font-weight: 400;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    max-width: 560px;
-    margin: 0 auto;
-  }
-
-  .hero-ctas {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 56px;
-  }
-
-  .cta-primary {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 28px;
-    background: var(--teal);
-    color: #050507;
-    font-family: var(--font-mono);
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 10px;
-    transition: all 0.25s ease;
-  }
-
-  .cta-primary:hover {
-    background: var(--teal-dim);
-    box-shadow: 0 0 40px rgba(0,229,160,0.3), 0 4px 20px rgba(0,229,160,0.2);
-    transform: translateY(-2px);
-  }
-
-  .cta-badge {
-    padding: 2px 8px;
-    background: rgba(5,5,7,0.25);
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-  }
-
-  .cta-secondary {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 24px;
-    border: 1px solid var(--border-bright);
-    background: transparent;
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
-    font-size: 14px;
-    border-radius: 10px;
-    transition: all 0.25s ease;
-  }
-
-  .cta-secondary:hover {
-    border-color: rgba(0,229,160,0.3);
-    color: var(--text-primary);
-    background: rgba(0,229,160,0.04);
-    transform: translateY(-2px);
-  }
-
-  .cta-price {
-    color: rgba(0,229,160,0.7);
-    font-size: 12px;
-  }
-
-  /* Demo window */
-  .demo-container {
-    width: 100%;
-    max-width: 860px;
-    border-radius: 16px;
-    border: 1px solid var(--border-bright);
-    background: var(--surface);
-    overflow: hidden;
-    box-shadow: 0 0 0 1px rgba(0,229,160,0.04), 0 40px 120px rgba(0,0,0,0.6), 0 0 80px rgba(0,229,160,0.04);
-    margin-bottom: 48px;
-  }
-
-  .window-chrome {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 12px 18px;
-    border-bottom: 1px solid var(--border);
-    background: var(--elevated);
-  }
-
-  .window-dots {
-    display: flex;
-    gap: 6px;
-  }
-
-  .dot {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-  }
-  .dot.red { background: #FF5F56; }
-  .dot.yellow { background: #FFBD2E; }
-  .dot.green { background: #27C93F; }
-
-  .window-title {
-    flex: 1;
-    text-align: center;
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.04em;
-  }
-
-  .window-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .pulse-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--teal);
-    animation: pulse-dot 2s ease-in-out infinite;
-  }
-
-  .demo-split {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    min-height: 320px;
-  }
-
-  .demo-pane {
-    padding: 20px 22px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .demo-input-pane {
-    border-right: 1px solid var(--border);
-  }
-
-  .demo-pipeline-pane {
-    background: rgba(0,0,0,0.15);
-  }
-
-  .pane-label {
     font-size: 10px;
-    color: rgba(0,229,160,0.45);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
-  .input-area {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--text-primary);
-    line-height: 1.7;
-    min-height: 60px;
-  }
-
-  .demo-typed { color: var(--text-primary); }
-
-  .cursor-blink {
-    color: var(--teal);
-    animation: blink-cursor 1s step-end infinite;
-    font-weight: 300;
-  }
-
-  .scan-line {
-    position: absolute;
-    left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(0,229,160,0.5), transparent);
-    animation: scan-line 3s ease-in-out infinite;
-    opacity: 0.3;
+    color: var(--text-3);
+    letter-spacing: 0.08em;
+    opacity: 0.5;
+    z-index: 3;
     pointer-events: none;
   }
+  .coord-tl { top: 80px; left: 32px; }
+  .coord-tr { top: 80px; right: 32px; }
+  .coord-bl { bottom: 60px; left: 32px; }
+  .coord-br { bottom: 60px; right: 32px; }
 
-  /* Pipeline stages */
-  .stages-list {
+  /* ── macOS status bar ───────── */
+  #macos-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 28px;
+    background: rgba(10,10,20,0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
     display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 16px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 100;
+    transform: translateY(-28px);
+    animation: bar-slide-in 0.6s var(--ease-spring) 0.3s forwards;
+  }
+  @keyframes bar-slide-in { to { transform: translateY(0); } }
+
+  .bar-left, .bar-right { display: flex; align-items: center; gap: 16px; }
+  .apple-logo { font-size: 13px; color: var(--text-1); line-height: 1; }
+  .bar-item { font-size: 12px; font-weight: 500; color: var(--text-1); font-family: -apple-system, sans-serif; }
+  .bar-item.system { color: var(--text-2); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .bar-icon { width: 16px; height: 16px; color: var(--text-2); flex-shrink: 0; }
+
+  .pc-icon-btn {
+    background: transparent;
+    border: none;
+    padding: 2px 4px;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    transition: background 0.15s;
+    cursor: none;
+    animation: pc-pulse 2s ease-in-out 1.2s 2;
+  }
+  .pc-icon-btn:hover { background: rgba(0,255,178,0.1); }
+  @keyframes pc-pulse { 0%,100%{filter:drop-shadow(0 0 0 transparent)} 50%{filter:drop-shadow(0 0 8px rgba(0,255,178,0.6))} }
+
+  /* ── App popover ─────────────── */
+  #app-popover {
+    position: absolute;
+    top: 36px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px) scale(0.95) perspective(1200px);
+    width: min(680px, 92vw);
+    background: rgba(13,13,28,0.96);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    box-shadow:
+      0 40px 100px rgba(0,0,0,0.7),
+      0 0 0 0.5px rgba(255,255,255,0.05) inset,
+      0 2px 80px rgba(0,255,178,0.04) inset;
+    opacity: 0;
+    animation: popover-in 0.7s var(--ease-spring) 0.9s forwards;
+    z-index: 50;
+    overflow: hidden;
+    will-change: transform;
+    transition: transform 0.15s ease-out;
+  }
+  @keyframes popover-in {
+    to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1) perspective(1200px); }
   }
 
-  .stage-row {
+  /* Triangle pointer from menubar */
+  #app-popover::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px; height: 6px;
+    background: rgba(255,255,255,0.1);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+
+  /* Window chrome */
+  .win-chrome {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+  }
+  .traffic { display: flex; gap: 6px; }
+  .traffic span {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    display: block;
+    cursor: none;
+  }
+  .tl-close { background: #FF5F57; }
+  .tl-min   { background: #FFBD2E; }
+  .tl-max   { background: #28C840; }
+
+  .win-title { font-size: 11px; color: var(--text-3); flex: 1; text-align: center; letter-spacing: 0.05em; }
+  .win-meta  { font-size: 10px; color: var(--teal); letter-spacing: 0.1em; }
+
+  /* Window body */
+  .win-body {
+    display: grid;
+    grid-template-columns: 1fr 140px 1fr;
+    gap: 0;
+    min-height: 220px;
+  }
+
+  /* Input pane */
+  .input-pane {
+    padding: 16px;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .input-label {
+    font-size: 9px;
+    color: var(--text-3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .input-area {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-2);
+    font-family: 'JetBrains Mono', monospace;
+    flex: 1;
+    min-height: 80px;
+  }
+  .input-cursor {
+    width: 8px; height: 14px;
+    background: var(--teal);
+    display: inline-block;
+    animation: blink-c 0.8s step-end infinite;
+    vertical-align: text-bottom;
+  }
+  @keyframes blink-c { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* Pipeline pane */
+  .pipeline-pane {
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-right: 1px solid rgba(255,255,255,0.05);
+  }
+  .stage-track {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+  .stage-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  .stage-item.active   { background: rgba(0,255,178,0.06); }
+  .stage-item.complete { opacity: 0.7; }
+
+  .stage-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border-hi);
+    flex-shrink: 0;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .stage-item.active   .stage-dot { background: var(--teal); box-shadow: 0 0 8px var(--teal); }
+  .stage-item.complete .stage-dot { background: var(--teal); }
+
+  .stage-name {
+    font-size: 9px;
+    color: var(--text-3);
+    flex: 1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s;
+  }
+  .stage-item.active   .stage-name { color: var(--teal); }
+  .stage-item.complete .stage-name { color: var(--text-2); }
+
+  .stage-check { width: 10px; height: 10px; opacity: 0; transition: opacity 0.2s; flex-shrink: 0; }
+  .stage-item.complete .stage-check { opacity: 1; }
+
+  .stage-progress-bar {
+    height: 2px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 1px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .stage-progress-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 1px;
+    width: 0%;
+    transition: width 0.5s var(--ease-out);
+    box-shadow: 0 0 8px var(--teal);
+  }
+
+  /* Output pane */
+  .output-pane {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  .output-pane.visible { opacity: 1; }
+  .output-label {
+    font-size: 9px;
+    color: var(--teal);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .output-text {
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--text-1);
+    font-family: 'JetBrains Mono', monospace;
+    flex: 1;
+  }
+  .output-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+  }
+  #output-provider { font-size: 9px; color: var(--text-3); }
+  .output-badge { font-size: 9px; color: var(--teal); background: rgba(0,255,178,0.08); padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(0,255,178,0.15); }
+
+  /* Win footer */
+  .win-footer {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 8px 16px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    background: rgba(0,0,0,0.2);
+  }
+  .footer-stat { font-size: 9px; color: var(--text-3); letter-spacing: 0.06em; }
+  .footer-dot-cluster { display: flex; gap: 4px; margin-left: auto; }
+  .fdot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-hi); }
+  .fdot.active { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
+
+  /* ── Hero copy ───────────────── */
+  .hero-copy {
+    position: absolute;
+    bottom: 100px;
+    left: max(32px, calc(50% - 580px));
+    z-index: 10;
+    max-width: 480px;
+  }
+
+  .hero-copy h1 {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(36px, 4.5vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+  .hero-copy h1 .accent { color: var(--teal); }
+
+  .hero-sub {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-2);
+    margin-bottom: 28px;
+    font-weight: 400;
+  }
+
+  .hero-ctas { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+
+  .hero-proof {
     display: flex;
     align-items: center;
     gap: 10px;
-    opacity: 0.18;
-    transition: opacity 0.4s ease;
-  }
-
-  .stage-row.active {
-    opacity: 1;
-  }
-
-  .stage-num {
-    font-size: 10px;
-    color: var(--text-muted);
-    width: 18px;
-    flex-shrink: 0;
-  }
-
-  .stage-bar {
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .stage-row.active .stage-bar::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--stage-color);
-    animation: slide-right 0.5s ease forwards;
-  }
-
-  .stage-label {
-    font-size: 10px;
-    color: var(--stage-color);
+    font-size: 11px;
+    color: var(--text-3);
     letter-spacing: 0.04em;
-    white-space: nowrap;
   }
+  .hero-proof .dot { opacity: 0.4; }
 
-  .stage-check {
-    width: 14px;
-    height: 14px;
-    border-radius: 3px;
-    border: 1px solid currentColor;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--stage-color);
-    flex-shrink: 0;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .stage-row.active .stage-check {
-    opacity: 1;
-  }
-
-  .demo-output {
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    padding-top: 12px;
-    border-top: 1px solid var(--border);
-    margin-top: 8px;
-  }
-
-  .demo-output.visible {
-    opacity: 1;
-  }
-
-  .demo-output-text {
-    font-size: 11px;
-    color: rgba(0,229,160,0.8);
-    line-height: 1.7;
-  }
-
-  .status-bar {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    padding: 10px 22px;
-    border-top: 1px solid var(--border);
-    background: var(--elevated);
-  }
-
-  .stat-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .stat-label {
-    font-size: 10px;
-    color: var(--text-muted);
-  }
-
-  .stat-value {
-    font-size: 10px;
-    color: var(--text-primary);
-  }
-
-  /* Social proof */
-  .social-proof {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .avatars {
-    display: flex;
-  }
-
-  .avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--elevated);
-    border: 2px solid var(--base);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--teal);
-    margin-left: -8px;
-    position: relative;
-  }
-
-  .avatar:first-child { margin-left: 0; }
-
-  .proof-text {
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-
-  .proof-text strong { color: var(--text-secondary); font-weight: 500; }
-
-  /* Scroll hint */
-  .scroll-hint {
+  /* ── Scroll cue ─────────────── */
+  .scroll-cue {
     position: absolute;
     bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    z-index: 3;
+    z-index: 10;
   }
-
   .scroll-line {
     width: 1px;
-    height: 40px;
-    background: linear-gradient(180deg, var(--teal) 0%, transparent 100%);
-    opacity: 0.25;
-    animation: float 2s ease-in-out infinite;
+    height: 48px;
+    background: linear-gradient(to bottom, transparent, var(--teal));
+    animation: scroll-line 2s ease-in-out infinite;
+  }
+  @keyframes scroll-line {
+    0%   { transform: scaleY(0); transform-origin: top; }
+    50%  { transform: scaleY(1); transform-origin: top; }
+    51%  { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+  .scroll-cue span {
+    font-size: 9px;
+    color: var(--text-3);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    writing-mode: vertical-lr;
   }
 
   @media (max-width: 768px) {
-    .demo-split { grid-template-columns: 1fr; }
-    .demo-input-pane { border-right: none; border-bottom: 1px solid var(--border); }
-    .headline { font-size: clamp(40px, 10vw, 64px); }
-    .hero-ctas { flex-direction: column; width: 100%; }
-    .cta-primary, .cta-secondary { width: 100%; justify-content: center; }
+    .win-body { grid-template-columns: 1fr; }
+    .pipeline-pane, .input-pane { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .hero-copy { left: 20px; right: 20px; bottom: 80px; max-width: none; }
+    .coord { display: none; }
   }
 </style>
 
 <script>
-  // ── Particle canvas ──────────────────────────────────────────────
-  const canvas = document.getElementById('particle-canvas') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d')!;
-
-  let W = 0, H = 0;
-  const particles: Array<{
-    x: number; y: number; vx: number; vy: number;
-    r: number; alpha: number; pulse: number;
-  }> = [];
-
-  const PARTICLE_COUNT = 60;
-  const CONNECT_DIST = 160;
-
-  function resize() {
-    W = canvas.offsetWidth;
-    H = canvas.offsetHeight;
-    canvas.width = W * devicePixelRatio;
-    canvas.height = H * devicePixelRatio;
-    ctx.scale(devicePixelRatio, devicePixelRatio);
+  // ── Live clock ────────────────────────────────────────────────────────────
+  const clockEl = document.getElementById('bar-time');
+  function updateClock() {
+    if (!clockEl) return;
+    const now = new Date();
+    clockEl.textContent = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
   }
+  updateClock();
+  setInterval(updateClock, 1000);
 
-  function initParticles() {
-    particles.length = 0;
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: Math.random() * 1.5 + 0.5,
-        alpha: Math.random() * 0.4 + 0.1,
-        pulse: Math.random() * Math.PI * 2,
-      });
-    }
-  }
+  // ── Coordinate tracker ────────────────────────────────────────────────────
+  const coordTL = document.querySelector('.coord-tl') as HTMLElement;
+  const coordTR = document.querySelector('.coord-tr') as HTMLElement;
+  let lastTime = performance.now();
+  document.addEventListener('mousemove', (e) => {
+    if (coordTL) coordTL.textContent = `x:${String(e.clientX).padStart(4,'0')} y:${String(e.clientY).padStart(4,'0')}`;
+    const now = performance.now();
+    const dt = (now - lastTime).toFixed(2);
+    if (coordTR) coordTR.textContent = `∆T ${dt}ms`;
+    lastTime = now;
+  }, { passive: true });
 
-  let raf = 0;
-  function tick() {
-    ctx.clearRect(0, 0, W, H);
-
-    const t = Date.now() * 0.001;
-
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.pulse += 0.02;
-      if (p.x < 0) p.x = W;
-      if (p.x > W) p.x = 0;
-      if (p.y < 0) p.y = H;
-      if (p.y > H) p.y = 0;
-
-      const a = p.alpha * (0.7 + 0.3 * Math.sin(p.pulse));
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0,229,160,${a})`;
-      ctx.fill();
+  // ── 3D popover tilt ────────────────────────────────────────────────────────
+  const popover = document.getElementById('app-popover') as HTMLElement;
+  const hero    = document.getElementById('hero') as HTMLElement;
+  if (popover && hero) {
+    hero.addEventListener('mousemove', (e) => {
+      const rect  = hero.getBoundingClientRect();
+      const cx    = rect.left + rect.width  / 2;
+      const cy    = rect.top  + rect.height / 2;
+      const rx    = ((e.clientY - cy) / rect.height) * 6;   // tilt X
+      const ry    = -((e.clientX - cx) / rect.width)  * 8;  // tilt Y
+      popover.style.transform =
+        `translateX(-50%) translateY(0) perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    }, { passive: true });
+    hero.addEventListener('mouseleave', () => {
+      popover.style.transform = 'translateX(-50%) translateY(0) perspective(1200px) rotateX(0deg) rotateY(0deg)';
     });
+  }
 
-    // Draw connections
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        if (d < CONNECT_DIST) {
-          const alpha = (1 - d / CONNECT_DIST) * 0.12;
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(0,229,160,${alpha})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-        }
-      }
+  // ── Background canvas gradient ─────────────────────────────────────────────
+  const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement;
+  const ctx    = canvas.getContext('2d')!;
+  let cw = 0, ch = 0;
+  let mx = 0.5, my = 0.5;
+  let animT = 0;
+
+  function resizeCanvas() {
+    cw = canvas.width  = canvas.offsetWidth;
+    ch = canvas.height = canvas.offsetHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas, { passive: true });
+
+  document.getElementById('hero')!.addEventListener('mousemove', (e: Event) => {
+    const ev  = e as MouseEvent;
+    const rect = hero.getBoundingClientRect();
+    mx = ev.clientX / rect.width;
+    my = ev.clientY / rect.height;
+  }, { passive: true });
+
+  function drawBg() {
+    animT += 0.003;
+    ctx.clearRect(0, 0, cw, ch);
+
+    // Deep base fill
+    ctx.fillStyle = '#030308';
+    ctx.fillRect(0, 0, cw, ch);
+
+    // Radial orbs that shift with mouse + time
+    const orbs = [
+      { x: mx * cw * 0.8 + cw * 0.1, y: my * ch * 0.6 + ch * 0.1,  r: cw * 0.5, c: 'rgba(0,255,178,0.045)' },
+      { x: Math.sin(animT) * cw * 0.2 + cw * 0.7, y: Math.cos(animT * 0.7) * ch * 0.2 + ch * 0.6, r: cw * 0.35, c: 'rgba(123,97,255,0.06)' },
+      { x: Math.cos(animT * 0.5) * cw * 0.15 + cw * 0.2, y: ch * 0.2, r: cw * 0.3, c: 'rgba(0,255,178,0.02)' },
+    ];
+    for (const orb of orbs) {
+      const g = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.r);
+      g.addColorStop(0,   orb.c);
+      g.addColorStop(1,   'transparent');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, cw, ch);
     }
 
-    raf = requestAnimationFrame(tick);
+    // Subtle grid lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.025)';
+    ctx.lineWidth   = 0.5;
+    const gridSize  = 60;
+    for (let x = 0; x < cw; x += gridSize) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, ch); ctx.stroke();
+    }
+    for (let y = 0; y < ch; y += gridSize) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cw, y); ctx.stroke();
+    }
+
+    requestAnimationFrame(drawBg);
   }
+  drawBg();
 
-  const resizeObs = new ResizeObserver(() => {
-    resize();
-    initParticles();
-  });
-  resizeObs.observe(canvas);
-  resize();
-  initParticles();
-  tick();
-
-  // ── Demo automation ──────────────────────────────────────────────
-  interface Example {
-    input: string;
-    tier: string;
-    intents: string;
-    context: string;
-    output: string;
-  }
-
-  const examples: Example[] = [
+  // ── Demo sequence ─────────────────────────────────────────────────────────
+  const demos = [
     {
-      input: 'fix the login bug and also make the errors better',
-      tier: 'COMPLEX',
-      intents: '2',
-      context: '1 entity',
-      output: 'Resolve auth failure for SESSION_INVALID state. Implement error taxonomy: credential mismatch, expiry, rate-limit. Return actionable user-facing string per class. Preserve happy-path behavior.',
+      input:  'Tell me about climate change and what I should do',
+      output: 'You are a climate policy analyst with expertise in individual action frameworks.\n\nTask: Provide a structured analysis of climate change focusing on high-leverage personal interventions.\n\nFormat: Start with 3 key facts, then 5 ranked actions by impact, conclude with a 30-day actionable plan.',
     },
     {
-      input: 'write tests for the auth module',
-      tier: 'STANDARD',
-      intents: '1',
-      context: '2 entities',
-      output: 'Generate test suite for authentication module. Coverage: unit (token validation), integration (session lifecycle), edge cases (expired tokens, malformed JWTs). Use AAA pattern. Mock external deps.',
-    },
-    {
-      input: 'what does this function do',
-      tier: 'SIMPLE',
-      intents: '1',
-      context: '0 entities',
-      output: 'Explain purpose, inputs, outputs, and side effects of the specified function. Include parameter types, return value, and a one-line doc summary.',
+      input:  'Write code to sort a list',
+      output: 'You are a senior software engineer specializing in algorithm design.\n\nTask: Implement an optimized sorting function with clear documentation, time/space complexity analysis, and edge case handling.\n\nConstraints: TypeScript, O(n log n), handle empty arrays and duplicate values.',
     },
   ];
 
-  let exIdx = 0;
+  let demoIdx = 0;
+  const inputEl    = document.getElementById('demo-input')!;
+  const outputEl   = document.getElementById('demo-output')!;
+  const outputPane = document.getElementById('output-pane')!;
+  const stageLabel = document.getElementById('win-stage-label')!;
+  const stageFill  = document.getElementById('stage-fill')!;
+  const latency    = document.getElementById('win-latency')!;
 
-  function getEls() {
-    return {
-      typed: document.getElementById('typed') as HTMLElement,
-      stages: document.querySelectorAll('.stage-row') as NodeListOf<HTMLElement>,
-      output: document.getElementById('demo-output') as HTMLElement,
-      outputText: document.getElementById('output-text') as HTMLElement,
-      tier: document.getElementById('stat-tier') as HTMLElement,
-      intents: document.getElementById('stat-intents') as HTMLElement,
-      context: document.getElementById('stat-context') as HTMLElement,
-      latency: document.getElementById('stat-latency') as HTMLElement,
-    };
-  }
+  async function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)); }
 
-  async function sleep(ms: number) {
-    return new Promise(r => setTimeout(r, ms));
-  }
-
-  async function typeText(el: HTMLElement, text: string) {
+  async function typeText(el: HTMLElement, text: string, speed = 30) {
     el.textContent = '';
-    for (let i = 0; i <= text.length; i++) {
-      el.textContent = text.slice(0, i);
-      await sleep(40 + Math.random() * 25);
+    for (const ch of text) {
+      el.textContent += ch;
+      await sleep(speed);
     }
   }
 
   async function runDemo() {
-    const ex = examples[exIdx % examples.length];
-    exIdx++;
-
-    const els = getEls();
+    const demo = demos[demoIdx++ % demos.length];
+    const stages = document.querySelectorAll('.stage-item') as NodeListOf<HTMLElement>;
 
     // Reset
-    els.stages.forEach(s => s.classList.remove('active'));
-    els.output.classList.remove('visible');
-    els.outputText.textContent = '';
-    els.tier.textContent = '—';
-    els.intents.textContent = '—';
-    els.context.textContent = '—';
-    els.latency.textContent = '0ms';
+    outputPane.classList.remove('visible');
+    outputEl.textContent = '';
+    stages.forEach(s => { s.classList.remove('active','complete'); });
+    stageFill.style.width = '0%';
 
-    await sleep(500);
-    els.tier.textContent = ex.tier;
-    els.intents.textContent = ex.intents;
-    els.context.textContent = ex.context;
-
-    await typeText(els.typed, ex.input);
+    // Type input
+    const cursor = document.getElementById('demo-cursor')!;
+    cursor.style.display = 'inline-block';
+    await typeText(inputEl, demo.input, 40);
     await sleep(400);
+    cursor.style.display = 'none';
 
-    let elapsed = 0;
-    for (let i = 0; i < els.stages.length; i++) {
-      await sleep(260);
-      els.stages[i].classList.add('active');
-      elapsed += Math.floor(Math.random() * 45 + 18);
-      els.latency.textContent = `${elapsed}ms`;
+    // Run stages
+    const startTime = performance.now();
+    for (let i = 0; i < 7; i++) {
+      stages[i].classList.add('active');
+      stageLabel.textContent = `Stage ${i+1}/7`;
+      stageFill.style.width = `${((i+1)/7)*100}%`;
+      await sleep(350);
+      stages[i].classList.remove('active');
+      stages[i].classList.add('complete');
     }
+    const elapsed = Math.round(performance.now() - startTime);
+    latency.textContent = elapsed + 'ms';
 
-    await sleep(180);
-    els.output.classList.add('visible');
+    // Show output
+    outputPane.classList.add('visible');
+    await typeText(outputEl, demo.output, 12);
+    await sleep(3000);
 
-    // Type output
-    let outIdx = 0;
-    const outputInterval = setInterval(() => {
-      els.outputText.textContent = ex.output.slice(0, outIdx);
-      outIdx += 4;
-      if (outIdx >= ex.output.length) {
-        els.outputText.textContent = ex.output;
-        clearInterval(outputInterval);
-      }
-    }, 14);
-
-    await sleep(5500);
+    // Clear and repeat
+    await sleep(1500);
     runDemo();
   }
 
-  setTimeout(runDemo, 900);
+  // Start demo after popover animation
+  setTimeout(runDemo, 1500);
 </script>

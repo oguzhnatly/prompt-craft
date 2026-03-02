@@ -1,208 +1,146 @@
 ---
+// FinalCTA — the close
 ---
 
-<section class="final-cta grid-bg ambient-top">
-  <div class="cta-glow"></div>
-  <div class="container">
-
+<section id="cta" class="section cta-section">
+  <div class="cta-inner">
     <!-- Corner marks -->
-    <div class="corner tl"></div>
-    <div class="corner tr"></div>
-    <div class="corner bl"></div>
-    <div class="corner br"></div>
+    <span class="corner-mark cm-tl" aria-hidden="true"></span>
+    <span class="corner-mark cm-tr" aria-hidden="true"></span>
+    <span class="corner-mark cm-bl" aria-hidden="true"></span>
+    <span class="corner-mark cm-br" aria-hidden="true"></span>
 
-    <div class="cta-inner">
-      <div class="cta-tag reveal">
-        <span class="mono">Ready to start</span>
-      </div>
+    <!-- Glow -->
+    <div class="cta-glow" aria-hidden="true"></div>
 
-      <h2 class="cta-headline reveal reveal-d1">
-        Your prompts are<br />
-        holding you back.
-      </h2>
+    <div class="tag teal" style="margin-bottom:32px">
+      <span class="tag-dot"></span>
+      FREE DOWNLOAD · macOS 14+
+    </div>
 
-      <p class="cta-sub reveal reveal-d2">
-        Every engineer using AI tools is leaving output quality on the table.
-        PromptCraft is the systematic fix. Free to download. $12/mo for the full cloud stack.
-      </p>
+    <h2 class="cta-headline">
+      Stop guessing.<br>
+      <span class="cta-teal">Start engineering.</span>
+    </h2>
 
-      <div class="cta-actions reveal reveal-d3">
-        <a href="/download" class="btn-primary">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M8 2v9M4 8l4 4 4-4M1 13h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Download for macOS
-          <span class="btn-badge">Free</span>
-        </a>
-        <a href="/pricing" class="btn-secondary">
-          View Pricing
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M2 7h10M8 3.5l3.5 3.5L8 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+    <p class="cta-sub">
+      Every AI response your team produces could be better.<br>
+      PromptCraft makes sure it is.
+    </p>
 
-      <div class="cta-specs reveal reveal-d4">
-        <span class="mono spec-item">macOS 14+</span>
-        <span class="spec-dot">·</span>
-        <span class="mono spec-item">Apple Silicon + Intel</span>
-        <span class="spec-dot">·</span>
-        <span class="mono spec-item">30-day money-back</span>
-        <span class="spec-dot">·</span>
-        <span class="mono spec-item">Zero telemetry</span>
-      </div>
+    <div class="cta-actions">
+      <a href="/download" class="btn btn-primary cta-btn" data-cursor="DOWNLOAD">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M9 2v11M4 9l5 5 5-5M1 16h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Download for macOS
+      </a>
+      <a href="/pricing" class="btn btn-ghost cta-btn" data-cursor="PRICING">
+        View pricing
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="cta-specs font-mono">
+      <span>Developer ID Signed</span>
+      <span class="cta-dot">·</span>
+      <span>Notarized by Apple</span>
+      <span class="cta-dot">·</span>
+      <span>No App Store required</span>
+      <span class="cta-dot">·</span>
+      <span>macOS 14 Sonoma+</span>
     </div>
   </div>
 </section>
 
 <style>
-  .final-cta {
-    position: relative;
-    padding: 140px 24px;
-    overflow: hidden;
-    text-align: center;
+  .cta-section {
+    padding: 120px 40px;
   }
+
+  .cta-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    padding: 80px 60px;
+    background: var(--surface);
+    border: 1px solid rgba(0,255,178,0.1);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  /* Corner marks */
+  .corner-mark {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-color: var(--teal);
+    border-style: solid;
+    opacity: 0.4;
+  }
+  .cm-tl { top: 16px; left: 16px;  border-width: 1px 0 0 1px; }
+  .cm-tr { top: 16px; right: 16px; border-width: 1px 1px 0 0; }
+  .cm-bl { bottom: 16px; left: 16px;  border-width: 0 0 1px 1px; }
+  .cm-br { bottom: 16px; right: 16px; border-width: 0 1px 1px 0; }
 
   .cta-glow {
     position: absolute;
-    bottom: -20%;
-    left: 50%;
+    top: 0; left: 50%;
     transform: translateX(-50%);
-    width: 800px;
-    height: 500px;
-    background: radial-gradient(ellipse at center, rgba(0,229,160,0.08) 0%, transparent 65%);
+    width: 400px; height: 300px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(0,255,178,0.08), transparent 70%);
     pointer-events: none;
   }
 
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
-  }
-
-  .corner {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border-color: rgba(0,229,160,0.2);
-    border-style: solid;
-  }
-  .corner.tl { top: -32px; left: -16px; border-width: 1px 0 0 1px; }
-  .corner.tr { top: -32px; right: -16px; border-width: 1px 1px 0 0; }
-  .corner.bl { bottom: -32px; left: -16px; border-width: 0 0 1px 1px; }
-  .corner.br { bottom: -32px; right: -16px; border-width: 0 1px 1px 0; }
-
-  .cta-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-  }
-
-  .cta-tag {
-    font-size: 11px;
-    color: var(--teal);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 28px;
-    padding: 5px 14px;
-    border: 1px solid rgba(0,229,160,0.2);
-    border-radius: 100px;
-    background: rgba(0,229,160,0.05);
-  }
-
   .cta-headline {
-    font-size: clamp(48px, 6vw, 80px);
-    font-weight: 900;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 700;
     letter-spacing: -0.04em;
-    line-height: 1.0;
-    color: var(--text-primary);
-    margin-bottom: 24px;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
   }
+  .cta-teal { color: var(--teal); }
 
   .cta-sub {
-    font-size: 17px;
-    color: var(--text-secondary);
+    font-size: 16px;
     line-height: 1.7;
-    max-width: 520px;
-    margin-bottom: 44px;
+    color: var(--text-2);
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
   }
 
   .cta-actions {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 16px;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
   }
 
-  .btn-primary {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 16px 32px;
-    background: var(--teal);
-    color: #050507;
-    font-family: var(--font-mono);
-    font-size: 15px;
-    font-weight: 700;
-    border-radius: 12px;
-    transition: all 0.25s ease;
-  }
-
-  .btn-primary:hover {
-    background: var(--teal-dim);
-    box-shadow: 0 0 60px rgba(0,229,160,0.35), 0 8px 32px rgba(0,229,160,0.2);
-    transform: translateY(-3px);
-  }
-
-  .btn-badge {
-    padding: 2px 9px;
-    background: rgba(5,5,7,0.2);
-    border-radius: 5px;
-    font-size: 11px;
-  }
-
-  .btn-secondary {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 16px 26px;
-    border: 1px solid var(--border-bright);
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
-    font-size: 14px;
-    border-radius: 12px;
-    transition: all 0.25s ease;
-    background: transparent;
-  }
-
-  .btn-secondary:hover {
-    border-color: rgba(0,229,160,0.25);
-    color: var(--text-primary);
-    transform: translateY(-3px);
-  }
+  .cta-btn { min-width: 200px; justify-content: center; }
 
   .cta-specs {
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.05em;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
-    justify-content: center;
+    position: relative;
+    z-index: 1;
   }
-
-  .spec-item {
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.04em;
-  }
-
-  .spec-dot {
-    color: var(--text-muted);
-    opacity: 0.4;
-  }
+  .cta-dot { opacity: 0.3; }
 
   @media (max-width: 640px) {
-    .cta-actions { flex-direction: column; width: 100%; }
-    .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+    .cta-inner { padding: 48px 24px; }
+    .cta-section { padding: 80px 20px; }
   }
 </style>

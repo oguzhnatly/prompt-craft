@@ -1,149 +1,134 @@
 ---
+// Minimal top nav — doesn't fight for attention
 ---
+
 <nav id="nav">
   <div class="nav-inner">
-    <a href="/" class="logo">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <circle cx="14" cy="14" r="12" stroke="var(--teal)" stroke-width="1" stroke-dasharray="3 2" opacity="0.45"/>
-        <circle cx="14" cy="14" r="7" stroke="var(--teal)" stroke-width="0.75" opacity="0.25"/>
-        <line x1="14" y1="3" x2="14" y2="7" stroke="var(--teal)" stroke-width="1.5"/>
-        <line x1="14" y1="21" x2="14" y2="25" stroke="var(--teal)" stroke-width="1.5"/>
-        <line x1="3" y1="14" x2="7" y2="14" stroke="var(--teal)" stroke-width="1.5"/>
-        <line x1="21" y1="14" x2="25" y2="14" stroke="var(--teal)" stroke-width="1.5"/>
-        <circle cx="14" cy="14" r="2.5" fill="var(--teal)"/>
+    <a href="/" class="nav-logo" aria-label="PromptCraft home">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="1.5" fill="var(--teal)"/>
+        <line x1="12" y1="2" x2="12" y2="8"  stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="12" y1="16" x2="12" y2="22" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="2" y1="12" x2="8" y2="12"  stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="12" x2="22" y2="12" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="5.2" y1="5.2" x2="8.5" y2="8.5"   stroke="rgba(0,255,178,0.3)" stroke-width="1" stroke-linecap="round"/>
+        <line x1="15.5" y1="15.5" x2="18.8" y2="18.8" stroke="rgba(0,255,178,0.3)" stroke-width="1" stroke-linecap="round"/>
+        <line x1="18.8" y1="5.2" x2="15.5" y2="8.5"  stroke="rgba(0,255,178,0.3)" stroke-width="1" stroke-linecap="round"/>
+        <line x1="8.5" y1="15.5" x2="5.2" y2="18.8"  stroke="rgba(0,255,178,0.3)" stroke-width="1" stroke-linecap="round"/>
       </svg>
-      <span class="logo-text">Prompt<span class="logo-accent">Craft</span></span>
+      <span>Prompt<strong>Craft</strong></span>
     </a>
 
     <div class="nav-links">
-      <a href="/#pipeline">Pipeline</a>
-      <a href="/#features">Features</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#features">Features</a>
       <a href="/pricing">Pricing</a>
       <a href="/docs">Docs</a>
     </div>
 
     <div class="nav-actions">
-      <a href="/download" class="nav-download">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-          <path d="M6.5 1.5v7M3 6l3.5 3.5L10 6M1 11.5h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <a href="/download" class="nav-dl">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 1v8M3 6l4 4 4-4M1 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Download
       </a>
-      <a href="/pricing" class="nav-cta">
+      <a href="/pricing" class="btn btn-primary" style="padding: 9px 20px; font-size:13px; border-radius:8px;">
         Get Cloud
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
   </div>
 </nav>
 
 <style>
-  nav {
+  #nav {
     position: fixed;
     top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 0 24px;
-    transition: all 0.3s ease;
+    z-index: 1000;
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s;
+    border-bottom: 1px solid transparent;
   }
 
-  nav.scrolled {
-    background: rgba(5,5,7,0.85);
-    backdrop-filter: blur(24px);
-    border-bottom: 1px solid var(--border);
+  #nav.scrolled {
+    background: rgba(3,3,8,0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom-color: var(--border);
   }
 
   .nav-inner {
-    max-width: 1120px;
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
-    height: 64px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 40px;
   }
 
-  .logo {
+  .nav-logo {
     display: flex;
     align-items: center;
     gap: 10px;
     text-decoration: none;
-  }
-
-  .logo-text {
-    font-family: var(--font-mono);
+    color: var(--text-1);
     font-size: 15px;
-    font-weight: 600;
-    color: var(--text-primary);
-    letter-spacing: -0.3px;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    flex-shrink: 0;
   }
-
-  .logo-accent { color: var(--teal); }
+  .nav-logo strong { font-weight: 700; }
 
   .nav-links {
     display: flex;
     align-items: center;
-    gap: 36px;
+    gap: 32px;
+    flex: 1;
+    justify-content: center;
   }
 
   .nav-links a {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--text-secondary);
-    letter-spacing: 0.02em;
+    text-decoration: none;
+    color: var(--text-2);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     transition: color 0.2s;
   }
-
-  .nav-links a:hover { color: var(--text-primary); }
+  .nav-links a:hover { color: var(--text-1); }
 
   .nav-actions {
     display: flex;
     align-items: center;
     gap: 16px;
+    flex-shrink: 0;
   }
 
-  .nav-download {
+  .nav-dl {
     display: flex;
     align-items: center;
-    gap: 7px;
-    font-family: var(--font-mono);
+    gap: 6px;
+    text-decoration: none;
+    color: var(--text-3);
     font-size: 13px;
-    color: var(--text-secondary);
+    font-weight: 500;
     transition: color 0.2s;
   }
-
-  .nav-download:hover { color: var(--text-primary); }
-
-  .nav-cta {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 8px 18px;
-    background: var(--teal);
-    color: #050507;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    font-weight: 600;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-  }
-
-  .nav-cta:hover {
-    background: var(--teal-dim);
-    box-shadow: 0 0 24px rgba(0,229,160,0.3);
-    transform: translateY(-1px);
-  }
+  .nav-dl:hover { color: var(--text-1); }
 
   @media (max-width: 768px) {
     .nav-links { display: none; }
-    .nav-download { display: none; }
+    #nav { padding: 0 20px; }
   }
 </style>
 
 <script>
   const nav = document.getElementById('nav')!;
-  const onScroll = () => {
-    nav.classList.toggle('scrolled', window.scrollY > 40);
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
 </script>

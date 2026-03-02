@@ -2,181 +2,297 @@
 export interface Props {
   title?: string;
   description?: string;
-  ogImage?: string;
+  image?: string;
 }
-
 const {
-  title = 'PromptCraft — Your AI hears what you type. Not what you mean.',
-  description = 'PromptCraft transforms every request into a precision-grade AI directive. Recursive Meta Prompt Architecture. Seven deterministic stages. Zero guesswork.',
-  ogImage = '/og.png',
+  title = 'PromptCraft — Precision Prompt Engineering for macOS',
+  description = 'The macOS menu bar app that transforms raw prompts through 7 engineered stages before they reach any AI. Every response, elevated.',
+  image = '/og.png',
 } = Astro.props;
-
-const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
+
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <title>{title}</title>
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <!-- Premium fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  </head>
-  <body>
-    <slot />
-  </body>
-</html>
+<html lang="en" class="overscroll-none">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#030308" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={image} />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+  <!-- Custom cursor -->
+  <div id="cursor" aria-hidden="true">
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+    <div id="cursor-text"></div>
+  </div>
 
-<style is:global>
-  :root {
-    --base: #050507;
-    --surface: #0C0C10;
-    --elevated: #131318;
-    --border: rgba(255,255,255,0.07);
-    --border-bright: rgba(255,255,255,0.14);
-    --teal: #00E5A0;
-    --teal-dim: #00B880;
-    --teal-glow: rgba(0,229,160,0.12);
-    --teal-subtle: rgba(0,229,160,0.06);
-    --indigo: #6366F1;
-    --text-primary: #F7F8FC;
-    --text-secondary: #8892A4;
-    --text-muted: #4B5563;
-    --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  }
+  <slot />
 
-  *, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+  <style is:global>
+    :root {
+      /* Core palette */
+      --void:      #030308;
+      --deep:      #07071F;
+      --surface:   #0D0D24;
+      --elevated:  #13132E;
+      --border:    rgba(255,255,255,0.06);
+      --border-hi: rgba(255,255,255,0.12);
+      --teal:      #00FFB2;
+      --teal-dim:  #00CC8F;
+      --indigo:    #7B61FF;
+      --pink:      #FF4D9B;
+      --amber:     #FFB830;
+      --text-1:    #FAFAFE;
+      --text-2:    #B8B6D8;
+      --text-3:    #7A788F;
 
-  html {
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-  }
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.83, 0, 0.17, 1);
+    }
 
-  body {
-    background: var(--base);
-    color: var(--text-primary);
-    font-family: var(--font-display);
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-    line-height: 1.6;
-  }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  ::selection {
-    background: rgba(0,229,160,0.2);
-    color: #fff;
-  }
+    html {
+      background: var(--void);
+      color: var(--text-1);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      cursor: none;
+      scroll-behavior: smooth;
+    }
 
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: var(--base); }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--teal-dim); }
+    body {
+      background: var(--void);
+      overflow-x: hidden;
+      position: relative;
+    }
 
-  a { color: inherit; text-decoration: none; }
+    ::selection { background: rgba(0,255,178,0.15); color: var(--teal); }
 
-  /* Reveal animations */
-  .reveal {
-    opacity: 0;
-    transform: translateY(32px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .reveal.visible { opacity: 1; transform: none; }
-  .reveal-d1 { transition-delay: 0.1s; }
-  .reveal-d2 { transition-delay: 0.18s; }
-  .reveal-d3 { transition-delay: 0.26s; }
-  .reveal-d4 { transition-delay: 0.34s; }
-  .reveal-d5 { transition-delay: 0.42s; }
-  .reveal-d6 { transition-delay: 0.5s; }
+    /* ── Cursor ─────────────────────────── */
+    #cursor {
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 99999;
+      mix-blend-mode: normal;
+    }
 
-  /* Blueprint grid */
-  .grid-bg {
-    background-color: var(--base);
-    background-image:
-      linear-gradient(rgba(0,229,160,0.038) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,229,160,0.038) 1px, transparent 1px);
-    background-size: 80px 80px;
-    background-position: center center;
-  }
+    #cursor-dot {
+      position: absolute;
+      width: 6px; height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.15s var(--ease-spring), height 0.15s var(--ease-spring), background 0.2s;
+      box-shadow: 0 0 12px var(--teal), 0 0 30px rgba(0,255,178,0.3);
+    }
 
-  /* Glow utilities */
-  .glow-teal {
-    box-shadow: 0 0 0 1px rgba(0,229,160,0.2), 0 0 40px rgba(0,229,160,0.08);
-  }
+    #cursor-ring {
+      position: absolute;
+      width: 32px; height: 32px;
+      border: 1.5px solid rgba(0,255,178,0.4);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.4s var(--ease-spring), height 0.4s var(--ease-spring), border-color 0.3s, transform 0.4s var(--ease-spring);
+    }
 
-  /* Section ambient lines */
-  .ambient-top {
-    position: relative;
-  }
-  .ambient-top::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,229,160,0.25), transparent);
-  }
+    #cursor-text {
+      position: absolute;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      transform: translate(-50%, 22px);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
 
-  .mono { font-family: var(--font-mono); }
+    body.cursor-hover #cursor-dot { width: 10px; height: 10px; background: var(--void); }
+    body.cursor-hover #cursor-ring { width: 50px; height: 50px; border-color: var(--teal); }
+    body.cursor-text #cursor-text { opacity: 1; }
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
-  }
+    /* ── Typography ─────────────────────── */
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-  @keyframes pulse-ring {
-    0% { transform: scale(1); opacity: 0.4; }
-    100% { transform: scale(1.6); opacity: 0; }
-  }
+    /* ── Utilities ──────────────────────── */
+    .teal   { color: var(--teal); }
+    .indigo { color: var(--indigo); }
 
-  @keyframes scan-line {
-    0% { top: 0; opacity: 0; }
-    5% { opacity: 1; }
-    95% { opacity: 0.8; }
-    100% { top: 100%; opacity: 0; }
-  }
+    /* ── Noise overlay (global depth) ───── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 1;
+    }
 
-  @keyframes blink-cursor {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
+    /* ── Tag/badge ──────────────────────── */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border: 1px solid var(--border-hi);
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .tag.teal { border-color: rgba(0,255,178,0.2); color: var(--teal); }
+    .tag-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 8px var(--teal);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-  @keyframes slide-right {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(100%); }
-  }
+    /* ── Magnetic button ────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      transition: transform 0.2s var(--ease-spring), box-shadow 0.3s, background 0.2s;
+      cursor: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.08), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .btn:hover::before { opacity: 1; }
 
-  @keyframes shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-</style>
+    .btn-primary {
+      background: var(--teal);
+      color: var(--void);
+      box-shadow: 0 0 0 0 rgba(0,255,178,0);
+    }
+    .btn-primary:hover {
+      background: #26FFB9;
+      box-shadow: 0 0 40px rgba(0,255,178,0.35), 0 8px 32px rgba(0,255,178,0.15);
+      transform: translateY(-2px);
+    }
 
-<script>
-  // Reveal observer
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border-hi);
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.04);
+      color: var(--text-1);
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    /* ── Scrollbar ──────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
+
+    /* ── Section spacing ────────────────── */
+    .section { position: relative; z-index: 2; }
+  </style>
+
+  <script>
+    // ── Custom cursor ─────────────────────────────────────────────────────────
+    const cursor   = document.getElementById('cursor')!;
+    const dot      = document.getElementById('cursor-dot')!;
+    const ring     = document.getElementById('cursor-ring')!;
+    const cText    = document.getElementById('cursor-text')!;
+
+    let mx = window.innerWidth  / 2;
+    let my = window.innerHeight / 2;
+    let ringX = mx, ringY = my;
+    let raf: number;
+
+    document.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left  = mx + 'px';
+      dot.style.top   = my + 'px';
+    });
+
+    function tick() {
+      ringX += (mx - ringX) * 0.12;
+      ringY += (my - ringY) * 0.12;
+      ring.style.left = ringX + 'px';
+      ring.style.top  = ringY + 'px';
+      cText.style.left = ringX + 'px';
+      cText.style.top  = ringY + 'px';
+      raf = requestAnimationFrame(tick);
+    }
+    tick();
+
+    // Hover detection
+    const hovers = document.querySelectorAll('a, button, [data-cursor]');
+    hovers.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        document.body.classList.add('cursor-hover');
+        const label = (el as HTMLElement).dataset.cursor;
+        if (label) {
+          cText.textContent = label;
+          document.body.classList.add('cursor-text');
         }
       });
-    },
-    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
-  );
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-</script>
+      el.addEventListener('mouseleave', () => {
+        document.body.classList.remove('cursor-hover', 'cursor-text');
+        cText.textContent = '';
+      });
+    });
+
+    // ── Magnetic buttons ──────────────────────────────────────────────────────
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('mousemove', (e: Event) => {
+        const ev = e as MouseEvent;
+        const rect = (btn as HTMLElement).getBoundingClientRect();
+        const cx = rect.left + rect.width  / 2;
+        const cy = rect.top  + rect.height / 2;
+        const dx = (ev.clientX - cx) * 0.25;
+        const dy = (ev.clientY - cy) * 0.25;
+        (btn as HTMLElement).style.transform = `translate(${dx}px, ${dy}px)`;
+        const px = ((ev.clientX - rect.left) / rect.width  * 100).toFixed(1);
+        const py = ((ev.clientY - rect.top)  / rect.height * 100).toFixed(1);
+        (btn as HTMLElement).style.setProperty('--mx', px + '%');
+        (btn as HTMLElement).style.setProperty('--my', py + '%');
+      });
+      btn.addEventListener('mouseleave', () => {
+        (btn as HTMLElement).style.transform = '';
+      });
+    });
+  </script>
+</body>
+</html>
