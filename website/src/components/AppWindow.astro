@@ -1,7 +1,7 @@
 ---
 // 100% accurate HTML replica of the real PromptCraft macOS app
 // Source: MainPopoverView.swift — every value extracted directly
-// App size: 420×580, fixed, dark mode
+// App size: 420×580, light mode default, dark mode via toggle
 ---
 
 <div class="app-win" id="app-win" role="img" aria-label="PromptCraft macOS app — interactive demo">
@@ -18,10 +18,15 @@
           <path d="M2 3.5c.5-1 1.2-1.8 2-2.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
         </svg>
       </button>
-      <!-- gearshape -->
-      <button class="aw-icon-btn" tabindex="-1" aria-hidden="true" title="Settings">
-        <svg viewBox="0 0 16 16" fill="none">
-          <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/>
+      <!-- sun/moon theme toggle -->
+      <button class="aw-icon-btn aw-theme-btn" id="aw-theme-btn" title="Toggle appearance" aria-label="Toggle light/dark mode">
+        <!-- Moon: visible in light mode (click to go dark) -->
+        <svg class="aw-theme-moon" viewBox="0 0 16 16" fill="none">
+          <path d="M13.5 9A5.5 5.5 0 017 2.5a.5.5 0 00-.6-.6A6.5 6.5 0 1013.6 9.6a.5.5 0 00-.1-.6z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <!-- Sun: visible in dark mode (click to go light) -->
+        <svg class="aw-theme-sun" viewBox="0 0 16 16" fill="none" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.2"/>
           <path d="M8 1.5v1.3M8 13.2v1.3M1.5 8h1.3M13.2 8h1.3M3.4 3.4l.9.9M11.7 11.7l.9.9M12.6 3.4l-.9.9M4.3 11.7l-.9.9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
         </svg>
       </button>
@@ -34,13 +39,10 @@
   <div class="aw-input-section">
     <div class="aw-input-well" id="input-well">
       <div class="aw-input-text mono" id="aw-input-text" aria-live="polite"></div>
-      <!-- Placeholder -->
       <div class="aw-placeholder" id="aw-placeholder">Type or paste your messy prompt here...</div>
-      <!-- Blinking cursor -->
       <span class="aw-cursor" id="aw-cursor" aria-hidden="true"></span>
-      <!-- Clear btn (hidden until there's text) -->
       <button class="aw-clear" id="aw-clear" style="display:none" tabindex="-1" aria-hidden="true">
-        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="rgba(235,235,245,0.3)"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="rgba(0,0,0,0.5)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" class="aw-clear-circle"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" class="aw-clear-x" stroke-width="1.5" stroke-linecap="round"/></svg>
       </button>
     </div>
     <span class="aw-char-count mono" id="aw-chars">0 characters</span>
@@ -49,40 +51,32 @@
   <!-- ── Style selector ── -->
   <div class="aw-styles-wrap">
     <div class="aw-styles-scroll" id="aw-styles">
-      <!-- Templates pill -->
       <button class="aw-pill aw-templates-pill" tabindex="-1" aria-hidden="true">
-        <svg viewBox="0 0 13 13" fill="none"><rect x="1.5" y="1.5" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.1"/><circle cx="9.5" cy="9.5" r="3" fill="rgba(28,28,30,1)" stroke="currentColor" stroke-width="1"/><path d="M8 9.5h3M9.5 8v3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 13 13" fill="none"><rect x="1.5" y="1.5" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.1"/><circle cx="9.5" cy="9.5" r="3" class="aw-tmpl-dot" stroke="currentColor" stroke-width="1"/><path d="M8 9.5h3M9.5 8v3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
         Templates
       </button>
-      <!-- General — active by default -->
       <button class="aw-pill aw-pill-active" data-pill="general" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5l1.5 3 3.5.5-2.5 2.5.5 3.5-3-1.5-3 1.5.5-3.5-2.5-2.5 3.5-.5z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
         General
       </button>
-      <!-- Engineering -->
       <button class="aw-pill" data-pill="engineering" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 13 13" fill="none"><path d="M9 4L5 11M4 7h5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><rect x="1" y="1" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.1"/></svg>
         Engineering
       </button>
-      <!-- Research -->
       <button class="aw-pill" data-pill="research" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="3.5" stroke="currentColor" stroke-width="1.2"/><path d="M8.5 8.5L11.5 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         Research
       </button>
-      <!-- Content -->
       <button class="aw-pill" data-pill="content" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 13 13" fill="none"><path d="M2 3h9M2 6h7M2 9h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         Content
       </button>
-      <!-- Analysis -->
       <button class="aw-pill" data-pill="analysis" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 13 13" fill="none"><path d="M2 10L5 7l2.5 2L11 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Analysis
       </button>
-      <!-- Add -->
       <button class="aw-pill aw-plus-pill" tabindex="-1" aria-hidden="true">+</button>
     </div>
-    <!-- Style description -->
     <p class="aw-style-desc" id="aw-style-desc">Balanced general-purpose optimization</p>
   </div>
 
@@ -93,7 +87,6 @@
       <span id="aw-verb-label">Concise</span>
       <span class="aw-verb-caret">▾</span>
     </button>
-
     <button class="aw-optimize" id="aw-optimize" tabindex="-1" aria-hidden="true">
       <span id="aw-opt-label">Optimize</span>
       <span class="aw-cmd">⌘↩</span>
@@ -103,7 +96,6 @@
   <!-- ── Output area ── -->
   <div class="aw-output-section">
     <div class="aw-output-well" id="aw-output-well">
-      <!-- Empty state -->
       <div class="aw-empty-state" id="aw-empty">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M3 21l1.65-3.8a9 9 0 113.4 2.9L3 21" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/>
@@ -111,33 +103,23 @@
         </svg>
         <span>Your optimized prompt will appear here</span>
       </div>
-      <!-- Output text (hidden until demo completes) -->
       <div class="aw-output-text mono" id="aw-output-text" style="display:none" aria-live="polite"></div>
-
-      <!-- Right side live animation rail -->
-      <div class="aw-live-strip" id="aw-live-strip" aria-hidden="true" style="display:none">
-        <span></span><span></span><span></span><span></span>
-      </div>
     </div>
 
-    <!-- Output action row (hidden until output exists) -->
     <div class="aw-output-row" id="aw-output-row" style="visibility:hidden">
       <span class="aw-clipboard-tag mono" id="aw-clipboard-tag" style="display:none">
         <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 11V3h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         On clipboard
       </span>
       <div class="aw-row-right">
-        <!-- Export icon -->
         <button class="aw-act-btn" tabindex="-1" aria-hidden="true">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 3v9M4 9l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <!-- Copy icon (becomes checkmark after copy) -->
         <button class="aw-act-btn" id="aw-copy-btn" tabindex="-1" aria-hidden="true">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 11V3h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         </button>
-        <!-- Clear output -->
-        <button class="aw-act-btn" id="aw-clear-out-btn" tabindex="-1" aria-hidden="true">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" fill="rgba(235,235,245,0.18)"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="rgba(235,235,245,0.5)" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <button class="aw-act-btn aw-act-close" id="aw-clear-out-btn" tabindex="-1" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" class="aw-close-circle"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" class="aw-close-x" stroke-width="1.3" stroke-linecap="round"/></svg>
         </button>
       </div>
     </div>
@@ -148,13 +130,11 @@
   <!-- ── Footer bar (height:44) ── -->
   <div class="aw-footer">
     <span class="aw-footer-shortcut">⌘⇧Space to toggle</span>
-
     <div class="aw-footer-right">
       <div class="aw-trial-pill">
         <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5v3L7.5 8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
         Trial: 14 days left
       </div>
-
       <button class="aw-privacy-btn" tabindex="-1" aria-hidden="true">
         <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M6 1L1.5 3v4c0 2.5 1.8 4.8 4.5 5.4C8.7 11.8 10.5 9.5 10.5 7V3L6 1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
         Local &amp; Private
@@ -164,36 +144,111 @@
 </div>
 
 <style>
-  /* ── Window container ─────────────────────── */
+  /* ── Theme tokens (light = default) ──────────── */
+  .app-win {
+    --aw-bg:           #F0EDE8;
+    --aw-win-bdr:      rgba(0,0,0,0.13);
+    --aw-sep:          rgba(0,0,0,0.09);
+    --aw-title:        rgba(0,0,0,0.86);
+    --aw-icon:         rgba(0,0,0,0.42);
+    --aw-icon-hbg:     rgba(0,0,0,0.06);
+    --aw-icon-h:       rgba(0,0,0,0.72);
+    --aw-well:         rgba(255,255,255,0.72);
+    --aw-well-bdr:     rgba(0,0,0,0.10);
+    --aw-inset1:       rgba(0,0,0,0.05);
+    --aw-inset2:       rgba(255,255,255,0.55);
+    --aw-text:         rgba(0,0,0,0.86);
+    --aw-ph:           rgba(0,0,0,0.28);
+    --aw-chars:        rgba(0,0,0,0.28);
+    --aw-pill-bg:      rgba(0,0,0,0.06);
+    --aw-pill-bdr:     rgba(0,0,0,0.10);
+    --aw-pill-text:    rgba(0,0,0,0.74);
+    --aw-pill-h:       rgba(0,0,0,0.10);
+    --aw-desc:         rgba(0,0,0,0.40);
+    --aw-out-text:     rgba(0,0,0,0.84);
+    --aw-empty:        rgba(0,0,0,0.26);
+    --aw-foot-key:     rgba(0,0,0,0.28);
+    --aw-trial-bg:     rgba(0,0,0,0.06);
+    --aw-trial-text:   rgba(0,0,0,0.48);
+    --aw-priv:         rgba(0,0,0,0.28);
+    --aw-act:          rgba(0,0,0,0.38);
+    --aw-act-hbg:      rgba(0,0,0,0.06);
+    --aw-act-h:        rgba(0,0,0,0.70);
+    --aw-clear-circle: rgba(0,0,0,0.12);
+    --aw-clear-x:      rgba(0,0,0,0.52);
+    --aw-close-circle: rgba(0,0,0,0.07);
+    --aw-close-x:      rgba(0,0,0,0.40);
+    --aw-tmpl-dot-bg:  rgba(240,237,232,1);
+  }
+
+  /* ── Dark mode overrides ─────────────────────── */
+  .app-win.dark {
+    --aw-bg:           #1C1C1E;
+    --aw-win-bdr:      rgba(255,255,255,0.12);
+    --aw-sep:          rgba(84,84,88,0.65);
+    --aw-title:        rgba(255,255,255,0.92);
+    --aw-icon:         rgba(235,235,245,0.60);
+    --aw-icon-hbg:     rgba(255,255,255,0.08);
+    --aw-icon-h:       rgba(255,255,255,0.85);
+    --aw-well:         rgba(44,44,46,0.60);
+    --aw-well-bdr:     rgba(84,84,88,0.65);
+    --aw-inset1:       rgba(0,0,0,0.35);
+    --aw-inset2:       rgba(255,255,255,0.03);
+    --aw-text:         rgba(255,255,255,0.92);
+    --aw-ph:           rgba(235,235,245,0.30);
+    --aw-chars:        rgba(235,235,245,0.28);
+    --aw-pill-bg:      #2C2C2E;
+    --aw-pill-bdr:     rgba(84,84,88,0.65);
+    --aw-pill-text:    rgba(235,235,245,0.85);
+    --aw-pill-h:       rgba(58,58,60,0.9);
+    --aw-desc:         rgba(235,235,245,0.40);
+    --aw-out-text:     rgba(255,255,255,0.92);
+    --aw-empty:        rgba(235,235,245,0.30);
+    --aw-foot-key:     rgba(235,235,245,0.28);
+    --aw-trial-bg:     rgba(84,84,88,0.18);
+    --aw-trial-text:   rgba(235,235,245,0.50);
+    --aw-priv:         rgba(235,235,245,0.28);
+    --aw-act:          rgba(235,235,245,0.45);
+    --aw-act-hbg:      rgba(255,255,255,0.06);
+    --aw-act-h:        rgba(235,235,245,0.85);
+    --aw-clear-circle: rgba(235,235,245,0.30);
+    --aw-clear-x:      rgba(0,0,0,0.50);
+    --aw-close-circle: rgba(235,235,245,0.18);
+    --aw-close-x:      rgba(235,235,245,0.50);
+    --aw-tmpl-dot-bg:  rgba(28,28,30,1);
+  }
+
+  /* ── Window container ────────────────────────── */
   .app-win {
     width: 420px;
     height: 580px;
-    background: #1C1C1E;   /* NSColor.windowBackgroundColor dark */
+    background: var(--aw-bg);
     border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid var(--aw-win-bdr);
     box-shadow:
-      0 0 0 0.5px rgba(0,0,0,0.5),
-      0 4px 6px rgba(0,0,0,0.15),
-      0 12px 28px rgba(0,0,0,0.22),
-      0 32px 80px rgba(0,0,0,0.18),
-      0 0 60px rgba(10,132,255,0.04);   /* subtle blue glow from accent */
+      0 0 0 0.5px rgba(0,0,0,0.14),
+      0 4px 6px rgba(0,0,0,0.07),
+      0 12px 28px rgba(0,0,0,0.10),
+      0 32px 80px rgba(0,0,0,0.08);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
-    color: #FFFFFF;
+    color: var(--aw-text);
     position: relative;
     user-select: none;
+    transition: background .22s, border-color .22s, color .22s, box-shadow .22s;
   }
 
-  /* ── Separator ────────────────────────────── */
+  /* ── Separator ───────────────────────────────── */
   .aw-sep {
     height: 1px;
-    background: rgba(84,84,88,0.65);   /* NSColor.separatorColor dark */
+    background: var(--aw-sep);
     flex-shrink: 0;
+    transition: background .22s;
   }
 
-  /* ── Header ───────────────────────────────── */
+  /* ── Header ──────────────────────────────────── */
   .aw-header {
     height: 44px;
     display: flex; align-items: center;
@@ -202,9 +257,10 @@
   }
   .aw-title {
     font-size: 15px; font-weight: 600;
-    color: rgba(255,255,255,0.92);
+    color: var(--aw-title);
     flex: 1;
     letter-spacing: -0.01em;
+    transition: color .22s;
   }
   .aw-header-btns { display: flex; gap: 0; }
   .aw-icon-btn {
@@ -212,47 +268,45 @@
     background: transparent; border: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     border-radius: 6px;
-    color: rgba(235,235,245,0.6);   /* .secondary */
+    color: var(--aw-icon);
     transition: background .12s, color .12s;
     padding: 0;
   }
   .aw-icon-btn svg { width: 14px; height: 14px; }
-  .aw-icon-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
+  .aw-icon-btn:hover { background: var(--aw-icon-hbg); color: var(--aw-icon-h); }
 
-  /* ── Input section ────────────────────────── */
+  /* ── Input section ───────────────────────────── */
   .aw-input-section {
     padding: 8px 16px;
     flex-shrink: 0;
     display: flex; flex-direction: column; gap: 4px;
   }
-
   .aw-input-well {
-    background: rgba(44,44,46,0.6);   /* textBackgroundColor.opacity(0.5) dark approx */
-    border: 0.5px solid rgba(84,84,88,0.65);
+    background: var(--aw-well);
+    border: 0.5px solid var(--aw-well-bdr);
     border-radius: 8px;
     padding: 8px;
     min-height: 88px;
     position: relative;
-    box-shadow: inset 0 1px 4px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.03);
+    box-shadow: inset 0 1px 4px var(--aw-inset1), inset 0 0 0 1px var(--aw-inset2);
+    transition: background .22s, border-color .22s, box-shadow .22s;
   }
-
   .aw-input-text {
     font-size: 13px; font-family: 'SF Mono', 'Fira Code', monospace;
     line-height: 1.55;
-    color: rgba(255,255,255,0.92);
+    color: var(--aw-text);
     white-space: pre-wrap; word-break: break-word;
     min-height: 60px;
+    transition: color .22s;
   }
-
   .aw-placeholder {
     position: absolute; top: 8px; left: 8px;
     font-size: 13px;
-    color: rgba(235,235,245,0.3);   /* .secondary placeholder */
+    color: var(--aw-ph);
     pointer-events: none;
-    transition: opacity .15s;
+    transition: opacity .15s, color .22s;
   }
   .aw-placeholder.hidden { opacity: 0; }
-
   .aw-cursor {
     display: inline-block;
     width: 2px; height: 14px;
@@ -264,28 +318,28 @@
     pointer-events: none;
   }
   @keyframes aw-blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
   .aw-clear {
     position: absolute; top: 6px; right: 6px;
     background: none; border: none; cursor: pointer; padding: 0;
     width: 18px; height: 18px;
   }
   .aw-clear svg { width: 100%; height: 100%; }
-
+  .aw-clear-circle { fill: var(--aw-clear-circle); }
+  .aw-clear-x { stroke: var(--aw-clear-x); }
   .aw-char-count {
     font-size: 10px;
-    color: rgba(235,235,245,0.28);   /* .tertiary */
+    color: var(--aw-chars);
     letter-spacing: 0.02em;
     padding-left: 2px;
+    transition: color .22s;
   }
 
-  /* ── Style selector ───────────────────────── */
+  /* ── Style selector ──────────────────────────── */
   .aw-styles-wrap {
     padding: 0 16px 6px;
     flex-shrink: 0;
     display: flex; flex-direction: column; gap: 4px;
   }
-
   .aw-styles-scroll {
     display: flex; gap: 7px;
     overflow-x: auto;
@@ -293,61 +347,54 @@
     padding-bottom: 1px;
   }
   .aw-styles-scroll::-webkit-scrollbar { display: none; }
-
   .aw-pill {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 5px 11px;
     border-radius: 999px;
-    background: #2C2C2E;   /* controlBackgroundColor dark */
-    border: 0.5px solid rgba(84,84,88,0.65);
+    background: var(--aw-pill-bg);
+    border: 0.5px solid var(--aw-pill-bdr);
     font-size: 12px; font-weight: 500;
-    color: rgba(235,235,245,0.85);   /* .primary */
+    color: var(--aw-pill-text);
     white-space: nowrap; cursor: pointer;
     font-family: -apple-system, sans-serif;
-    transition: background .12s, color .12s;
+    transition: background .12s, color .12s, border-color .22s;
     flex-shrink: 0;
   }
   .aw-pill svg { width: 11px; height: 11px; flex-shrink: 0; }
-  .aw-pill:hover { background: rgba(58,58,60,0.9); }
-
+  .aw-pill:hover { background: var(--aw-pill-h); }
   .aw-pill-active {
-    background: #0A84FF !important;   /* accentColor */
+    background: #0A84FF !important;
     border-color: transparent !important;
     color: #FFFFFF !important;
   }
-
-  .aw-templates-pill { color: rgba(235,235,245,0.5); }
+  .aw-templates-pill { color: var(--aw-desc); }
+  .aw-tmpl-dot { fill: var(--aw-tmpl-dot-bg); }
   .aw-plus-pill {
     width: 26px; height: 26px;
-    padding: 0;
-    border-radius: 8px;
+    padding: 0; border-radius: 8px;
     justify-content: center;
-    font-size: 16px;
-    line-height: 1;
-    font-weight: 500;
+    font-size: 16px; line-height: 1; font-weight: 500;
     flex: 0 0 26px;
   }
-
   .aw-style-desc {
     font-size: 11px;
-    color: rgba(235,235,245,0.4);
-    padding-left: 2px;
-    margin: 0;
+    color: var(--aw-desc);
+    padding-left: 2px; margin: 0;
+    transition: color .22s;
   }
 
-  /* ── Action area (verbosity + optimize) ───── */
+  /* ── Action area ─────────────────────────────── */
   .aw-action-wrap {
     padding: 0 16px 8px;
     display: flex; flex-direction: column; gap: 7px;
     flex-shrink: 0;
   }
-
   .aw-verbosity {
     align-self: center;
     display: inline-flex; align-items: center; gap: 5px;
     padding: 3px 10px;
     border-radius: 999px;
-    background: rgba(10,132,255,0.1);
+    background: rgba(10,132,255,0.10);
     font-size: 10px; font-weight: 500;
     color: #0A84FF;
     border: 1px solid rgba(10,132,255,0.24);
@@ -357,15 +404,13 @@
   .aw-verbosity:hover { background: rgba(10,132,255,0.16); border-color: rgba(10,132,255,0.34); }
   .aw-verb-dot {
     width: 5px; height: 5px; border-radius: 50%;
-    background: rgba(10,132,255,0.7); flex-shrink: 0;
+    background: rgba(10,132,255,0.70); flex-shrink: 0;
     transition: background .15s;
   }
   .aw-verb-caret { font-size: 9px; opacity: .7; margin-left: 2px; }
-
-  .aw-verbosity.mode-concise { color: #0A84FF; border-color: rgba(10,132,255,0.24); background: rgba(10,132,255,0.1); }
-  .aw-verbosity.mode-balanced { color: #30D158; border-color: rgba(48,209,88,0.24); background: rgba(48,209,88,0.12); }
+  .aw-verbosity.mode-concise  { color: #0A84FF; border-color: rgba(10,132,255,0.24); background: rgba(10,132,255,0.10); }
+  .aw-verbosity.mode-balanced { color: #30D158; border-color: rgba(48,209,88,0.24);  background: rgba(48,209,88,0.12);  }
   .aw-verbosity.mode-detailed { color: #FF9F0A; border-color: rgba(255,159,10,0.28); background: rgba(255,159,10,0.14); }
-
   .aw-optimize {
     width: 100%; height: 36px;
     display: flex; align-items: center; justify-content: center; gap: 7px;
@@ -376,144 +421,115 @@
     color: #FFFFFF;
     font-family: -apple-system, sans-serif;
     transition: background .15s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.20);
   }
   .aw-optimize:hover { background: linear-gradient(to bottom, #1A8EFF, #0078F0); }
   .aw-optimize.processing { background: linear-gradient(to bottom, #FF9F0A, #E8850A); }
-
   .aw-cmd { font-size: 11px; opacity: 0.65; }
 
-  /* ── Output section ───────────────────────── */
+  /* ── Output section ──────────────────────────── */
   .aw-output-section {
     padding: 0 16px 8px;
     flex: 1; display: flex; flex-direction: column; gap: 4px;
     min-height: 0;
   }
-
   .aw-output-well {
     flex: 1;
-    background: rgba(44,44,46,0.6);
-    border: 0.5px solid rgba(84,84,88,0.65);
+    background: var(--aw-well);
+    border: 0.5px solid var(--aw-well-bdr);
     border-radius: 8px;
     padding: 8px;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: inset 0 1px 4px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.03);
+    box-shadow: inset 0 1px 4px var(--aw-inset1), inset 0 0 0 1px var(--aw-inset2);
     overflow: hidden;
     position: relative;
+    transition: background .22s, border-color .32s, box-shadow .32s;
   }
-
+  /* Green processing glow — replaces the blue dot strip */
+  .aw-output-well.processing {
+    border-color: rgba(0,200,83,0.38);
+    box-shadow:
+      inset 0 1px 4px var(--aw-inset1),
+      0 0 0 1.5px rgba(0,200,83,0.14),
+      0 0 14px rgba(0,200,83,0.09);
+    animation: aw-proc-glow 1.4s ease-in-out infinite;
+  }
+  @keyframes aw-proc-glow {
+    0%,100% { box-shadow: inset 0 1px 4px var(--aw-inset1), 0 0 0 1.5px rgba(0,200,83,0.16); }
+    50%      { box-shadow: inset 0 1px 4px var(--aw-inset1), 0 0 0 2px rgba(0,200,83,0.38), 0 0 18px rgba(0,200,83,0.12); }
+  }
   .aw-empty-state {
     display: flex; flex-direction: column;
     align-items: center; gap: 8px;
-    color: rgba(235,235,245,0.3);
-    font-size: 13px;
-    text-align: center;
+    color: var(--aw-empty);
+    font-size: 13px; text-align: center;
     animation: aw-pulse 3s ease-in-out infinite;
+    transition: color .22s;
   }
   @keyframes aw-pulse { 0%,100%{opacity:0.6} 50%{opacity:0.4} }
-
   .aw-output-text {
     width: 100%; height: 100%;
     font-size: 13px; font-family: 'SF Mono', 'Fira Code', monospace;
     line-height: 1.55;
-    color: rgba(255,255,255,0.92);
-    overflow-y: auto;
-    scrollbar-width: none;
+    color: var(--aw-out-text);
+    overflow-y: auto; scrollbar-width: none;
     white-space: pre-wrap; word-break: break-word;
     align-self: flex-start;
+    transition: color .22s;
   }
   .aw-output-text::-webkit-scrollbar { display: none; }
-
-  .aw-live-strip {
-    position: absolute;
-    top: 10px; right: 10px;
-    width: 10px; height: calc(100% - 20px);
-    pointer-events: none;
-  }
-  .aw-live-strip::before {
-    content: '';
-    position: absolute;
-    left: 4px; top: 0; bottom: 0;
-    width: 2px;
-    border-radius: 999px;
-    background: linear-gradient(to bottom, rgba(10,132,255,0.08), rgba(10,132,255,0.42), rgba(10,132,255,0.08));
-  }
-  .aw-live-strip span {
-    position: absolute;
-    left: 1px;
-    width: 8px; height: 8px;
-    border-radius: 999px;
-    background: radial-gradient(circle, rgba(90,170,255,1) 0%, rgba(10,132,255,0.85) 50%, rgba(10,132,255,0.35) 100%);
-    box-shadow: 0 0 10px rgba(10,132,255,0.55), 0 0 18px rgba(10,132,255,0.28);
-    animation: aw-live-run 1.5s linear infinite;
-    opacity: 0;
-  }
-  .aw-live-strip span:nth-child(2) { animation-delay: .35s; }
-  .aw-live-strip span:nth-child(3) { animation-delay: .7s; }
-  .aw-live-strip span:nth-child(4) { animation-delay: 1.05s; }
-  @keyframes aw-live-run {
-    0% { top: 0; opacity: 0; transform: scale(.55); }
-    12% { opacity: 1; transform: scale(1); }
-    88% { opacity: 1; transform: scale(.9); }
-    100% { top: calc(100% - 8px); opacity: 0; transform: scale(.55); }
-  }
-
   .aw-output-row {
     display: flex; align-items: center; height: 20px;
   }
   .aw-clipboard-tag {
     display: flex; align-items: center; gap: 3px;
-    font-size: 10px; color: rgba(235,235,245,0.4);
+    font-size: 10px; color: var(--aw-desc);
+    transition: color .22s;
   }
   .aw-row-right { display: flex; gap: 4px; margin-left: auto; }
   .aw-act-btn {
     width: 24px; height: 20px;
     background: none; border: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    color: rgba(235,235,245,0.45);
-    border-radius: 4px; transition: color .12s, background .12s;
+    color: var(--aw-act);
+    border-radius: 4px;
+    transition: color .12s, background .12s;
   }
-  .aw-act-btn:hover { color: rgba(235,235,245,0.85); background: rgba(255,255,255,0.06); }
+  .aw-act-btn:hover { color: var(--aw-act-h); background: var(--aw-act-hbg); }
+  .aw-close-circle { fill: var(--aw-close-circle); }
+  .aw-close-x { stroke: var(--aw-close-x); }
 
-  /* ── Footer ───────────────────────────────── */
+  /* ── Footer ──────────────────────────────────── */
   .aw-footer {
     height: 44px; flex-shrink: 0;
     display: flex; align-items: center;
-    padding: 0 16px;
-    gap: 8px;
+    padding: 0 16px; gap: 8px;
   }
-
   .aw-footer-shortcut {
     font-size: 9px;
-    color: rgba(235,235,245,0.28);
-    white-space: nowrap;
-    margin-right: auto;
+    color: var(--aw-foot-key);
+    white-space: nowrap; margin-right: auto;
+    transition: color .22s;
   }
-
   .aw-footer-right {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    display: inline-flex; align-items: center; gap: 6px;
   }
-
   .aw-trial-pill {
     display: inline-flex; align-items: center; gap: 4px;
     font-size: 9px; font-weight: 500;
-    color: rgba(235,235,245,0.5);
+    color: var(--aw-trial-text);
     padding: 3px 8px; border-radius: 999px;
-    background: rgba(84,84,88,0.18);
+    background: var(--aw-trial-bg);
     font-family: -apple-system, sans-serif;
     white-space: nowrap;
+    transition: color .22s, background .22s;
   }
-
   .aw-privacy-btn {
     display: inline-flex; align-items: center; gap: 3px;
-    font-size: 9px;
-    color: rgba(235,235,245,0.28);
-    background: none; border: none; cursor: pointer;
-    padding: 0;
-    font-family: -apple-system, sans-serif;
-    white-space: nowrap;
+    font-size: 9px; color: var(--aw-priv);
+    background: none; border: none; cursor: pointer; padding: 0;
+    font-family: -apple-system, sans-serif; white-space: nowrap;
+    transition: color .22s;
   }
 
   /* Responsive */
@@ -662,7 +678,7 @@ This drives executive grade outputs instead of generic commentary.`
 
   const verbModes = [
     { key: 'concise',  label: 'Concise',  className: 'mode-concise',  dot: 'rgba(10,132,255,0.75)', typingMs: 3 },
-    { key: 'balanced', label: 'Balanced', className: 'mode-balanced', dot: 'rgba(48,209,88,0.75)', typingMs: 3 },
+    { key: 'balanced', label: 'Balanced', className: 'mode-balanced', dot: 'rgba(48,209,88,0.75)',  typingMs: 3 },
     { key: 'detailed', label: 'Detailed', className: 'mode-detailed', dot: 'rgba(255,159,10,0.75)', typingMs: 2 },
   ] as const;
 
@@ -670,25 +686,36 @@ This drives executive grade outputs instead of generic commentary.`
   let currentVerb = 0;
   let runToken = 0;
 
-  const inputEl     = document.getElementById('aw-input-text')! as HTMLElement;
-  const placeholder = document.getElementById('aw-placeholder')! as HTMLElement;
-  const charCount   = document.getElementById('aw-chars')! as HTMLElement;
-  const clearBtn    = document.getElementById('aw-clear')! as HTMLElement;
-  const cursorEl    = document.getElementById('aw-cursor')! as HTMLElement;
-  const optBtn      = document.getElementById('aw-optimize')! as HTMLElement;
-  const optLabel    = document.getElementById('aw-opt-label')! as HTMLElement;
-  const emptyState  = document.getElementById('aw-empty')! as HTMLElement;
-  const outputText  = document.getElementById('aw-output-text')! as HTMLElement;
-  const outputRow   = document.getElementById('aw-output-row')! as HTMLElement;
-  const styleDesc   = document.getElementById('aw-style-desc')! as HTMLElement;
-  const liveStrip   = document.getElementById('aw-live-strip')! as HTMLElement;
-  const verbBtn     = document.getElementById('aw-verb')! as HTMLButtonElement;
-  const verbLabel   = document.getElementById('aw-verb-label')! as HTMLElement;
-  const verbDot     = document.getElementById('aw-verb-dot')! as HTMLElement;
+  const inputEl      = document.getElementById('aw-input-text')! as HTMLElement;
+  const placeholder  = document.getElementById('aw-placeholder')! as HTMLElement;
+  const charCount    = document.getElementById('aw-chars')! as HTMLElement;
+  const clearBtn     = document.getElementById('aw-clear')! as HTMLElement;
+  const cursorEl     = document.getElementById('aw-cursor')! as HTMLElement;
+  const optBtn       = document.getElementById('aw-optimize')! as HTMLElement;
+  const optLabel     = document.getElementById('aw-opt-label')! as HTMLElement;
+  const emptyState   = document.getElementById('aw-empty')! as HTMLElement;
+  const outputText   = document.getElementById('aw-output-text')! as HTMLElement;
+  const outputRow    = document.getElementById('aw-output-row')! as HTMLElement;
+  const outputWell   = document.getElementById('aw-output-well')! as HTMLElement;
+  const styleDesc    = document.getElementById('aw-style-desc')! as HTMLElement;
+  const verbBtn      = document.getElementById('aw-verb')! as HTMLButtonElement;
+  const verbLabel    = document.getElementById('aw-verb-label')! as HTMLElement;
+  const verbDot      = document.getElementById('aw-verb-dot')! as HTMLElement;
+  const appWin       = document.getElementById('app-win')! as HTMLElement;
+  const themeBtn     = document.getElementById('aw-theme-btn')! as HTMLButtonElement;
+  const themeMoon    = themeBtn.querySelector('.aw-theme-moon') as HTMLElement;
+  const themeSun     = themeBtn.querySelector('.aw-theme-sun') as HTMLElement;
 
   const inputTextNode = document.createTextNode('');
   inputEl.appendChild(inputTextNode);
   inputEl.appendChild(cursorEl);
+
+  // ── Theme toggle ─────────────────────────────
+  themeBtn.addEventListener('click', () => {
+    const isDark = appWin.classList.toggle('dark');
+    themeMoon.style.display = isDark ? 'none' : '';
+    themeSun.style.display  = isDark ? '' : 'none';
+  });
 
   function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -732,7 +759,6 @@ This drives executive grade outputs instead of generic commentary.`
   async function typeInputAnimated(token: number) {
     setInputText('');
     cursorEl.style.display = 'inline-block';
-
     let txt = '';
     for (const ch of fixedInput) {
       if (token !== runToken) return;
@@ -740,7 +766,6 @@ This drives executive grade outputs instead of generic commentary.`
       setInputText(txt);
       await sleep(28);
     }
-
     if (token !== runToken) return;
     cursorEl.style.display = 'none';
   }
@@ -764,7 +789,7 @@ This drives executive grade outputs instead of generic commentary.`
 
     optLabel.textContent = 'Optimizing...';
     optBtn.classList.add('processing');
-    liveStrip.style.display = 'flex';
+    outputWell.classList.add('processing');
 
     await sleep(520);
     if (token !== runToken) return;
@@ -785,7 +810,7 @@ This drives executive grade outputs instead of generic commentary.`
     }
 
     if (token !== runToken) return;
-    liveStrip.style.display = 'none';
+    outputWell.classList.remove('processing');
   }
 
   // Style selection clicks
@@ -809,7 +834,7 @@ This drives executive grade outputs instead of generic commentary.`
     runOptimization({ animateInput: false });
   });
 
-  // Init default state
+  // Init: light mode (no .dark class), moon icon visible
   setStyle('research');
   setVerbosity(0);
   runOptimization({ animateInput: true });
