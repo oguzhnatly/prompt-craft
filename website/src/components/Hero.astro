@@ -170,9 +170,35 @@ import AppWindow from './AppWindow.astro';
           <span>o3</span>
         </div>
 
-        <div class="hp-logo" role="listitem" aria-label="Claude Opus">
-          <iconify-icon class="hp-icon" icon="lucide:gem" style="color:#c2410c"></iconify-icon>
-          <span>Claude Opus</span>
+      </div>
+
+      <div class="hp-divider"></div>
+
+      <span class="hp-label mono">Extensions</span>
+      <div class="hp-logos" role="list" aria-label="Supported extensions">
+
+        <div class="hp-logo" role="listitem" aria-label="Raycast">
+          <svg class="hp-icon" viewBox="0 0 24 24" fill="#FF6363">
+            <path d="M12 2L2 12l2.12 2.12 1.41-1.41L12 19.17l6.47-6.46 1.41 1.41L22 12 12 2zm0 3.17L18.83 12 12 18.83 5.17 12 12 5.17z"/>
+          </svg>
+          <span>Raycast</span>
+        </div>
+
+        <div class="hp-logo" role="listitem" aria-label="Alfred">
+          <svg class="hp-icon" viewBox="0 0 24 24" fill="#5C1F87">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-1-13v6l5 3-1 1.73-6-3.73V7h2z"/>
+          </svg>
+          <span>Alfred</span>
+        </div>
+
+        <div class="hp-logo" role="listitem" aria-label="Spotlight">
+          <iconify-icon class="hp-icon" icon="lucide:search" style="color:#888"></iconify-icon>
+          <span>Spotlight</span>
+        </div>
+
+        <div class="hp-logo" role="listitem" aria-label="macOS Shortcuts">
+          <iconify-icon class="hp-icon" icon="lucide:square-function" style="color:#1475d6"></iconify-icon>
+          <span>Shortcuts</span>
         </div>
 
       </div>
@@ -242,7 +268,9 @@ import AppWindow from './AppWindow.astro';
 
   /* Provider logos */
   .hero-providers { padding: 0 0 56px; border-top: 1px solid var(--bdr); }
-  .hp-inner { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding-top: 28px; }
+  .hp-inner { display: flex; flex-direction: column; gap: 20px; padding-top: 28px; }
+  .hp-row { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .hp-divider { width: 100%; height: 1px; background: var(--bdr); }
   .hp-label { font-size: 10px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; flex-shrink: 0; }
   .hp-logos { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
   .hp-logo {
