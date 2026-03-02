@@ -153,10 +153,10 @@ const stages = [
 </section>
 
 <style>
-  #pipeline { padding: 100px 0 80px; }
+  #pipeline { padding: 72px 0 56px; }
 
   .pl-header {
-    max-width: 620px; margin-bottom: 44px;
+    max-width: 620px; margin-bottom: 28px;
     display: flex; flex-direction: column; gap: 16px;
   }
   .pl-h2 {
@@ -168,23 +168,23 @@ const stages = [
 
   #pl-scroll-wrapper {
     position: relative;
-    height: 120vh;
-    margin-bottom: 20px;
+    height: 95vh;
+    margin-bottom: 12px;
   }
 
   #pl-sticky {
     position: sticky;
-    top: 72px;
+    top: 84px;
     width: 100%;
-    height: calc(100vh - 88px);
-    min-height: calc(100vh - 88px);
+    height: calc(100vh - 120px);
+    min-height: calc(100vh - 120px);
     display: flex; flex-direction: column;
     justify-content: center;
   }
 
   .pl-ide {
     width: 100%;
-    min-height: clamp(560px, 78vh, 760px);
+    min-height: clamp(500px, 68vh, 690px);
     display: grid; grid-template-columns: 300px 1fr;
     border-top: 1px solid var(--bdr);
     border-bottom: 1px solid var(--bdr);
@@ -271,9 +271,9 @@ const stages = [
   }
 
   .pl-progress {
-    margin-top: 12px;
-    display: flex; align-items: center; gap: 10px;
-    padding: 6px 0;
+    margin-top: 10px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 14px;
   }
   .pl-progress-track {
     flex: 1; height: 8px; background: var(--bdr);
@@ -289,9 +289,11 @@ const stages = [
   }
   .pl-progress-label {
     font-size: 10px; color: var(--ink2); letter-spacing: 0.08em;
-    min-width: 52px;
+    min-width: 58px;
     text-align: center;
-    padding: 3px 7px;
+    white-space: nowrap;
+    line-height: 1;
+    padding: 4px 8px;
     border-radius: 999px;
     background: var(--bg2);
     border: 1px solid var(--bdr);
