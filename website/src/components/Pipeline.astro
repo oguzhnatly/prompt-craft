@@ -1,0 +1,132 @@
+---
+const stages = [
+  {
+    step: '01',
+    name: 'Intent Decomposer',
+    desc: 'Parses raw input into distinct action intents. Separates urgency and emotional markers from task logic. Compound requests are segmented so each action is represented independently.',
+    detail: 'OUTPUT: intents[], intent_count, urgency_level, cleaned_input',
+    color: '#00FFB2',
+  },
+  {
+    step: '02',
+    name: 'Entity Extractor',
+    desc: 'Finds persons, projects, environments, technical terms, temporal markers, and organizations from raw text. Builds structured metadata that gets injected later for precision targeting.',
+    detail: 'OUTPUT: entities{persons, projects, envs, terms, orgs}',
+    color: '#60A5FA',
+  },
+  {
+    step: '03',
+    name: 'Complexity Classifier',
+    desc: 'Computes an ambiguity score and maps the input to one of four tiers. Complexity comes from task load, not from template habit. Simple requests stay simple.',
+    detail: 'OUTPUT: tier(1-4), ambiguity_score, context_signals[]',
+    color: '#C084FC',
+  },
+  {
+    step: '04',
+    name: 'Context Engine',
+    desc: 'Retrieves nearest semantic matches from your context store. Injects learned project and environment details into existing sentences instead of adding extra sections. Context increases specificity, not length.',
+    detail: 'OUTPUT: context_block, injected_entities[], cluster_names[]',
+    color: '#FBBF24',
+  },
+  {
+    step: '05',
+    name: 'Prompt Assembler',
+    desc: 'Builds system and user messages with tier calibration, context block injection, and tier-matched few-shot examples. Output structure is earned by complexity, never assumed.',
+    detail: 'OUTPUT: system_message, user_message, max_tokens_budget',
+    color: '#F472B6',
+  },
+  {
+    step: '06',
+    name: 'Model Execution',
+    desc: 'Sends assembled messages to your selected provider. Supports Claude, GPT-4, DeepSeek, and local Ollama models. Provider routing is configurable per workspace.',
+    detail: 'OUTPUT: raw_response, provider, model, tokens_used',
+    color: '#FB923C',
+  },
+  {
+    step: '07',
+    name: 'Post Processor',
+    desc: 'Enforces the word budget, removes forbidden structure in simple tiers, and blocks meta leakage. The final result has exactly the complexity the task earned. Nothing more.',
+    detail: 'OUTPUT: final_directive, compression_applied, leakage_suppressed',
+    color: '#00FFB2',
+  },
+];
+---
+
+<section id="pipeline" class="py-32 relative overflow-hidden bg-blueprint-dense">
+
+  <!-- Section header -->
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="mb-20 text-center" data-reveal>
+      <div class="inline-flex items-center gap-3 mb-6">
+        <div class="w-16 h-px bg-teal/30"></div>
+        <span class="font-mono text-[11px] text-teal/60 tracking-widest uppercase">RMPA · Recursive Meta Prompt Architecture</span>
+        <div class="w-16 h-px bg-teal/30"></div>
+      </div>
+      <h2 class="text-[52px] font-black tracking-tight text-ink leading-none mb-4">
+        Seven stages.<br />
+        <span class="text-teal">Zero guesswork.</span>
+      </h2>
+      <p class="text-[16px] text-ink-secondary max-w-xl mx-auto leading-relaxed">
+        Every optimization follows a deterministic pipeline. Understanding happens before generation.
+        Complexity is measured, not assumed.
+      </p>
+    </div>
+
+    <!-- Pipeline visualization -->
+    <div class="relative max-w-3xl mx-auto">
+
+      <!-- Vertical connector line -->
+      <div class="absolute left-[42px] top-8 bottom-8 w-px bg-gradient-to-b from-teal/40 via-teal/20 to-teal/40 pointer-events-none"></div>
+
+      <div class="space-y-4">
+        {stages.map((stage, i) => (
+          <div
+            class="group relative flex gap-6 p-6 rounded-xl border border-border bg-panel/60 hover:border-teal/20 hover:bg-panel transition-all duration-300 cursor-default"
+            data-reveal
+            data-reveal-delay={String((i % 6) + 1)}
+          >
+            <!-- Step number badge -->
+            <div
+              class="flex-shrink-0 w-10 h-10 rounded-lg border flex items-center justify-center font-mono text-[12px] font-semibold transition-all duration-300 group-hover:scale-110"
+              style={`border-color: ${stage.color}40; color: ${stage.color}; background: ${stage.color}10;`}
+            >
+              {stage.step}
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-3 mb-2">
+                <h3 class="font-mono text-[14px] font-semibold text-ink">{stage.name}</h3>
+                <div class="h-px flex-1 bg-border group-hover:bg-teal/10 transition-colors"></div>
+              </div>
+              <p class="text-[13px] text-ink-secondary leading-relaxed mb-2">{stage.desc}</p>
+              <code class="font-mono text-[11px] text-ink-muted/60">{stage.detail}</code>
+            </div>
+
+            <!-- Active indicator on hover -->
+            <div
+              class="absolute right-4 top-1/2 -translate-y-1/2 w-1 h-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={`background: ${stage.color};`}
+            ></div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Design principles -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
+      {[
+        { title: 'Complexity earned, not assumed', desc: 'Simple requests stay compact. Structure appears only when task load demands it.' },
+        { title: 'Context adds precision, not length', desc: 'Learned entities inject into existing sentences. Output length stays constant.' },
+        { title: 'Emotional noise, filtered', desc: 'Urgency is preserved as signal. Profanity and frustration are stripped before analysis.' },
+      ].map(p => (
+        <div class="p-6 rounded-xl border border-border bg-panel/40 relative" data-reveal>
+          <div class="absolute top-4 right-4 w-6 h-6 border-r border-t border-teal/20"></div>
+          <h4 class="font-mono text-[13px] font-semibold text-ink mb-2">{p.title}</h4>
+          <p class="text-[13px] text-ink-secondary leading-relaxed">{p.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

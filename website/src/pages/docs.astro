@@ -1,0 +1,108 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const sections = [
+  {
+    id: 'quick-start',
+    title: 'Quick Start',
+    content: `After installing PromptCraft and granting accessibility permissions, set your global keyboard shortcut in Preferences → Shortcuts. The default is ⌘⇧P.
+
+Select any text in any application and press the shortcut. PromptCraft processes the selection through the 7-stage RMPA pipeline and copies the result to your clipboard.
+
+For Cloud subscribers, the optimized result reflects your accumulated context memory from previous sessions.`,
+  },
+  {
+    id: 'architecture',
+    title: 'RMPA Architecture',
+    content: `Recursive Meta Prompt Architecture separates understanding from generation. A 7-stage deterministic pipeline builds an intermediate representation of user intent before any prompt assembly occurs.
+
+The pipeline runs in under 200ms for local models. Cloud inference adds routing and context injection overhead but stays under 800ms for most requests.
+
+Full technical specification: docs/RMPA_WHITEPAPER.md on GitHub.`,
+  },
+  {
+    id: 'providers',
+    title: 'Provider Configuration',
+    content: `PromptCraft supports: Claude (Anthropic), GPT-4o (OpenAI), DeepSeek V3, and any local Ollama model.
+
+Cloud subscribers do not need to configure API keys. The cloud relay handles provider routing.
+
+Pro users configure their own API keys in Preferences → Providers. Keys are stored in the system Keychain.`,
+  },
+  {
+    id: 'extensions',
+    title: 'Alfred + Raycast',
+    content: `Alfred Workflow: Import the workflow from alfred-workflow/ in the GitHub repository. Trigger optimization with the keyword 'pc' or your custom keyword.
+
+Raycast Extension: Available in the Raycast Store (search "PromptCraft") or install manually from raycast-extension/ in the repository. Command: "Optimize Prompt".
+
+Both extensions are open source. Contributions welcome.`,
+  },
+];
+---
+
+<Base title="Documentation — PromptCraft" description="Technical documentation for PromptCraft. Architecture, quick start, provider setup, and extensions.">
+  <Nav />
+  <main class="min-h-screen pt-32 pb-24 bg-void">
+    <div class="max-w-5xl mx-auto px-6">
+
+      <div class="mb-16" data-reveal>
+        <div class="inline-flex items-center gap-3 mb-6">
+          <div class="w-10 h-px bg-teal/30"></div>
+          <span class="font-mono text-[11px] text-teal/60 tracking-widest uppercase">Documentation</span>
+        </div>
+        <h1 class="text-[52px] font-black tracking-tight text-ink leading-none">
+          Technical Reference
+        </h1>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+        <!-- Sidebar nav -->
+        <nav class="lg:col-span-1">
+          <div class="sticky top-28 space-y-1">
+            {sections.map(s => (
+              <a
+                href={`#${s.id}`}
+                class="block font-mono text-[12px] text-ink-secondary hover:text-ink py-2 px-3 rounded-lg hover:bg-panel transition-all"
+              >
+                {s.title}
+              </a>
+            ))}
+            <a
+              href="https://github.com/oguzhnatly/prompt-craft"
+              target="_blank"
+              rel="noopener"
+              class="flex items-center gap-2 font-mono text-[12px] text-teal/70 hover:text-teal py-2 px-3 mt-4 transition-colors"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+              GitHub
+            </a>
+          </div>
+        </nav>
+
+        <!-- Content -->
+        <div class="lg:col-span-3 space-y-16">
+          {sections.map((section, i) => (
+            <div id={section.id} data-reveal>
+              <h2 class="font-mono text-[20px] font-semibold text-ink mb-6 pb-4 border-b border-border">
+                <span class="text-teal/40 text-[14px] mr-3">{String(i + 1).padStart(2, '0')}</span>
+                {section.title}
+              </h2>
+              <div class="prose prose-invert max-w-none">
+                {section.content.split('\n\n').map(para => (
+                  <p class="text-[14px] text-ink-secondary leading-relaxed mb-4">{para}</p>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>

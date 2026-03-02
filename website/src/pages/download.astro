@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base title="Download — PromptCraft" description="Download PromptCraft for macOS. Requires macOS 14 or later.">
+  <Nav />
+  <main class="min-h-screen pt-32 pb-24 bg-blueprint">
+
+    <div class="max-w-3xl mx-auto px-6 text-center">
+
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-teal/20 bg-teal/5 font-mono text-[11px] text-teal tracking-widest uppercase mb-10" data-reveal>
+        <span class="w-1.5 h-1.5 rounded-full bg-teal"></span>
+        v1.1.0 · macOS 14+
+      </div>
+
+      <h1 class="text-[64px] font-black tracking-tight text-ink leading-none mb-6" data-reveal data-reveal-delay="1">
+        Download<br /><span class="text-teal">PromptCraft</span>
+      </h1>
+
+      <p class="text-[16px] text-ink-secondary leading-relaxed mb-12 max-w-xl mx-auto" data-reveal data-reveal-delay="2">
+        Requires macOS 14 Sonoma or later. Apple Silicon and Intel supported.
+        Signed and notarized with Apple Developer ID.
+      </p>
+
+      <!-- Download button -->
+      <div data-reveal data-reveal-delay="3" class="mb-12">
+        <a
+          href="/releases/PromptCraft-1.1.0.dmg"
+          class="inline-flex items-center gap-3 px-8 py-4 bg-teal text-void font-mono text-[15px] font-semibold rounded-xl hover:bg-teal-dim transition-all duration-200 hover:shadow-[0_0_40px_rgba(0,255,178,0.25)]"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2v12M5 10l5 5 5-5M2 17h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Download PromptCraft
+          <span class="text-void/60 font-normal text-[12px]">1.1.0 · 18MB</span>
+        </a>
+      </div>
+
+      <!-- Install instructions -->
+      <div class="text-left p-6 rounded-xl border border-border bg-panel max-w-xl mx-auto" data-reveal data-reveal-delay="4">
+        <div class="font-mono text-[11px] text-teal/60 tracking-widest uppercase mb-4">Installation</div>
+        <ol class="space-y-3">
+          {[
+            'Open the downloaded .dmg file',
+            'Drag PromptCraft to Applications',
+            'Launch PromptCraft from Applications',
+            'Grant accessibility permissions when prompted',
+            'Set your keyboard shortcut and provider in Settings',
+          ].map((step, i) => (
+            <li class="flex items-start gap-3">
+              <span class="font-mono text-[11px] text-teal w-5 flex-shrink-0 mt-0.5">{String(i + 1).padStart(2, '0')}</span>
+              <span class="text-[13px] text-ink-secondary">{step}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <!-- System requirements -->
+      <div class="mt-8 text-center" data-reveal>
+        <p class="font-mono text-[12px] text-ink-muted">macOS 14.0 Sonoma or later · Apple Silicon (M1+) or Intel · 20MB disk space</p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>

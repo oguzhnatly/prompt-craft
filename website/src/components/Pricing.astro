@@ -1,0 +1,146 @@
+---
+const tiers = [
+  {
+    id: 'pro',
+    name: 'Pro',
+    price: '$99',
+    period: 'one-time',
+    tag: 'Lifetime License',
+    desc: 'Full local pipeline. All optimization stages. No subscription. Pay once, own it forever.',
+    cta: 'Buy Pro License',
+    ctaHref: '/checkout/pro',
+    featured: false,
+    features: [
+      'Full 7-stage RMPA pipeline',
+      'Unlimited local optimizations',
+      'Multi-provider support (Claude, GPT, DeepSeek)',
+      'Ollama local model support',
+      'Alfred + Raycast extensions',
+      'Custom style presets',
+      'Prompt history (30 days)',
+      'macOS menu bar + global shortcut',
+      'Free updates for 2 years',
+    ],
+  },
+  {
+    id: 'cloud',
+    name: 'Cloud',
+    price: '$12',
+    period: 'per month',
+    tag: 'Most Powerful',
+    desc: 'Everything in Pro, plus persistent context memory, cross-device sync, and the managed cloud relay for zero-config provider access.',
+    cta: 'Start Cloud',
+    ctaHref: '/checkout/cloud',
+    featured: true,
+    features: [
+      'Everything in Pro',
+      'Persistent context memory',
+      'Entity learning across sessions',
+      'Cross-device sync',
+      'Managed cloud relay (no API keys needed)',
+      '1,000 cloud optimizations per day',
+      'Priority model routing',
+      'Prompt history (unlimited)',
+      'Email support',
+    ],
+  },
+];
+---
+
+<section id="pricing" class="py-32 relative bg-blueprint">
+
+  <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal/20 to-transparent"></div>
+  <div class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-teal/10 to-transparent"></div>
+
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="mb-20 text-center" data-reveal>
+      <div class="inline-flex items-center gap-3 mb-6">
+        <div class="w-16 h-px bg-teal/30"></div>
+        <span class="font-mono text-[11px] text-teal/60 tracking-widest uppercase">Pricing</span>
+        <div class="w-16 h-px bg-teal/30"></div>
+      </div>
+      <h2 class="text-[52px] font-black tracking-tight text-ink leading-none mb-4">
+        Own it.<br />
+        <span class="text-teal">Or run it in the cloud.</span>
+      </h2>
+      <p class="text-[16px] text-ink-secondary max-w-lg mx-auto">
+        No usage-based billing. No surprise invoices. Simple pricing for engineers.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+      {tiers.map((tier, i) => (
+        <div
+          class={`relative p-8 rounded-2xl border transition-all duration-300 ${
+            tier.featured
+              ? 'border-teal/30 bg-panel shadow-[0_0_60px_rgba(0,255,178,0.06),inset_0_0_0_1px_rgba(0,255,178,0.08)]'
+              : 'border-border bg-panel/60 hover:border-teal/15'
+          }`}
+          data-reveal
+          data-reveal-delay={String(i + 1)}
+        >
+          {tier.featured && (
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-teal text-void font-mono text-[11px] font-semibold rounded-full tracking-wider">
+              MOST POPULAR
+            </div>
+          )}
+
+          <!-- Corner brackets for featured -->
+          {tier.featured && (
+            <>
+              <div class="absolute top-3 left-3 w-5 h-5 border-l border-t border-teal/30"></div>
+              <div class="absolute top-3 right-3 w-5 h-5 border-r border-t border-teal/30"></div>
+              <div class="absolute bottom-3 left-3 w-5 h-5 border-l border-b border-teal/30"></div>
+              <div class="absolute bottom-3 right-3 w-5 h-5 border-r border-b border-teal/30"></div>
+            </>
+          )}
+
+          <div class="mb-6">
+            <div class="flex items-center gap-3 mb-1">
+              <span class="font-mono text-[13px] font-semibold text-ink">{tier.name}</span>
+              <span class="font-mono text-[10px] px-2 py-0.5 rounded border border-teal/20 bg-teal/5 text-teal/80 tracking-wider">{tier.tag}</span>
+            </div>
+            <div class="flex items-baseline gap-2 mb-3">
+              <span class="text-[48px] font-black text-ink leading-none">{tier.price}</span>
+              <span class="font-mono text-[13px] text-ink-secondary">{tier.period}</span>
+            </div>
+            <p class="text-[13px] text-ink-secondary leading-relaxed">{tier.desc}</p>
+          </div>
+
+          <a
+            href={tier.ctaHref}
+            class={`w-full flex items-center justify-center gap-2 py-3.5 rounded-lg font-mono text-[14px] font-semibold transition-all duration-200 mb-8 ${
+              tier.featured
+                ? 'bg-teal text-void hover:bg-teal-dim hover:shadow-[0_0_24px_rgba(0,255,178,0.25)]'
+                : 'border border-border text-ink hover:border-teal/20 hover:text-ink'
+            }`}
+          >
+            {tier.cta}
+            <svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+
+          <ul class="space-y-3">
+            {tier.features.map(feat => (
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-teal flex-shrink-0 mt-0.5" viewBox="0 0 16 16" fill="none">
+                  <path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="text-[13px] text-ink-secondary leading-snug">{feat}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <!-- Notes -->
+    <div class="mt-12 text-center space-y-2" data-reveal>
+      <p class="font-mono text-[12px] text-ink-muted">
+        Pro license includes 2 years of free updates · macOS 14 or later required · 30-day money-back guarantee
+      </p>
+    </div>
+  </div>
+</section>
