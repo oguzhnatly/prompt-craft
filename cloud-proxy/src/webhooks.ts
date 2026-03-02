@@ -1,432 +1,201 @@
-import type { Env } from "./types";
+/**
+ * Stripe webhook handler — drives the entire purchase automation
+ * Flow: Stripe payment → webhook → create license → email via Resend → done
+ * Zero external dependencies for licensing (in-house KV system)
+ */
 
-// ─── Stripe Webhook Handler ─────────────────────────────────────────
+import { createLicense, renewCloud, suspendByCustomer } from './license';
+import type { Env } from './types';
 
-export async function handleStripeWebhook(
-  request: Request,
-  env: Env,
-  _ctx: ExecutionContext
-): Promise<Response> {
-  const signature = request.headers.get("Stripe-Signature");
-  if (!signature) {
-    return jsonResponse(400, { error: "Missing Stripe-Signature header." });
-  }
-
-  const rawBody = await request.text();
-
-  // Verify signature using Web Crypto (no npm dependencies)
-  const isValid = await verifyStripeSignature(
-    rawBody,
-    signature,
-    env.STRIPE_WEBHOOK_SECRET
-  );
-  if (!isValid) {
-    return jsonResponse(400, { error: "Invalid signature." });
-  }
-
-  let event: StripeEvent;
-  try {
-    event = JSON.parse(rawBody) as StripeEvent;
-  } catch {
-    return jsonResponse(400, { error: "Invalid JSON payload." });
-  }
-
-  try {
-    switch (event.type) {
-      case "checkout.session.completed":
-        await handleCheckoutCompleted(event, env);
-        break;
-      case "customer.subscription.created":
-        await handleSubscriptionCreated(event, env);
-        break;
-      case "customer.subscription.deleted":
-        await handleSubscriptionDeleted(event, env);
-        break;
-      case "charge.refunded":
-        await handleChargeRefunded(event, env);
-        break;
-      default:
-        // Unhandled event type — acknowledge silently
-        break;
-    }
-  } catch (err) {
-    console.error(`Webhook handler error for ${event.type}:`, err);
-    return jsonResponse(500, { error: "Internal webhook processing error." });
-  }
-
-  return jsonResponse(200, { received: true });
+interface StripeEvent {
+  id: string;
+  type: string;
+  data: { object: Record<string, unknown> };
 }
 
-// ─── Stripe Signature Verification ──────────────────────────────────
+// ── Stripe signature verification ────────────────────────────────────────────
 
 async function verifyStripeSignature(
-  payload: string,
-  signatureHeader: string,
+  body: string,
+  signature: string,
   secret: string
 ): Promise<boolean> {
-  // Parse t= and v1= from the Stripe-Signature header
-  const parts = signatureHeader.split(",");
-  let timestamp = "";
-  let sig = "";
+  const parts = signature.split(',').reduce<Record<string, string>>((acc, part) => {
+    const [k, v] = part.split('=');
+    acc[k] = v;
+    return acc;
+  }, {});
 
-  for (const part of parts) {
-    const [key, value] = part.trim().split("=");
-    if (key === "t") timestamp = value;
-    if (key === "v1") sig = value;
-  }
+  const timestamp = parts['t'];
+  const sigV1 = parts['v1'];
+  if (!timestamp || !sigV1) return false;
 
-  if (!timestamp || !sig) return false;
-
-  // Reject if timestamp is older than 5 minutes
-  const timestampAge = Math.floor(Date.now() / 1000) - parseInt(timestamp, 10);
-  if (timestampAge > 300) return false;
-
-  // Compute HMAC-SHA256 of "{timestamp}.{payload}"
-  const encoder = new TextEncoder();
+  const payload = `${timestamp}.${body}`;
   const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
+    'raw',
+    new TextEncoder().encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
     false,
-    ["sign"]
+    ['sign']
   );
-
-  const signed = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    encoder.encode(`${timestamp}.${payload}`)
-  );
-
-  const expectedSig = Array.from(new Uint8Array(signed))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-
-  return timingSafeEqual(expectedSig, sig);
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
+  const computed = Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+  return computed === sigV1;
 }
 
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i++) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return result === 0;
-}
-
-// ─── Event Handlers ─────────────────────────────────────────────────
-
-async function handleCheckoutCompleted(
-  event: StripeEvent,
-  env: Env
-): Promise<void> {
-  const session = event.data.object as StripeCheckoutSession;
-
-  // Only handle one-time payments (Pro) here; subscriptions handled separately
-  if (session.mode === "subscription") return;
-
-  const email = session.customer_email ?? session.customer_details?.email;
-  const customerId = session.customer as string;
-
-  if (!email) {
-    console.error("checkout.session.completed: no email found");
-    return;
-  }
-
-  // Create perpetual Keygen license
-  const license = await createKeygenLicense(env, {
-    email,
-    tier: "pro",
-    stripeCustomerId: customerId,
-    policyId: env.KEYGEN_PRO_POLICY_ID,
-  });
-
-  if (license) {
-    await sendLicenseEmail(env, email, license.key, "pro");
-  }
-}
-
-async function handleSubscriptionCreated(
-  event: StripeEvent,
-  env: Env
-): Promise<void> {
-  const subscription = event.data.object as StripeSubscription;
-  const customerId = subscription.customer as string;
-
-  // Look up customer email from Stripe
-  const email = await getStripeCustomerEmail(env, customerId);
-  if (!email) {
-    console.error("customer.subscription.created: no email found");
-    return;
-  }
-
-  // Create subscription Keygen license
-  const license = await createKeygenLicense(env, {
-    email,
-    tier: "cloud",
-    stripeCustomerId: customerId,
-    stripeSubscriptionId: subscription.id,
-    policyId: env.KEYGEN_CLOUD_POLICY_ID,
-  });
-
-  if (license) {
-    await sendLicenseEmail(env, email, license.key, "cloud");
-  }
-}
-
-async function handleSubscriptionDeleted(
-  event: StripeEvent,
-  env: Env
-): Promise<void> {
-  const subscription = event.data.object as StripeSubscription;
-
-  // Find license by subscription ID metadata
-  const license = await findKeygenLicense(
-    env,
-    "stripeSubscriptionId",
-    subscription.id
-  );
-
-  if (license) {
-    await suspendKeygenLicense(env, license.id);
-  }
-}
-
-async function handleChargeRefunded(
-  event: StripeEvent,
-  env: Env
-): Promise<void> {
-  const charge = event.data.object as StripeCharge;
-  const customerId = charge.customer as string;
-
-  if (!customerId) return;
-
-  // Find license by customer ID metadata
-  const license = await findKeygenLicense(
-    env,
-    "stripeCustomerId",
-    customerId
-  );
-
-  if (license) {
-    await revokeKeygenLicense(env, license.id);
-  }
-}
-
-// ─── Keygen.sh API Helpers ──────────────────────────────────────────
-
-interface CreateLicenseParams {
-  email: string;
-  tier: string;
-  stripeCustomerId: string;
-  stripeSubscriptionId?: string;
-  policyId: string;
-}
-
-interface KeygenLicense {
-  id: string;
-  key: string;
-}
-
-async function createKeygenLicense(
-  env: Env,
-  params: CreateLicenseParams
-): Promise<KeygenLicense | null> {
-  const response = await fetch(
-    `https://api.keygen.sh/v1/accounts/${env.KEYGEN_ACCOUNT_ID}/licenses`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/vnd.api+json",
-        Accept: "application/vnd.api+json",
-        Authorization: `Bearer ${env.KEYGEN_PRODUCT_TOKEN}`,
-      },
-      body: JSON.stringify({
-        data: {
-          type: "licenses",
-          attributes: {
-            metadata: {
-              email: params.email,
-              tier: params.tier,
-              stripeCustomerId: params.stripeCustomerId,
-              ...(params.stripeSubscriptionId && {
-                stripeSubscriptionId: params.stripeSubscriptionId,
-              }),
-            },
-          },
-          relationships: {
-            policy: {
-              data: {
-                type: "policies",
-                id: params.policyId,
-              },
-            },
-          },
-        },
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    console.error(
-      "Failed to create Keygen license:",
-      response.status,
-      await response.text()
-    );
-    return null;
-  }
-
-  const body = (await response.json()) as {
-    data: { id: string; attributes: { key: string } };
-  };
-
-  return { id: body.data.id, key: body.data.attributes.key };
-}
-
-async function findKeygenLicense(
-  env: Env,
-  metadataKey: string,
-  metadataValue: string
-): Promise<{ id: string } | null> {
-  const response = await fetch(
-    `https://api.keygen.sh/v1/accounts/${env.KEYGEN_ACCOUNT_ID}/licenses?metadata[${metadataKey}]=${encodeURIComponent(metadataValue)}`,
-    {
-      method: "GET",
-      headers: {
-        Accept: "application/vnd.api+json",
-        Authorization: `Bearer ${env.KEYGEN_PRODUCT_TOKEN}`,
-      },
-    }
-  );
-
-  if (!response.ok) return null;
-
-  const body = (await response.json()) as {
-    data: Array<{ id: string }>;
-  };
-
-  return body.data.length > 0 ? { id: body.data[0].id } : null;
-}
-
-async function suspendKeygenLicense(
-  env: Env,
-  licenseId: string
-): Promise<void> {
-  await fetch(
-    `https://api.keygen.sh/v1/accounts/${env.KEYGEN_ACCOUNT_ID}/licenses/${licenseId}/actions/suspend`,
-    {
-      method: "POST",
-      headers: {
-        Accept: "application/vnd.api+json",
-        Authorization: `Bearer ${env.KEYGEN_PRODUCT_TOKEN}`,
-      },
-    }
-  );
-}
-
-async function revokeKeygenLicense(
-  env: Env,
-  licenseId: string
-): Promise<void> {
-  await fetch(
-    `https://api.keygen.sh/v1/accounts/${env.KEYGEN_ACCOUNT_ID}/licenses/${licenseId}/actions/revoke`,
-    {
-      method: "POST",
-      headers: {
-        Accept: "application/vnd.api+json",
-        Authorization: `Bearer ${env.KEYGEN_PRODUCT_TOKEN}`,
-      },
-    }
-  );
-}
-
-// ─── Stripe API Helpers ─────────────────────────────────────────────
-
-async function getStripeCustomerEmail(
-  env: Env,
-  customerId: string
-): Promise<string | null> {
-  const response = await fetch(
-    `https://api.stripe.com/v1/customers/${customerId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
-      },
-    }
-  );
-
-  if (!response.ok) return null;
-
-  const customer = (await response.json()) as { email?: string };
-  return customer.email ?? null;
-}
-
-// ─── Resend Email ───────────────────────────────────────────────────
+// ── Email via Resend ───────────────────────────────────────────────────────────
 
 async function sendLicenseEmail(
-  env: Env,
-  email: string,
+  resendKey: string,
+  to: string,
   licenseKey: string,
-  tier: string
+  tier: 'pro' | 'cloud',
+  expiresAt?: string
 ): Promise<void> {
-  const tierLabel = tier === "cloud" ? "Cloud" : "Pro";
-  const deepLink = `promptcraft://activate?key=${encodeURIComponent(licenseKey)}&email=${encodeURIComponent(email)}`;
+  if (!resendKey) return; // Skip if Resend not configured yet
 
-  const htmlBody = `
-    <h2>Your PromptCraft ${tierLabel} License</h2>
-    <p>Thank you for your purchase! Here is your license key:</p>
-    <pre style="background:#f4f4f4;padding:12px;border-radius:6px;font-size:16px;font-family:monospace;">${licenseKey}</pre>
-    <p><a href="${deepLink}" style="display:inline-block;padding:12px 24px;background:#4F46E5;color:white;text-decoration:none;border-radius:8px;font-weight:600;">Activate in PromptCraft</a></p>
-    <p style="color:#666;font-size:12px;">Or paste the license key manually in PromptCraft &rarr; Settings &rarr; License.</p>
-  `;
+  const tierLabel = tier === 'pro' ? 'Pro (Lifetime)' : 'Cloud';
+  const body = tier === 'pro'
+    ? `Your PromptCraft Pro license is ready.`
+    : `Your PromptCraft Cloud subscription is active.${expiresAt ? ` Next renewal: ${new Date(expiresAt).toLocaleDateString()}.` : ''}`;
 
-  await fetch("https://api.resend.com/emails", {
-    method: "POST",
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      'Authorization': `Bearer ${resendKey}`,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: "PromptCraft <noreply@promptcraft.app>",
-      to: email,
+      from: 'PromptCraft <hello@promptcraft.app>',
+      to: [to],
       subject: `Your PromptCraft ${tierLabel} License Key`,
-      html: htmlBody,
+      html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
+<body style="margin:0;padding:0;background:#050507;color:#F7F8FC;font-family:'JetBrains Mono',monospace">
+  <div style="max-width:560px;margin:0 auto;padding:48px 24px">
+    <div style="margin-bottom:32px">
+      <span style="font-size:20px;font-weight:700;letter-spacing:-0.03em">Prompt<span style="color:#00E5A0">Craft</span></span>
+    </div>
+    <h1 style="font-size:28px;font-weight:900;letter-spacing:-0.04em;margin-bottom:12px;color:#F7F8FC">${body}</h1>
+    <p style="font-size:14px;color:#8892A4;line-height:1.7;margin-bottom:32px">Your license key is below. Enter it in PromptCraft → Preferences → License.</p>
+    <div style="background:#0C0C10;border:1px solid rgba(0,229,160,0.2);border-radius:12px;padding:24px;margin-bottom:32px">
+      <div style="font-size:11px;color:rgba(0,229,160,0.6);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">License Key</div>
+      <div style="font-size:20px;font-weight:700;color:#00E5A0;letter-spacing:0.05em">${licenseKey}</div>
+    </div>
+    <div style="font-size:13px;color:#4B5563;line-height:1.7">
+      <p>Need help? Reply to this email or visit <a href="https://promptcraft.app/docs" style="color:#00E5A0;text-decoration:none">promptcraft.app/docs</a></p>
+    </div>
+  </div>
+</body>
+</html>
+      `.trim(),
     }),
   });
 }
 
-// ─── Types ──────────────────────────────────────────────────────────
+// ── Main handler ───────────────────────────────────────────────────────────────
 
-interface StripeEvent<T = StripeCheckoutSession | StripeSubscription | StripeCharge> {
-  type: string;
-  data: {
-    object: T;
-  };
-}
+export async function handleStripeWebhook(request: Request, env: Env): Promise<Response> {
+  const body = await request.text();
+  const signature = request.headers.get('stripe-signature') ?? '';
 
-interface StripeCheckoutSession {
-  mode: string;
-  customer: unknown;
-  customer_email?: string;
-  customer_details?: { email?: string };
-}
+  // Verify signature
+  const valid = await verifyStripeSignature(body, signature, env.STRIPE_WEBHOOK_SECRET ?? '');
+  if (!valid) {
+    return new Response('Invalid signature', { status: 401 });
+  }
 
-interface StripeSubscription {
-  id: string;
-  customer: unknown;
-}
+  let event: StripeEvent;
+  try {
+    event = JSON.parse(body) as StripeEvent;
+  } catch {
+    return new Response('Invalid JSON', { status: 400 });
+  }
 
-interface StripeCharge {
-  customer: unknown;
-}
+  const obj = event.data.object as Record<string, unknown>;
 
-// ─── Helpers ────────────────────────────────────────────────────────
+  try {
+    switch (event.type) {
 
-function jsonResponse(
-  status: number,
-  body: Record<string, unknown>
-): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
+      case 'checkout.session.completed': {
+        const session = obj as {
+          customer_email?: string;
+          customer?: string;
+          subscription?: string;
+          metadata?: { tier?: string };
+          payment_status?: string;
+          mode?: string;
+        };
+
+        const email = session.customer_email ?? '';
+        const customerId = (session.customer ?? '') as string;
+        const isSubscription = session.mode === 'subscription';
+        const tier = isSubscription ? 'cloud' : 'pro';
+
+        // For subscriptions, expiresAt is set on invoice.paid
+        // For one-time (pro), no expiry
+        const expiresAt = isSubscription
+          ? new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString()
+          : undefined;
+
+        const license = await createLicense(env.KV, {
+          tier,
+          email,
+          customerId,
+          subscriptionId: isSubscription ? (session.subscription as string) : undefined,
+          expiresAt,
+        });
+
+        await sendLicenseEmail(
+          env.RESEND_API_KEY ?? '',
+          email,
+          license.key,
+          tier,
+          expiresAt
+        );
+
+        console.log(`License created: ${license.key} [${tier}] → ${email}`);
+        break;
+      }
+
+      case 'invoice.paid': {
+        // Cloud subscription renewed — extend expiry by 31 days
+        const invoice = obj as { customer?: string; lines?: { data?: Array<{ period?: { end?: number } }> } };
+        const customerId = (invoice.customer ?? '') as string;
+        const periodEnd = invoice.lines?.data?.[0]?.period?.end;
+        if (customerId && periodEnd) {
+          const expiresAt = new Date(periodEnd * 1000).toISOString();
+          await renewCloud(env.KV, customerId, expiresAt);
+          console.log(`Cloud license renewed for customer ${customerId} until ${expiresAt}`);
+        }
+        break;
+      }
+
+      case 'customer.subscription.deleted': {
+        // Subscription cancelled or payment failed permanently
+        const sub = obj as { customer?: string };
+        if (sub.customer) {
+          await suspendByCustomer(env.KV, sub.customer as string);
+          console.log(`License suspended for customer ${sub.customer}`);
+        }
+        break;
+      }
+
+      case 'charge.refunded': {
+        // Refund issued — suspend license
+        const charge = obj as { customer?: string };
+        if (charge.customer) {
+          await suspendByCustomer(env.KV, charge.customer as string);
+        }
+        break;
+      }
+    }
+  } catch (err) {
+    console.error('Webhook handler error:', err);
+    return new Response('Internal error', { status: 500 });
+  }
+
+  return new Response('OK', { status: 200 });
 }

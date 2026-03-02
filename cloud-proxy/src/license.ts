@@ -1,104 +1,135 @@
-import type { Env } from "./types";
+/**
+ * PromptCraft In-House Licensing
+ * Cloudflare KV backed. No third-party dependency.
+ * Key format: PC-XXXX-XXXX-XXXX-XXXX
+ */
 
-const CACHE_TTL_SECONDS = 86400; // 24 hours
-const INVALID_CACHE_TTL_SECONDS = 3600; // 1 hour
+export type LicenseTier = 'pro' | 'cloud';
+export type LicenseStatus = 'active' | 'expired' | 'suspended' | 'invalid';
 
-export async function hashLicenseKey(key: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(key);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+export interface License {
+  key: string;
+  tier: LicenseTier;
+  status: LicenseStatus;
+  email: string;
+  customerId: string;
+  subscriptionId?: string;
+  machines: string[];
+  maxMachines: number;
+  createdAt: string;
+  expiresAt?: string;
 }
 
-interface KeygenValidateResponse {
-  meta: {
-    valid: boolean;
-    detail: string;
-    code: string;
+// ── Key generation ──────────────────────────────────────────────────
+
+function seg(bytes: Uint8Array, offset: number): string {
+  return Array.from(bytes.slice(offset, offset + 2))
+    .map(b => b.toString(16).padStart(2, '0').toUpperCase())
+    .join('');
+}
+
+export function generateLicenseKey(): string {
+  const b = crypto.getRandomValues(new Uint8Array(8));
+  return `PC-${seg(b,0)}-${seg(b,2)}-${seg(b,4)}-${seg(b,6)}`;
+}
+
+export async function hashLicenseKey(key: string): Promise<string> {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(key));
+  return Array.from(new Uint8Array(buf)).slice(0, 8).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── KV keys ────────────────────────────────────────────────────────
+
+const K  = (key: string)   => `license:${key.toUpperCase()}`;
+const KE = (email: string) => `email:${email.toLowerCase()}`;
+const KC = (cid: string)   => `customer:${cid}`;
+
+// ── CRUD ───────────────────────────────────────────────────────────
+
+export async function createLicense(
+  kv: KVNamespace,
+  opts: {
+    tier: LicenseTier;
+    email: string;
+    customerId: string;
+    subscriptionId?: string;
+    expiresAt?: string;
+  }
+): Promise<License> {
+  const key = generateLicenseKey();
+  const license: License = {
+    key,
+    tier: opts.tier,
+    status: 'active',
+    email: opts.email.toLowerCase(),
+    customerId: opts.customerId,
+    subscriptionId: opts.subscriptionId,
+    machines: [],
+    maxMachines: opts.tier === 'pro' ? 3 : 5,
+    createdAt: new Date().toISOString(),
+    expiresAt: opts.expiresAt,
   };
-  data?: {
-    id: string;
-    attributes: {
-      metadata?: Record<string, string>;
-    };
-  };
+  await Promise.all([
+    kv.put(K(key), JSON.stringify(license)),
+    kv.put(KE(opts.email), key),
+    kv.put(KC(opts.customerId), key),
+  ]);
+  return license;
+}
+
+export async function getLicenseByKey(kv: KVNamespace, key: string): Promise<License | null> {
+  const raw = await kv.get(K(key));
+  return raw ? (JSON.parse(raw) as License) : null;
+}
+
+export async function getLicenseByCustomer(kv: KVNamespace, cid: string): Promise<License | null> {
+  const key = await kv.get(KC(cid));
+  return key ? getLicenseByKey(kv, key) : null;
+}
+
+export async function setLicenseStatus(kv: KVNamespace, key: string, status: LicenseStatus): Promise<void> {
+  const lic = await getLicenseByKey(kv, key);
+  if (!lic) return;
+  lic.status = status;
+  await kv.put(K(key), JSON.stringify(lic));
+}
+
+export async function renewCloud(kv: KVNamespace, cid: string, expiresAt: string): Promise<void> {
+  const lic = await getLicenseByCustomer(kv, cid);
+  if (!lic) return;
+  lic.status = 'active';
+  lic.expiresAt = expiresAt;
+  await kv.put(K(lic.key), JSON.stringify(lic));
+}
+
+export async function suspendByCustomer(kv: KVNamespace, cid: string): Promise<void> {
+  const lic = await getLicenseByCustomer(kv, cid);
+  if (lic) await setLicenseStatus(kv, lic.key, 'suspended');
+}
+
+// ── Validation (called from index.ts) ──────────────────────────────
+
+export interface ValidationResult {
+  valid: boolean;
+  reason?: string;
+  tier?: LicenseTier;
 }
 
 export async function validateLicense(
-  licenseKey: string,
-  env: Env
-): Promise<{ valid: boolean; tier?: string; reason?: string }> {
-  const hash = await hashLicenseKey(licenseKey);
-  const cacheKey = `license:${hash}`;
+  key: string,
+  env: { KV: KVNamespace }
+): Promise<ValidationResult> {
+  const lic = await getLicenseByKey(env.KV, key.trim().toUpperCase());
 
-  // Check cache first
-  const cached = await env.KV.get(cacheKey);
-  if (cached) {
-    try {
-      const parsed = JSON.parse(cached) as {
-        valid: boolean;
-        tier?: string;
-      };
-      if (parsed.valid) {
-        return { valid: true, tier: parsed.tier };
-      }
-      return { valid: false, reason: "License is not active." };
-    } catch {
-      // Corrupted cache — fall through to validation
-    }
+  if (!lic) return { valid: false, reason: 'License key not found.' };
+  if (lic.status === 'suspended') return { valid: false, reason: 'License suspended. Contact support.' };
+  if (lic.status === 'expired') return { valid: false, reason: 'License expired. Renew at promptcraft.app/pricing.' };
+
+  // Auto-expire check for cloud
+  if (lic.expiresAt && new Date(lic.expiresAt) < new Date()) {
+    await setLicenseStatus(env.KV, key, 'expired');
+    return { valid: false, reason: 'Cloud subscription expired. Renew at promptcraft.app/pricing.' };
   }
 
-  // Validate against Keygen.sh
-  try {
-    const response = await fetch(
-      `https://api.keygen.sh/v1/accounts/${env.KEYGEN_ACCOUNT_ID}/licenses/actions/validate`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/vnd.api+json",
-          Accept: "application/vnd.api+json",
-          Authorization: `Bearer ${env.KEYGEN_PRODUCT_TOKEN}`,
-        },
-        body: JSON.stringify({
-          meta: {
-            key: licenseKey,
-          },
-        }),
-      }
-    );
-
-    if (!response.ok && response.status >= 500) {
-      // Keygen API error — don't cache, allow retry
-      return { valid: false, reason: "License validation service unavailable." };
-    }
-
-    const data = (await response.json()) as KeygenValidateResponse;
-    const code = data.meta.code;
-
-    // Proxy only checks key validity — machine activation is client-side
-    if (code === "VALID" || code === "NO_MACHINE" || code === "NO_MACHINES") {
-      const tier = data.data?.attributes?.metadata?.["tier"] ?? "pro";
-      await env.KV.put(
-        cacheKey,
-        JSON.stringify({ valid: true, tier }),
-        { expirationTtl: CACHE_TTL_SECONDS }
-      );
-      return { valid: true, tier };
-    }
-
-    // Cache invalid result for a shorter period to allow re-validation
-    await env.KV.put(
-      cacheKey,
-      JSON.stringify({ valid: false }),
-      { expirationTtl: INVALID_CACHE_TTL_SECONDS }
-    );
-    return {
-      valid: false,
-      reason: `License status: ${code}.`,
-    };
-  } catch {
-    // Network error — don't cache, don't block user
-    return { valid: false, reason: "Unable to validate license. Try again." };
-  }
+  return { valid: true, tier: lic.tier };
 }

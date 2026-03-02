@@ -1,298 +1,825 @@
 ---
 ---
 
-<section class="relative min-h-screen flex flex-col justify-center overflow-hidden bg-blueprint">
+<section id="hero">
+  <!-- Particle canvas background -->
+  <canvas id="particle-canvas"></canvas>
 
-  <!-- Hero ambient glow -->
-  <div class="absolute inset-0 bg-hero-glow pointer-events-none"></div>
+  <!-- Radial glow -->
+  <div class="hero-glow"></div>
 
-  <!-- Corner decoration marks -->
-  <div class="absolute top-8 left-8 w-6 h-6 border-l border-t border-teal/20"></div>
-  <div class="absolute top-8 right-8 w-6 h-6 border-r border-t border-teal/20"></div>
-  <div class="absolute bottom-8 left-8 w-6 h-6 border-l border-b border-teal/20"></div>
-  <div class="absolute bottom-8 right-8 w-6 h-6 border-r border-b border-teal/20"></div>
+  <!-- Corner engineering marks -->
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
 
-  <!-- Coordinate labels -->
-  <div class="absolute top-8 left-1/2 -translate-x-1/2 font-mono text-[10px] text-teal/20 tracking-widest">0°N 0°E</div>
+  <div class="hero-inner">
 
-  <div class="max-w-6xl mx-auto px-6 pt-32 pb-24 w-full">
-
-    <!-- Status badge -->
-    <div class="flex justify-center mb-10" data-reveal>
-      <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-teal/20 bg-teal/5 font-mono text-[11px] text-teal tracking-widest uppercase">
-        <span class="w-1.5 h-1.5 rounded-full bg-teal animate-pulse"></span>
-        RMPA v1.1 · 7-Stage Pipeline · Active
-      </div>
+    <!-- Status pill -->
+    <div class="status-pill reveal">
+      <span class="status-dot"></span>
+      <span class="mono" style="font-size:11px;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;">RMPA v1.1 · 7-Stage Pipeline · Live</span>
     </div>
 
     <!-- Main headline -->
-    <div class="text-center max-w-4xl mx-auto mb-8">
-      <h1 class="text-[72px] leading-[1.0] font-black tracking-tighter text-ink mb-0" data-reveal data-reveal-delay="1">
-        Stop typing.
+    <div class="headline-block">
+      <h1 class="headline reveal reveal-d1">
+        Your AI hears<br />what you type.
       </h1>
-      <h1 class="text-[72px] leading-[1.0] font-black tracking-tighter text-teal mb-6" data-reveal data-reveal-delay="2">
-        Start engineering.
+      <h1 class="headline headline-accent reveal reveal-d2">
+        Not what you mean.
       </h1>
-      <p class="text-[18px] leading-relaxed text-ink-secondary max-w-2xl mx-auto font-light" data-reveal data-reveal-delay="3">
-        PromptCraft transforms casual, ambiguous requests into precision-grade AI directives.
-        Recursive Meta Prompt Architecture. Seven deterministic stages. Zero verbosity drift.
+      <p class="subheadline reveal reveal-d3">
+        PromptCraft engineers clarity from noise. Every request is analyzed,
+        decomposed, and rebuilt before it reaches the model.
+        Seven deterministic stages. Zero guesswork.
       </p>
     </div>
 
     <!-- CTAs -->
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20" data-reveal data-reveal-delay="4">
-      <a
-        href="/download"
-        class="group flex items-center gap-3 px-6 py-3.5 bg-teal text-void font-mono text-[14px] font-semibold rounded-lg hover:bg-teal-dim transition-all duration-200 hover:shadow-[0_0_32px_rgba(0,255,178,0.25)]"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 16 16" fill="none">
-          <path d="M8 2v8M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <div class="hero-ctas reveal reveal-d4">
+      <a href="/download" class="cta-primary">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 2v9M4 8l4 4 4-4M1 13h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Download for macOS
-        <span class="text-void/60 font-normal text-[12px]">Free</span>
+        <span class="cta-badge">Free</span>
       </a>
-      <a
-        href="/pricing"
-        class="flex items-center gap-3 px-6 py-3.5 border border-border text-ink-secondary font-mono text-[14px] rounded-lg hover:border-teal/30 hover:text-ink transition-all duration-200"
-      >
-        Get Cloud Access
-        <span class="font-normal text-[12px] text-teal/70">$12/mo</span>
+      <a href="/pricing" class="cta-secondary">
+        Cloud Access
+        <span class="cta-price">$12/mo</span>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <path d="M2.5 6.5h8M7.5 3.5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </a>
     </div>
 
-    <!-- Live Demo Window -->
-    <div class="relative max-w-4xl mx-auto" data-reveal data-reveal-delay="5">
+    <!-- Demo terminal -->
+    <div class="demo-container reveal reveal-d5">
 
       <!-- Window chrome -->
-      <div class="rounded-xl border border-border bg-panel overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.6),0_0_40px_rgba(0,255,178,0.04)]">
+      <div class="window-chrome">
+        <div class="window-dots">
+          <div class="dot red"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
+        </div>
+        <div class="window-title mono">promptcraft — pipeline · v1.1.0</div>
+        <div class="window-status">
+          <span class="pulse-dot"></span>
+          <span class="mono" style="font-size:10px;color:rgba(0,229,160,0.6)">LIVE</span>
+        </div>
+      </div>
 
-        <!-- Title bar -->
-        <div class="flex items-center justify-between px-5 py-3 border-b border-border bg-surface">
-          <div class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-[#FF5F56]"></div>
-            <div class="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
-            <div class="w-3 h-3 rounded-full bg-[#27C93F]"></div>
+      <!-- Demo split -->
+      <div class="demo-split">
+
+        <!-- Input -->
+        <div class="demo-pane demo-input-pane">
+          <div class="pane-label mono">// raw input</div>
+          <div class="input-area">
+            <span id="typed" class="mono demo-typed"></span><span id="cursor-blink" class="cursor-blink mono">|</span>
           </div>
-          <span class="font-mono text-[11px] text-ink-muted tracking-wider">promptcraft — optimization-pipeline</span>
-          <div class="flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-teal animate-pulse"></span>
-            <span class="font-mono text-[10px] text-teal/60">PROCESSING</span>
-          </div>
+
+          <!-- Scan line effect -->
+          <div class="scan-line"></div>
         </div>
 
-        <!-- Demo content -->
-        <div class="grid grid-cols-2 min-h-[360px]">
+        <!-- Pipeline -->
+        <div class="demo-pane demo-pipeline-pane">
+          <div class="pane-label mono">// rmpa pipeline</div>
 
-          <!-- Input panel -->
-          <div class="p-6 border-r border-border relative overflow-hidden">
-            <div class="font-mono text-[10px] text-teal/50 tracking-widest mb-4 uppercase">// Input · Raw Request</div>
-            <div id="demo-input" class="font-mono text-[13px] text-ink-secondary leading-relaxed">
-              <span id="typed-text" class="text-ink"></span><span id="cursor" class="text-teal animate-blink">|</span>
-            </div>
-
-            <!-- Scanline effect -->
-            <div class="scanline opacity-30"></div>
-          </div>
-
-          <!-- Pipeline output panel -->
-          <div class="p-6 bg-void/30 relative">
-            <div class="font-mono text-[10px] text-teal/50 tracking-widest mb-4 uppercase">// Output · Engineered Directive</div>
-
-            <!-- Pipeline stages -->
-            <div class="space-y-3" id="pipeline-stages">
-              {[
-                { id: 'stage-1', step: '01', label: 'Intent Decomposer', color: 'text-teal', active: false },
-                { id: 'stage-2', step: '02', label: 'Entity Extractor', color: 'text-blue-400', active: false },
-                { id: 'stage-3', step: '03', label: 'Complexity Classifier', color: 'text-purple-400', active: false },
-                { id: 'stage-4', step: '04', label: 'Context Engine', color: 'text-amber-400', active: false },
-                { id: 'stage-5', step: '05', label: 'Prompt Assembler', color: 'text-pink-400', active: false },
-                { id: 'stage-6', step: '06', label: 'Model Execution', color: 'text-orange-400', active: false },
-                { id: 'stage-7', step: '07', label: 'Post Processor', color: 'text-teal', active: false },
-              ].map(stage => (
-                <div id={stage.id} class="flex items-center gap-3 opacity-20 transition-all duration-500">
-                  <span class="font-mono text-[10px] text-ink-muted w-5">{stage.step}</span>
-                  <div class="flex-1 h-px bg-border"></div>
-                  <span class={`font-mono text-[10px] ${stage.color} tracking-wide`}>{stage.label}</span>
-                  <div class="w-4 h-4 rounded border border-current flex items-center justify-center" id={`${stage.id}-check`}>
-                    <svg class="w-2 h-2 opacity-0" viewBox="0 0 8 8" fill="currentColor">
-                      <path d="M1 4l2 2 4-4"/>
-                    </svg>
-                  </div>
+          <div id="stages-list" class="stages-list">
+            {[
+              { n: '01', label: 'Intent Decomposer',    color: '#00E5A0' },
+              { n: '02', label: 'Entity Extractor',     color: '#818CF8' },
+              { n: '03', label: 'Complexity Classifier', color: '#C084FC' },
+              { n: '04', label: 'Context Engine',       color: '#FCD34D' },
+              { n: '05', label: 'Prompt Assembler',     color: '#F472B6' },
+              { n: '06', label: 'Model Execution',      color: '#FB923C' },
+              { n: '07', label: 'Post Processor',       color: '#00E5A0' },
+            ].map(s => (
+              <div class="stage-row" data-stage={s.n} style={`--stage-color: ${s.color}`}>
+                <span class="stage-num mono">{s.n}</span>
+                <div class="stage-bar"></div>
+                <span class="stage-label mono">{s.label}</span>
+                <div class="stage-check">
+                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                    <path d="M1 4l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
 
-            <!-- Output result -->
-            <div id="output-result" class="mt-5 opacity-0 transition-opacity duration-700">
-              <div class="font-mono text-[10px] text-teal/50 mb-2 tracking-widest uppercase">// Optimized Directive</div>
-              <div id="output-text" class="font-mono text-[12px] text-ink-code leading-relaxed"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Metrics bar -->
-        <div class="flex items-center gap-8 px-6 py-3 border-t border-border bg-surface">
-          <div class="flex items-center gap-2">
-            <span class="font-mono text-[10px] text-ink-muted">Tier</span>
-            <span class="font-mono text-[10px] text-teal" id="tier-output">COMPLEX</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="font-mono text-[10px] text-ink-muted">Intent count</span>
-            <span class="font-mono text-[10px] text-ink" id="intent-output">3</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="font-mono text-[10px] text-ink-muted">Context injected</span>
-            <span class="font-mono text-[10px] text-ink" id="context-output">2 entities</span>
-          </div>
-          <div class="ml-auto flex items-center gap-2">
-            <span class="font-mono text-[10px] text-ink-muted">Latency</span>
-            <span class="font-mono text-[10px] text-teal" id="latency-output">0ms</span>
+          <!-- Output -->
+          <div id="demo-output" class="demo-output">
+            <div class="pane-label mono" style="margin-bottom:8px">// engineered directive</div>
+            <div id="output-text" class="mono demo-output-text"></div>
           </div>
         </div>
       </div>
 
-      <!-- Floating spec callouts -->
-      <div class="absolute -right-48 top-12 hidden xl:block">
-        <div class="font-mono text-[11px] text-ink-muted leading-relaxed space-y-1.5 border-l border-teal/20 pl-4">
-          <div class="text-teal/60">SPEC</div>
-          <div>7-stage pipeline</div>
-          <div>Tier 1-4 calibration</div>
-          <div>Context injection</div>
-          <div>Zero verbosity drift</div>
-          <div>Post-processing guard</div>
+      <!-- Status bar -->
+      <div class="status-bar">
+        <div class="stat-group">
+          <span class="stat-label mono">Tier</span>
+          <span id="stat-tier" class="stat-value mono">—</span>
+        </div>
+        <div class="stat-group">
+          <span class="stat-label mono">Intents</span>
+          <span id="stat-intents" class="stat-value mono">—</span>
+        </div>
+        <div class="stat-group">
+          <span class="stat-label mono">Context</span>
+          <span id="stat-context" class="stat-value mono">—</span>
+        </div>
+        <div class="stat-group" style="margin-left:auto">
+          <span class="stat-label mono">Latency</span>
+          <span id="stat-latency" class="stat-value mono" style="color:var(--teal)">—</span>
         </div>
       </div>
     </div>
 
     <!-- Social proof -->
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-8 mt-16" data-reveal>
-      <div class="flex -space-x-2">
-        {[1,2,3,4,5].map(i => (
-          <div class="w-8 h-8 rounded-full border-2 border-void bg-panel flex items-center justify-center text-[11px] font-mono text-teal">
-            {String.fromCharCode(64 + i)}
-          </div>
+    <div class="social-proof reveal reveal-d6">
+      <div class="avatars">
+        {['O','A','T','J','M'].map((l, i) => (
+          <div class="avatar" style={`z-index:${5-i}`}>{l}</div>
         ))}
       </div>
-      <p class="font-mono text-[12px] text-ink-muted">
-        Used by engineers at <span class="text-ink">Anthropic, OpenAI, and Linear</span>
+      <p class="proof-text mono">
+        Trusted by engineers at <strong>Anthropic, OpenAI, Vercel</strong>
       </p>
     </div>
   </div>
 
   <!-- Scroll indicator -->
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-    <span class="font-mono text-[10px] text-teal/30 tracking-widest uppercase">Scroll</span>
-    <svg class="w-4 h-4 text-teal/30" viewBox="0 0 16 16" fill="none">
-      <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span class="mono" style="font-size:10px;color:rgba(0,229,160,0.25);letter-spacing:0.12em;text-transform:uppercase;margin-top:8px">Scroll</span>
   </div>
 </section>
 
+<style>
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 120px 24px 80px;
+  }
+
+  #particle-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 600px;
+    background: radial-gradient(ellipse at center, rgba(0,229,160,0.065) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: rgba(0,229,160,0.18);
+    border-style: solid;
+    z-index: 2;
+  }
+  .corner.tl { top: 80px; left: 24px; border-width: 1px 0 0 1px; }
+  .corner.tr { top: 80px; right: 24px; border-width: 1px 1px 0 0; }
+  .corner.bl { bottom: 24px; left: 24px; border-width: 0 0 1px 1px; }
+  .corner.br { bottom: 24px; right: 24px; border-width: 0 1px 1px 0; }
+
+  .hero-inner {
+    position: relative;
+    z-index: 3;
+    max-width: 900px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px;
+    border: 1px solid rgba(0,229,160,0.2);
+    background: rgba(0,229,160,0.05);
+    border-radius: 100px;
+    margin-bottom: 40px;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,229,160,0.3); }
+    50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(0,229,160,0); }
+  }
+
+  .headline-block {
+    margin-bottom: 28px;
+  }
+
+  .headline {
+    font-size: clamp(52px, 7vw, 88px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .headline-accent {
+    color: transparent;
+    background: linear-gradient(135deg, var(--teal) 0%, #4ADE80 50%, var(--teal) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 200% auto;
+    animation: shimmer 4s linear infinite;
+    margin-bottom: 32px;
+  }
+
+  .subheadline {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .hero-ctas {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+
+  .cta-primary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: var(--teal);
+    color: #050507;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+  }
+
+  .cta-primary:hover {
+    background: var(--teal-dim);
+    box-shadow: 0 0 40px rgba(0,229,160,0.3), 0 4px 20px rgba(0,229,160,0.2);
+    transform: translateY(-2px);
+  }
+
+  .cta-badge {
+    padding: 2px 8px;
+    background: rgba(5,5,7,0.25);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .cta-secondary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border: 1px solid var(--border-bright);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+  }
+
+  .cta-secondary:hover {
+    border-color: rgba(0,229,160,0.3);
+    color: var(--text-primary);
+    background: rgba(0,229,160,0.04);
+    transform: translateY(-2px);
+  }
+
+  .cta-price {
+    color: rgba(0,229,160,0.7);
+    font-size: 12px;
+  }
+
+  /* Demo window */
+  .demo-container {
+    width: 100%;
+    max-width: 860px;
+    border-radius: 16px;
+    border: 1px solid var(--border-bright);
+    background: var(--surface);
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(0,229,160,0.04), 0 40px 120px rgba(0,0,0,0.6), 0 0 80px rgba(0,229,160,0.04);
+    margin-bottom: 48px;
+  }
+
+  .window-chrome {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--elevated);
+  }
+
+  .window-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+  .dot.red { background: #FF5F56; }
+  .dot.yellow { background: #FFBD2E; }
+  .dot.green { background: #27C93F; }
+
+  .window-title {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .window-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  .demo-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 320px;
+  }
+
+  .demo-pane {
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .demo-input-pane {
+    border-right: 1px solid var(--border);
+  }
+
+  .demo-pipeline-pane {
+    background: rgba(0,0,0,0.15);
+  }
+
+  .pane-label {
+    font-size: 10px;
+    color: rgba(0,229,160,0.45);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .input-area {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.7;
+    min-height: 60px;
+  }
+
+  .demo-typed { color: var(--text-primary); }
+
+  .cursor-blink {
+    color: var(--teal);
+    animation: blink-cursor 1s step-end infinite;
+    font-weight: 300;
+  }
+
+  .scan-line {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,160,0.5), transparent);
+    animation: scan-line 3s ease-in-out infinite;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* Pipeline stages */
+  .stages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .stage-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.18;
+    transition: opacity 0.4s ease;
+  }
+
+  .stage-row.active {
+    opacity: 1;
+  }
+
+  .stage-num {
+    font-size: 10px;
+    color: var(--text-muted);
+    width: 18px;
+    flex-shrink: 0;
+  }
+
+  .stage-bar {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stage-row.active .stage-bar::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--stage-color);
+    animation: slide-right 0.5s ease forwards;
+  }
+
+  .stage-label {
+    font-size: 10px;
+    color: var(--stage-color);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .stage-check {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--stage-color);
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .stage-row.active .stage-check {
+    opacity: 1;
+  }
+
+  .demo-output {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .demo-output.visible {
+    opacity: 1;
+  }
+
+  .demo-output-text {
+    font-size: 11px;
+    color: rgba(0,229,160,0.8);
+    line-height: 1.7;
+  }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 10px 22px;
+    border-top: 1px solid var(--border);
+    background: var(--elevated);
+  }
+
+  .stat-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .stat-value {
+    font-size: 10px;
+    color: var(--text-primary);
+  }
+
+  /* Social proof */
+  .social-proof {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .avatars {
+    display: flex;
+  }
+
+  .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--elevated);
+    border: 2px solid var(--base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--teal);
+    margin-left: -8px;
+    position: relative;
+  }
+
+  .avatar:first-child { margin-left: 0; }
+
+  .proof-text {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .proof-text strong { color: var(--text-secondary); font-weight: 500; }
+
+  /* Scroll hint */
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 3;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(180deg, var(--teal) 0%, transparent 100%);
+    opacity: 0.25;
+    animation: float 2s ease-in-out infinite;
+  }
+
+  @media (max-width: 768px) {
+    .demo-split { grid-template-columns: 1fr; }
+    .demo-input-pane { border-right: none; border-bottom: 1px solid var(--border); }
+    .headline { font-size: clamp(40px, 10vw, 64px); }
+    .hero-ctas { flex-direction: column; width: 100%; }
+    .cta-primary, .cta-secondary { width: 100%; justify-content: center; }
+  }
+</style>
+
 <script>
-  const examples = [
+  // ── Particle canvas ──────────────────────────────────────────────
+  const canvas = document.getElementById('particle-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+
+  let W = 0, H = 0;
+  const particles: Array<{
+    x: number; y: number; vx: number; vy: number;
+    r: number; alpha: number; pulse: number;
+  }> = [];
+
+  const PARTICLE_COUNT = 60;
+  const CONNECT_DIST = 160;
+
+  function resize() {
+    W = canvas.offsetWidth;
+    H = canvas.offsetHeight;
+    canvas.width = W * devicePixelRatio;
+    canvas.height = H * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+  }
+
+  function initParticles() {
+    particles.length = 0;
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: Math.random() * 1.5 + 0.5,
+        alpha: Math.random() * 0.4 + 0.1,
+        pulse: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  let raf = 0;
+  function tick() {
+    ctx.clearRect(0, 0, W, H);
+
+    const t = Date.now() * 0.001;
+
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.pulse += 0.02;
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+
+      const a = p.alpha * (0.7 + 0.3 * Math.sin(p.pulse));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,229,160,${a})`;
+      ctx.fill();
+    });
+
+    // Draw connections
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < CONNECT_DIST) {
+          const alpha = (1 - d / CONNECT_DIST) * 0.12;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0,229,160,${alpha})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+
+    raf = requestAnimationFrame(tick);
+  }
+
+  const resizeObs = new ResizeObserver(() => {
+    resize();
+    initParticles();
+  });
+  resizeObs.observe(canvas);
+  resize();
+  initParticles();
+  tick();
+
+  // ── Demo automation ──────────────────────────────────────────────
+  interface Example {
+    input: string;
+    tier: string;
+    intents: string;
+    context: string;
+    output: string;
+  }
+
+  const examples: Example[] = [
     {
-      input: 'fix the login bug and also add better error messages',
-      output: 'Resolve authentication failure for edge case: [SESSION_INVALID state]. Implement structured error taxonomy: distinguish between (1) credential mismatch, (2) session expiry, (3) rate-limit exceeded. Return actionable user-facing string per class. Preserve existing happy-path behavior.',
+      input: 'fix the login bug and also make the errors better',
       tier: 'COMPLEX',
       intents: '2',
       context: '1 entity',
+      output: 'Resolve auth failure for SESSION_INVALID state. Implement error taxonomy: credential mismatch, expiry, rate-limit. Return actionable user-facing string per class. Preserve happy-path behavior.',
     },
     {
       input: 'write tests for the auth module',
-      output: 'Generate comprehensive test suite for authentication module. Coverage requirements: (1) unit tests for token validation, (2) integration tests for session lifecycle, (3) edge cases: expired tokens, malformed JWTs, concurrent sessions. Use AAA pattern. Mock external dependencies.',
       tier: 'STANDARD',
       intents: '1',
       context: '2 entities',
+      output: 'Generate test suite for authentication module. Coverage: unit (token validation), integration (session lifecycle), edge cases (expired tokens, malformed JWTs). Use AAA pattern. Mock external deps.',
     },
     {
       input: 'what does this function do',
-      output: 'Explain the purpose, inputs, outputs, and side effects of the specified function. Include: parameter types, return value, error conditions, and a one-line summary suitable for documentation.',
       tier: 'SIMPLE',
       intents: '1',
       context: '0 entities',
+      output: 'Explain purpose, inputs, outputs, and side effects of the specified function. Include parameter types, return value, and a one-line doc summary.',
     },
   ];
 
-  let currentExample = 0;
-  let charIndex = 0;
-  let isTyping = false;
-  let pipelineStep = 0;
+  let exIdx = 0;
 
-  function resetPipeline() {
-    for (let i = 1; i <= 7; i++) {
-      const stage = document.getElementById(`stage-${i}`)!;
-      const check = document.getElementById(`stage-${i}-check`)!;
-      stage.style.opacity = '0.2';
-      check.querySelector('svg')!.style.opacity = '0';
-    }
-    const outputEl = document.getElementById('output-result')!;
-    outputEl.style.opacity = '0';
-    document.getElementById('output-text')!.textContent = '';
-    document.getElementById('latency-output')!.textContent = '0ms';
+  function getEls() {
+    return {
+      typed: document.getElementById('typed') as HTMLElement,
+      stages: document.querySelectorAll('.stage-row') as NodeListOf<HTMLElement>,
+      output: document.getElementById('demo-output') as HTMLElement,
+      outputText: document.getElementById('output-text') as HTMLElement,
+      tier: document.getElementById('stat-tier') as HTMLElement,
+      intents: document.getElementById('stat-intents') as HTMLElement,
+      context: document.getElementById('stat-context') as HTMLElement,
+      latency: document.getElementById('stat-latency') as HTMLElement,
+    };
   }
 
-  async function runPipeline(example: typeof examples[0]) {
-    const tierEl = document.getElementById('tier-output')!;
-    const intentEl = document.getElementById('intent-output')!;
-    const contextEl = document.getElementById('context-output')!;
-    const latencyEl = document.getElementById('latency-output')!;
-
-    tierEl.textContent = example.tier;
-    intentEl.textContent = example.intents;
-    contextEl.textContent = example.context;
-
-    let elapsed = 0;
-    for (let i = 1; i <= 7; i++) {
-      await new Promise(r => setTimeout(r, 280));
-      elapsed += Math.floor(Math.random() * 40 + 20);
-      const stage = document.getElementById(`stage-${i}`)!;
-      const check = document.getElementById(`stage-${i}-check`)!;
-      stage.style.opacity = '1';
-      check.querySelector('svg')!.style.opacity = '1';
-      latencyEl.textContent = `${elapsed}ms`;
-    }
-
-    await new Promise(r => setTimeout(r, 200));
-
-    const outputEl = document.getElementById('output-result')!;
-    const outputText = document.getElementById('output-text')!;
-    outputEl.style.opacity = '1';
-
-    // Type the output
-    let outIndex = 0;
-    const typeOutput = setInterval(() => {
-      outputText.textContent = example.output.slice(0, outIndex);
-      outIndex += 3;
-      if (outIndex >= example.output.length) {
-        outputText.textContent = example.output;
-        clearInterval(typeOutput);
-      }
-    }, 12);
+  async function sleep(ms: number) {
+    return new Promise(r => setTimeout(r, ms));
   }
 
-  async function typeInput(text: string) {
-    const el = document.getElementById('typed-text')!;
+  async function typeText(el: HTMLElement, text: string) {
     el.textContent = '';
-
     for (let i = 0; i <= text.length; i++) {
       el.textContent = text.slice(0, i);
-      await new Promise(r => setTimeout(r, 45 + Math.random() * 30));
+      await sleep(40 + Math.random() * 25);
     }
   }
 
   async function runDemo() {
-    const example = examples[currentExample % examples.length];
-    currentExample++;
+    const ex = examples[exIdx % examples.length];
+    exIdx++;
 
-    resetPipeline();
-    await new Promise(r => setTimeout(r, 600));
-    await typeInput(example.input);
-    await new Promise(r => setTimeout(r, 400));
-    await runPipeline(example);
-    await new Promise(r => setTimeout(r, 4000));
+    const els = getEls();
+
+    // Reset
+    els.stages.forEach(s => s.classList.remove('active'));
+    els.output.classList.remove('visible');
+    els.outputText.textContent = '';
+    els.tier.textContent = '—';
+    els.intents.textContent = '—';
+    els.context.textContent = '—';
+    els.latency.textContent = '0ms';
+
+    await sleep(500);
+    els.tier.textContent = ex.tier;
+    els.intents.textContent = ex.intents;
+    els.context.textContent = ex.context;
+
+    await typeText(els.typed, ex.input);
+    await sleep(400);
+
+    let elapsed = 0;
+    for (let i = 0; i < els.stages.length; i++) {
+      await sleep(260);
+      els.stages[i].classList.add('active');
+      elapsed += Math.floor(Math.random() * 45 + 18);
+      els.latency.textContent = `${elapsed}ms`;
+    }
+
+    await sleep(180);
+    els.output.classList.add('visible');
+
+    // Type output
+    let outIdx = 0;
+    const outputInterval = setInterval(() => {
+      els.outputText.textContent = ex.output.slice(0, outIdx);
+      outIdx += 4;
+      if (outIdx >= ex.output.length) {
+        els.outputText.textContent = ex.output;
+        clearInterval(outputInterval);
+      }
+    }, 14);
+
+    await sleep(5500);
     runDemo();
   }
 
-  // Start demo after page load
-  setTimeout(runDemo, 1200);
+  setTimeout(runDemo, 900);
 </script>

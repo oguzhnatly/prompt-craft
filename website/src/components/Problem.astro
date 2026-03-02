@@ -1,0 +1,345 @@
+---
+---
+
+<section id="problem" class="problem-section grid-bg">
+  <div class="container">
+
+    <div class="section-tag reveal">
+      <span class="mono">The Problem</span>
+    </div>
+
+    <h2 class="section-title reveal reveal-d1">
+      The gap between<br />
+      <span class="gradient-text">intent and instruction.</span>
+    </h2>
+
+    <p class="section-desc reveal reveal-d2">
+      Language models reward precision. Humans think in shorthand.
+      Every ambiguous word costs you quality. Every missing context costs you accuracy.
+    </p>
+
+    <!-- Comparison -->
+    <div class="comparison reveal reveal-d3">
+
+      <!-- Before -->
+      <div class="compare-card compare-before">
+        <div class="card-label mono">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Without PromptCraft
+        </div>
+        <div class="compare-prompt">
+          <div class="prompt-line bad">
+            <span class="mono prompt-text">"fix the login thing and also maybe check why users are getting logged out"</span>
+          </div>
+        </div>
+        <div class="compare-issues">
+          <div class="issue-item">
+            <span class="issue-icon">✗</span>
+            <span class="mono issue-text">Vague verb: "fix" — no specificity</span>
+          </div>
+          <div class="issue-item">
+            <span class="issue-icon">✗</span>
+            <span class="mono issue-text">Compound intent — two problems merged</span>
+          </div>
+          <div class="issue-item">
+            <span class="issue-icon">✗</span>
+            <span class="mono issue-text">"maybe" — uncertainty bleeds into output</span>
+          </div>
+          <div class="issue-item">
+            <span class="issue-icon">✗</span>
+            <span class="mono issue-text">Zero context — no codebase, no error, no scope</span>
+          </div>
+        </div>
+        <div class="compare-result bad-result">
+          <div class="mono result-label">Model output quality</div>
+          <div class="quality-bar-track">
+            <div class="quality-bar bad-bar"></div>
+          </div>
+          <span class="mono quality-pct bad-pct">34%</span>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="compare-arrow">
+        <div class="arrow-glow"></div>
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M4 16h24M20 8l8 8-8 8" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="mono" style="font-size:11px;color:var(--teal);letter-spacing:0.06em;text-align:center">RMPA<br/>ENGINE</span>
+      </div>
+
+      <!-- After -->
+      <div class="compare-card compare-after">
+        <div class="card-label mono good-label">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M2 5l2.5 2.5L8 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          With PromptCraft
+        </div>
+        <div class="compare-prompt">
+          <div class="prompt-line good">
+            <span class="mono prompt-text">"Resolve auth token invalidation on session resume. Investigate: (1) token refresh race condition on concurrent requests, (2) Redis TTL mismatch on user.sessions. Preserve SSO flow. Return root cause + minimal fix."</span>
+          </div>
+        </div>
+        <div class="compare-issues">
+          <div class="issue-item good-item">
+            <span class="issue-icon good-icon">✓</span>
+            <span class="mono issue-text">Intent decomposed into 2 discrete tasks</span>
+          </div>
+          <div class="issue-item good-item">
+            <span class="issue-icon good-icon">✓</span>
+            <span class="mono issue-text">Technical entities injected from context</span>
+          </div>
+          <div class="issue-item good-item">
+            <span class="issue-icon good-icon">✓</span>
+            <span class="mono issue-text">Scope defined — SSO preserved</span>
+          </div>
+          <div class="issue-item good-item">
+            <span class="issue-icon good-icon">✓</span>
+            <span class="mono issue-text">Output format specified — root cause + fix</span>
+          </div>
+        </div>
+        <div class="compare-result good-result">
+          <div class="mono result-label">Model output quality</div>
+          <div class="quality-bar-track">
+            <div class="quality-bar good-bar"></div>
+          </div>
+          <span class="mono quality-pct good-pct">97%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .problem-section {
+    padding: 120px 24px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--teal);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    padding: 5px 12px;
+    border: 1px solid rgba(0,229,160,0.18);
+    border-radius: 100px;
+    background: rgba(0,229,160,0.05);
+  }
+
+  .section-title {
+    font-size: clamp(40px, 5vw, 60px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    max-width: 700px;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--teal), #818CF8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .section-desc {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: 64px;
+  }
+
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr;
+    gap: 0;
+    align-items: center;
+  }
+
+  .compare-card {
+    padding: 28px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .compare-before {
+    border-color: rgba(239,68,68,0.2);
+    background: rgba(239,68,68,0.03);
+  }
+
+  .compare-after {
+    border-color: rgba(0,229,160,0.2);
+    background: rgba(0,229,160,0.03);
+  }
+
+  .card-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    color: rgba(239,68,68,0.8);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .good-label { color: var(--teal); }
+
+  .compare-prompt {
+    margin-bottom: 24px;
+  }
+
+  .prompt-text {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  .prompt-line {
+    padding: 14px 16px;
+    border-radius: 8px;
+    border-left: 3px solid rgba(239,68,68,0.5);
+    background: rgba(239,68,68,0.05);
+  }
+
+  .prompt-line.good {
+    border-left-color: rgba(0,229,160,0.5);
+    background: rgba(0,229,160,0.04);
+  }
+
+  .compare-issues {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .issue-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .issue-icon {
+    font-size: 12px;
+    color: rgba(239,68,68,0.7);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .good-icon { color: var(--teal); }
+
+  .issue-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .compare-result {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .result-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .quality-bar-track {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.06);
+    overflow: hidden;
+  }
+
+  .quality-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .bad-bar {
+    width: 0%;
+    background: rgba(239,68,68,0.6);
+  }
+
+  .good-bar {
+    width: 0%;
+    background: var(--teal);
+  }
+
+  .comparison.in-view .bad-bar { width: 34%; }
+  .comparison.in-view .good-bar { width: 97%; }
+
+  .quality-pct {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .bad-pct { color: rgba(239,68,68,0.8); }
+  .good-pct { color: var(--teal); }
+
+  .compare-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+  }
+
+  .arrow-glow {
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,160,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    .comparison {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .compare-arrow {
+      flex-direction: row;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  // Animate quality bars when in view
+  const comparison = document.querySelector('.comparison');
+  if (comparison) {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in-view');
+        }
+      });
+    }, { threshold: 0.3 });
+    obs.observe(comparison);
+  }
+</script>

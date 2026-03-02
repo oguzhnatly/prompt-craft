@@ -1,0 +1,97 @@
+---
+const providers = [
+  { name: 'Claude', sub: 'Anthropic' },
+  { name: 'GPT-4o', sub: 'OpenAI' },
+  { name: 'DeepSeek V3', sub: 'DeepSeek' },
+  { name: 'Ollama', sub: 'Local Models' },
+  { name: 'Alfred', sub: 'Workflow' },
+  { name: 'Raycast', sub: 'Extension' },
+  { name: 'macOS', sub: 'Menu Bar' },
+  { name: 'Keygen', sub: 'Licensing' },
+];
+---
+
+<section class="marquee-section ambient-top">
+  <div class="marquee-track">
+    <div class="marquee-items" id="marquee-items">
+      {[...providers, ...providers].map(p => (
+        <div class="marquee-item">
+          <span class="item-name mono">{p.name}</span>
+          <span class="item-sub mono">{p.sub}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+  <div class="fade-left"></div>
+  <div class="fade-right"></div>
+</section>
+
+<style>
+  .marquee-section {
+    position: relative;
+    overflow: hidden;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .marquee-track {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .marquee-items {
+    display: inline-flex;
+    gap: 0;
+    animation: marquee-scroll 28s linear infinite;
+  }
+
+  @keyframes marquee-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .marquee-items:hover {
+    animation-play-state: paused;
+  }
+
+  .marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 32px;
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .item-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+  }
+
+  .item-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .fade-left, .fade-right {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 120px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .fade-left {
+    left: 0;
+    background: linear-gradient(90deg, var(--surface), transparent);
+  }
+
+  .fade-right {
+    right: 0;
+    background: linear-gradient(270deg, var(--surface), transparent);
+  }
+</style>

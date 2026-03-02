@@ -3,10 +3,6 @@ export interface Env {
   CLAUDE_API_KEY: string;
   DEEPSEEK_API_KEY: string;
   OPENAI_API_KEY: string;
-  KEYGEN_ACCOUNT_ID: string;
-  KEYGEN_PRODUCT_TOKEN: string;
-  KEYGEN_PRO_POLICY_ID: string;
-  KEYGEN_CLOUD_POLICY_ID: string;
   STRIPE_WEBHOOK_SECRET: string;
   STRIPE_SECRET_KEY: string;
   RESEND_API_KEY: string;

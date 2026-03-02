@@ -1,0 +1,71 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base title="Terms of Service — PromptCraft" description="PromptCraft terms of service.">
+  <Nav />
+  <main style="padding-top: 100px; padding-bottom: 80px; min-height: 100vh; background: var(--base);">
+    <div style="max-width: 720px; margin: 0 auto; padding: 0 24px;">
+
+      <div style="margin-bottom: 48px;">
+        <span class="mono" style="font-size:11px;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;display:block">Legal</span>
+        <h1 style="font-size:clamp(40px,5vw,56px);font-weight:900;letter-spacing:-0.04em;color:var(--text-primary);margin-bottom:16px">Terms of Service</h1>
+        <p class="mono" style="font-size:13px;color:var(--text-muted)">Last updated: March 2, 2026</p>
+      </div>
+
+      <div class="prose">
+        <h2>License</h2>
+        <p>PromptCraft is proprietary commercial software. Purchasing a license grants you a non-exclusive, non-transferable right to use PromptCraft on the number of machines specified by your license tier.</p>
+        <ul>
+          <li><strong>Pro License:</strong> Up to 3 machines. Perpetual. No subscription required.</li>
+          <li><strong>Cloud License:</strong> Up to 5 machines. Monthly subscription. Access to the cloud relay and context memory features.</li>
+        </ul>
+
+        <h2>Permitted use</h2>
+        <p>You may use PromptCraft for personal and commercial purposes on machines you own or control. You may not redistribute, reverse engineer, or resell PromptCraft or its license keys.</p>
+
+        <h2>Refunds</h2>
+        <p>We offer a 30-day money-back guarantee on Pro licenses. For Cloud subscriptions, you may cancel at any time. Refunds for Cloud subscriptions are handled on a case-by-case basis. Contact <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a>.</p>
+
+        <h2>Service availability</h2>
+        <p>The Cloud relay is provided on a best-effort basis. We do not guarantee 100% uptime. Scheduled maintenance will be announced where possible. The local Pro tier is not affected by service availability.</p>
+
+        <h2>Prohibited conduct</h2>
+        <p>You may not use PromptCraft to generate illegal content, circumvent AI safety systems, or violate the terms of service of any AI provider integrated with PromptCraft.</p>
+
+        <h2>Changes</h2>
+        <p>We may update these terms. Continued use of PromptCraft after changes constitutes acceptance of the new terms. Major changes will be communicated by email.</p>
+
+        <h2>Contact</h2>
+        <p>Questions: <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a></p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .prose h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin: 40px 0 14px;
+  }
+  .prose p, .prose li {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+  .prose ul {
+    padding-left: 24px;
+    margin-bottom: 14px;
+  }
+  .prose li { margin-bottom: 8px; }
+  .prose strong { color: var(--text-primary); font-weight: 600; }
+  .prose a { color: var(--teal); }
+  .prose a:hover { opacity: 0.8; }
+</style>

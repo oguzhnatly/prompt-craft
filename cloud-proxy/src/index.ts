@@ -23,7 +23,7 @@ export default {
 
     // --- Stripe webhook ---
     if (url.pathname === "/webhooks/stripe" && request.method === "POST") {
-      return handleStripeWebhook(request, env, ctx);
+      return handleStripeWebhook(request, env);
     }
 
     // --- Model list endpoints ---

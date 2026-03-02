@@ -1,0 +1,256 @@
+---
+---
+
+<section id="creator" class="creator-section ambient-top">
+  <div class="container">
+    <div class="creator-inner reveal">
+
+      <!-- Left: Bio -->
+      <div class="creator-bio">
+        <div class="section-tag mono">Built by</div>
+
+        <h2 class="creator-name">Oguzhan Atalay</h2>
+        <p class="creator-title mono">Senior Full Stack Engineer · Independent Builder</p>
+
+        <p class="creator-desc">
+          I've spent years building and shipping production software. PromptCraft was built because I
+          needed it. Every engineering team using AI loses hours daily to bad prompts that produce bad
+          output. The RMPA architecture is the systematic fix I couldn't find anywhere else.
+        </p>
+
+        <div class="creator-stack">
+          <span class="stack-item mono">TypeScript</span>
+          <span class="stack-item mono">Swift</span>
+          <span class="stack-item mono">Next.js</span>
+          <span class="stack-item mono">Cloudflare Workers</span>
+          <span class="stack-item mono">Expo</span>
+        </div>
+
+        <div class="creator-links">
+          <a href="https://github.com/oguzhnatly" target="_blank" rel="noopener" class="creator-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            @oguzhnatly
+          </a>
+          <a href="https://linkedin.com/in/oguzhnatly" target="_blank" rel="noopener" class="creator-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+              <circle cx="4" cy="4" r="2"/>
+            </svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Stats -->
+      <div class="creator-stats">
+        {[
+          { value: '7', label: 'Pipeline stages', sub: 'deterministic' },
+          { value: '123', label: 'Tests passing', sub: 'xcodebuild' },
+          { value: '3', label: 'Extensions', sub: 'Alfred · Raycast · CLI' },
+          { value: '4', label: 'AI Providers', sub: 'Claude · GPT · DS · Ollama' },
+        ].map(stat => (
+          <div class="stat-card">
+            <div class="stat-number mono">{stat.value}</div>
+            <div class="stat-label">{stat.label}</div>
+            <div class="stat-sub mono">{stat.sub}</div>
+          </div>
+        ))}
+
+        <!-- RMPA Architecture note -->
+        <div class="arch-note">
+          <div class="arch-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="7" cy="7" r="6" stroke="var(--teal)" stroke-width="1" stroke-dasharray="2 1.5" opacity="0.6"/>
+              <circle cx="7" cy="7" r="2" fill="var(--teal)"/>
+            </svg>
+          </div>
+          <p class="mono arch-text">
+            RMPA whitepaper available on GitHub. Architecture and algorithm documented in full.
+          </p>
+          <a href="https://github.com/oguzhnatly/prompt-craft/blob/main/docs/RMPA_WHITEPAPER.md" target="_blank" class="arch-link mono">
+            Read whitepaper →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .creator-section {
+    padding: 120px 24px;
+    background: var(--surface);
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .creator-inner {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .section-tag {
+    font-size: 11px;
+    color: var(--teal);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .creator-name {
+    font-size: clamp(36px, 4vw, 52px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .creator-title {
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 0.04em;
+    margin-bottom: 28px;
+  }
+
+  .creator-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 28px;
+    max-width: 480px;
+  }
+
+  .creator-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .stack-item {
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--elevated);
+    letter-spacing: 0.04em;
+  }
+
+  .creator-links {
+    display: flex;
+    gap: 16px;
+  }
+
+  .creator-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--elevated);
+    transition: all 0.2s;
+  }
+
+  .creator-link:hover {
+    color: var(--text-primary);
+    border-color: rgba(0,229,160,0.2);
+    background: rgba(0,229,160,0.04);
+    transform: translateY(-2px);
+  }
+
+  /* Stats */
+  .creator-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--elevated);
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .stat-card:hover {
+    border-color: rgba(0,229,160,0.2);
+    transform: translateY(-3px);
+  }
+
+  .stat-number {
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .arch-note {
+    grid-column: span 2;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,229,160,0.15);
+    background: rgba(0,229,160,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .arch-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(0,229,160,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .arch-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+  }
+
+  .arch-link {
+    font-size: 12px;
+    color: var(--teal);
+    letter-spacing: 0.04em;
+    transition: opacity 0.2s;
+  }
+
+  .arch-link:hover { opacity: 0.7; }
+
+  @media (max-width: 960px) {
+    .creator-inner { grid-template-columns: 1fr; gap: 48px; }
+  }
+</style>

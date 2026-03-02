@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base title="Privacy Policy — PromptCraft" description="PromptCraft privacy policy. We collect the minimum possible. Your prompts are never stored.">
+  <Nav />
+  <main style="padding-top: 100px; padding-bottom: 80px; min-height: 100vh; background: var(--base);">
+    <div style="max-width: 720px; margin: 0 auto; padding: 0 24px;">
+
+      <div style="margin-bottom: 48px;">
+        <span class="mono" style="font-size:11px;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;display:block">Legal</span>
+        <h1 style="font-size:clamp(40px,5vw,56px);font-weight:900;letter-spacing:-0.04em;color:var(--text-primary);margin-bottom:16px">Privacy Policy</h1>
+        <p class="mono" style="font-size:13px;color:var(--text-muted)">Last updated: March 2, 2026</p>
+      </div>
+
+      <div class="prose">
+        <h2>What we collect</h2>
+        <p>We collect the minimum possible information to operate PromptCraft:</p>
+        <ul>
+          <li><strong>Email address</strong> — to deliver your license key and send renewal notices.</li>
+          <li><strong>License metadata</strong> — your license key, tier (Pro or Cloud), and activated machine count. No machine identifiers are stored in readable form.</li>
+          <li><strong>Stripe payment data</strong> — handled entirely by Stripe. We never see or store your card details.</li>
+        </ul>
+
+        <h2>What we never collect</h2>
+        <ul>
+          <li>Your prompts, requests, or model outputs are <strong>never stored, logged, or analyzed</strong>.</li>
+          <li>We do not track your behavior, usage patterns, or session content.</li>
+          <li>We do not use analytics, tracking pixels, or third-party monitoring tools on this website.</li>
+        </ul>
+
+        <h2>Cloud proxy</h2>
+        <p>When you use PromptCraft Cloud, your requests are relayed through our Cloudflare Workers proxy to the AI provider of your choice. We log only: a hash of your license key, the provider name, HTTP status code, and latency in milliseconds. <strong>No content is logged.</strong></p>
+
+        <h2>Data storage</h2>
+        <p>License data is stored in Cloudflare KV, distributed globally across Cloudflare's infrastructure. Email addresses are used only to deliver your license key and are stored with your license record. We do not sell, rent, or share your email with third parties.</p>
+
+        <h2>Cookies</h2>
+        <p>This website uses no cookies. No tracking. No analytics. No third-party scripts except Google Fonts (loaded at page render from fonts.googleapis.com).</p>
+
+        <h2>Data deletion</h2>
+        <p>To delete your data, email <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a>. We will delete your license record and email address within 7 days. Note: deleting your data will deactivate your license.</p>
+
+        <h2>Contact</h2>
+        <p>Questions about privacy: <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a></p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .prose h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin: 40px 0 14px;
+  }
+  .prose p, .prose li {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+  .prose ul {
+    padding-left: 24px;
+    margin-bottom: 14px;
+  }
+  .prose li { margin-bottom: 8px; }
+  .prose strong { color: var(--text-primary); font-weight: 600; }
+  .prose a { color: var(--teal); }
+  .prose a:hover { opacity: 0.8; }
+</style>
