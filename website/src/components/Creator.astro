@@ -1,202 +1,115 @@
 ---
 ---
-<section class="section creator-section">
-  <div class="container">
-    <div class="creator-inner" data-reveal>
-      <div class="creator-left">
-        <div class="badge" style="margin-bottom:28px">BUILT BY</div>
-        <h2 class="creator-name syne">Oguzhan Atalay</h2>
-        <p class="creator-role mono">Senior Full-Stack Engineer · Independent</p>
-        <p class="creator-bio">
-          Five years building production systems across Europe and the United States.
-          PromptCraft started as a personal frustration — spending more time reformulating
-          AI prompts than using the outputs. The RMPA pipeline is the result of 18 months
-          of studying how language models fail to understand intent, and what structure
-          is required to eliminate that failure.
+<section id="creator" aria-labelledby="creator-heading">
+  <div class="wrap cr-wrap">
+
+    <!-- Big pull quote -->
+    <div class="cr-quote-block" data-reveal>
+      <svg class="crq-mark" viewBox="0 0 48 36" fill="none" aria-hidden="true">
+        <path d="M0 36V22.5C0 10.1 7.2 3 21.6 0L24 4.2C17.4 6 14.1 9.6 14.4 15H22.8V36H0zM25.2 36V22.5C25.2 10.1 32.4 3 46.8 0L49.2 4.2C42.6 6 39.3 9.6 39.6 15H48V36H25.2z" fill="var(--acc-low)"/>
+      </svg>
+      <blockquote>
+        <p class="crq-text">
+          "I got tired of starting every AI conversation with a three-paragraph context dump.
+          I was spending more time writing the setup than writing the actual work.
+          PromptCraft started as a one-file Swift script. When it started saving me forty minutes a day,
+          I turned it into a real app."
         </p>
-        <div class="creator-quote">
-          <div class="cq-bar"></div>
-          <p class="cq-text">
-            "The gap between what you type and what the AI understands is not a language problem —
-            it is an architecture problem. RMPA is the architecture."
-          </p>
-        </div>
-        <div class="creator-links">
-          <a href="https://github.com/oguzhnatly" target="_blank" rel="noopener" class="cl-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.09.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.742 0 .267.18.577.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
-            @oguzhnatly
-          </a>
-          <a href="https://github.com/oguzhnatly/prompt-craft/blob/main/docs/RMPA_WHITEPAPER.md" target="_blank" rel="noopener" class="cl-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 2v6h6M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            RMPA Whitepaper
-          </a>
-        </div>
+        <footer class="crq-footer">
+          <div class="crq-meta">
+            <span class="crq-name">Oguzhan Atalay</span>
+            <span class="crq-role mono">@oguzhnatly · Lisbon, Portugal</span>
+          </div>
+          <div id="creator-heading" class="crq-stats">
+            <span><strong>265</strong> GitHub stars on flutter_carplay</span>
+            <span><strong>12+</strong> products shipped</span>
+            <span><strong>5+</strong> years full-stack engineering</span>
+          </div>
+        </footer>
+      </blockquote>
+    </div>
+
+    <!-- Timeline + links -->
+    <div class="cr-bottom" data-reveal data-d="2">
+      <div class="cr-timeline">
+        {[
+          { when: '2024 Q1', what: 'First prototype — a menu bar app that prepended a role prompt to every request. One file of Swift. Worked immediately.' },
+          { when: '2024 Q2', what: 'Added the style selector and context engine. Response quality was obviously better. Started showing it to other engineers.' },
+          { when: '2024 Q4', what: 'Full 7-stage pipeline, clipboard history, and the cloud proxy for provider routing without API key management.' },
+          { when: '2025',    what: 'Published. Still the only AI tool I actually keep open. Used every day, built on ever since.' },
+        ].map(t => (
+          <div class="cr-tl-row">
+            <span class="cr-tl-when mono">{t.when}</span>
+            <p class="cr-tl-what">{t.what}</p>
+          </div>
+        ))}
       </div>
 
-      <div class="creator-right">
-        <div class="creator-stats">
-          <div class="cs-item">
-            <span class="cs-n syne">5+</span>
-            <span class="cs-l mono">years production</span>
-          </div>
-          <div class="cs-item">
-            <span class="cs-n syne">12+</span>
-            <span class="cs-l mono">shipped products</span>
-          </div>
-          <div class="cs-item">
-            <span class="cs-n syne">18</span>
-            <span class="cs-l mono">months research</span>
-          </div>
-          <div class="cs-item">
-            <span class="cs-n syne">123</span>
-            <span class="cs-l mono">tests passing</span>
-          </div>
-        </div>
-
-        <div class="creator-stack">
-          <div class="cs-label mono">Stack</div>
-          <div class="cs-badges">
-            <span class="cs-badge mono">Swift</span>
-            <span class="cs-badge mono">SwiftUI</span>
-            <span class="cs-badge mono">TypeScript</span>
-            <span class="cs-badge mono">Cloudflare Workers</span>
-            <span class="cs-badge mono">Astro</span>
-            <span class="cs-badge mono">Next.js</span>
-            <span class="cs-badge mono">macOS 14+</span>
-          </div>
-        </div>
-
-        <div class="creator-whitepaper">
-          <div class="cwp-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 2v6h6M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </div>
-          <div class="cwp-text">
-            <span class="cwp-title mono">RMPA Whitepaper</span>
-            <span class="cwp-sub">The theoretical framework behind the 7-stage pipeline. Free, open access.</span>
-          </div>
-          <a href="https://github.com/oguzhnatly/prompt-craft/blob/main/docs/RMPA_WHITEPAPER.md"
-             target="_blank" rel="noopener" class="btn btn-outline" style="padding:8px 16px;font-size:12px;border-radius:8px;flex-shrink:0">
-            Read
-            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 6h6M6 3l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
+      <div class="cr-links">
+        <a href="https://twitter.com/oguzhnatly" target="_blank" rel="noopener" class="btn btn-ghost cr-link">
+          <iconify-icon icon="simple-icons:x" style="font-size:13px;" aria-hidden="true"></iconify-icon>
+          Follow the build
+        </a>
+        <a href="mailto:hello@promptcraft.app" class="btn btn-ghost cr-link">
+          <iconify-icon icon="lucide:mail" style="font-size:13px;" aria-hidden="true"></iconify-icon>
+          hello@promptcraft.app
+        </a>
       </div>
     </div>
+
   </div>
 </section>
 
 <style>
-  .creator-section {
+  #creator {
     padding: 80px 0 100px;
-    background: var(--paper-2);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    border-top: 1px solid var(--bdr); border-bottom: 1px solid var(--bdr);
   }
 
-  .creator-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px; align-items: start;
-  }
+  .cr-wrap { display: flex; flex-direction: column; gap: 56px; }
 
-  .creator-name {
-    font-size: clamp(28px, 3vw, 40px);
-    font-weight: 800; letter-spacing: -0.04em;
-    color: var(--ink); margin-bottom: 6px;
+  /* Pull quote */
+  .cr-quote-block { position: relative; padding-left: 0; }
+  .crq-mark {
+    width: 40px; height: 30px; margin-bottom: 20px; opacity: .7;
   }
+  .crq-text {
+    font-size: clamp(18px, 2.5vw, 26px);
+    font-weight: 500; letter-spacing: -0.025em; line-height: 1.5;
+    color: var(--ink2); max-width: 880px;
+  }
+  .crq-footer {
+    display: flex; align-items: flex-start; gap: 48px;
+    margin-top: 28px; flex-wrap: wrap;
+  }
+  .crq-meta { display: flex; flex-direction: column; gap: 4px; }
+  .crq-name { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+  .crq-role { font-size: 12px; color: var(--dim); }
+  .crq-stats {
+    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+    font-size: 13px; color: var(--mid);
+  }
+  .crq-stats strong { color: var(--ink); font-weight: 700; }
 
-  .creator-role {
-    font-size: 12px; color: var(--ink-3);
-    letter-spacing: 0.04em; margin-bottom: 20px;
-    display: block;
+  /* Timeline */
+  .cr-bottom { display: grid; grid-template-columns: 1fr 280px; gap: 64px; align-items: start; }
+  .cr-timeline { display: flex; flex-direction: column; gap: 0; }
+  .cr-tl-row {
+    display: grid; grid-template-columns: 100px 1fr;
+    gap: 24px; padding: 18px 0;
+    border-top: 1px solid var(--bdr);
+    align-items: start;
   }
+  .cr-tl-row:last-child { border-bottom: 1px solid var(--bdr); }
+  .cr-tl-when { font-size: 11px; font-weight: 600; color: var(--acc); letter-spacing: 0.04em; padding-top: 2px; }
+  .cr-tl-what { font-size: 14px; line-height: 1.7; color: var(--mid); }
 
-  .creator-bio {
-    font-size: 15px; line-height: 1.75;
-    color: var(--ink-2); margin-bottom: 24px;
-  }
+  .cr-links { display: flex; flex-direction: column; gap: 8px; }
+  .cr-link   { padding: 10px 18px; font-size: 13px; border-radius: 8px; }
 
-  .creator-quote {
-    display: flex; gap: 16px;
-    margin-bottom: 28px;
-    padding: 16px 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-  .cq-bar { width: 3px; border-radius: 2px; background: var(--teal); flex-shrink: 0; }
-  .cq-text { font-size: 14px; line-height: 1.65; color: var(--ink-2); font-style: italic; }
-
-  .creator-links { display: flex; gap: 16px; flex-wrap: wrap; }
-  .cl-link {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-size: 13px; font-weight: 500; color: var(--ink-2);
-    padding: 8px 14px;
-    background: white; border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    transition: border-color .15s, color .15s, box-shadow .15s;
-  }
-  .cl-link:hover {
-    color: var(--ink);
-    border-color: var(--ink-3);
-    box-shadow: 0 2px 12px rgba(12,11,24,0.06);
-  }
-
-  /* Stats */
-  .creator-stats {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg); overflow: hidden;
-    margin-bottom: 24px;
-  }
-  .cs-item {
-    display: flex; flex-direction: column; gap: 4px;
-    padding: 24px 20px;
-    background: white;
-  }
-  .cs-n {
-    font-size: 32px; font-weight: 800;
-    letter-spacing: -0.05em; color: var(--ink);
-    line-height: 1;
-  }
-  .cs-l { font-size: 11px; color: var(--ink-3); letter-spacing: 0.04em; }
-
-  /* Stack */
-  .creator-stack {
-    margin-bottom: 20px;
-  }
-  .cs-label {
-    font-size: 10px; color: var(--ink-4);
-    letter-spacing: 0.1em; text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .cs-badges { display: flex; flex-wrap: wrap; gap: 6px; }
-  .cs-badge {
-    padding: 4px 10px;
-    background: white; border: 1px solid var(--border);
-    border-radius: 6px;
-    font-size: 11px; color: var(--ink-2);
-    font-weight: 500;
-  }
-
-  /* Whitepaper */
-  .creator-whitepaper {
-    display: flex; align-items: center; gap: 14px;
-    padding: 16px;
-    background: white; border: 1px solid var(--border);
-    border-radius: var(--r-md);
-  }
-  .cwp-icon {
-    width: 36px; height: 36px;
-    background: var(--paper-2); border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--teal-d); flex-shrink: 0;
-  }
-  .cwp-text { display: flex; flex-direction: column; gap: 2px; flex: 1; }
-  .cwp-title { font-size: 12px; font-weight: 600; color: var(--ink); }
-  .cwp-sub { font-size: 11px; color: var(--ink-3); line-height: 1.4; }
-
-  @media (max-width: 768px) {
-    .creator-inner { grid-template-columns: 1fr; gap: 40px; }
+  @media (max-width: 900px) {
+    .cr-bottom { grid-template-columns: 1fr; gap: 32px; }
+    .cr-links  { flex-direction: row; flex-wrap: wrap; }
   }
 </style>

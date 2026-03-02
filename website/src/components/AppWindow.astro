@@ -1,473 +1,793 @@
 ---
-// Pixel-perfect replica of the real PromptCraft macOS popover (420×580)
-// Based directly on MainPopoverView.swift source
+// 100% accurate HTML replica of the real PromptCraft macOS app
+// Source: MainPopoverView.swift — every value extracted directly
+// App size: 420×580, fixed, dark mode
 ---
 
-<div class="mac-window" id="app-window" role="img" aria-label="PromptCraft macOS app window">
-  <!-- ── Title bar ── -->
-  <div class="win-titlebar">
-    <div class="traffic-lights" aria-hidden="true">
-      <span class="tl tl-r" title="Close"></span>
-      <span class="tl tl-y" title="Minimize"></span>
-      <span class="tl tl-g" title="Maximize"></span>
-    </div>
-    <span class="win-title mono">PromptCraft</span>
-    <div class="win-actions" aria-hidden="true">
-      <button class="win-btn" tabindex="-1" aria-hidden="true">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-          <path d="M8 2C4.69 2 2 4.69 2 8s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 2.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm0 8c-1.65 0-3.11-.84-4-2.12.02-.99 2.67-1.53 4-1.53 1.33 0 3.98.54 4 1.53A4.99 4.99 0 018 12.5z" fill="currentColor"/>
+<div class="app-win" id="app-win" role="img" aria-label="PromptCraft macOS app — interactive demo">
+
+  <!-- ── Header bar (height:44) ── -->
+  <div class="aw-header">
+    <span class="aw-title">PromptCraft</span>
+    <div class="aw-header-btns">
+      <!-- clock.arrow.circlepath -->
+      <button class="aw-icon-btn" tabindex="-1" aria-hidden="true" title="History">
+        <svg viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M8 4.5v4L10.5 10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 3.5c.5-1 1.2-1.8 2-2.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
         </svg>
       </button>
-      <button class="win-btn" tabindex="-1" aria-hidden="true">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-          <path d="M8 2a6 6 0 100 12A6 6 0 008 2zm0 2a4 4 0 110 8A4 4 0 018 4zm.75 2h-1.5v3.25L9.1 10.6l1.06-1.06-1.41-1.41V6z" fill="currentColor" opacity=".6"/>
-        </svg>
-      </button>
-      <button class="win-btn" tabindex="-1" aria-hidden="true">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-          <path d="M8.5 2.5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm.75 9h-1.5V7h1.5v4.5zm0-6h-1.5v-1.5h1.5V5.5z" fill="currentColor" opacity=".6"/>
+      <!-- gearshape -->
+      <button class="aw-icon-btn" tabindex="-1" aria-hidden="true" title="Settings">
+        <svg viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M8 1.5v1.3M8 13.2v1.3M1.5 8h1.3M13.2 8h1.3M3.4 3.4l.9.9M11.7 11.7l.9.9M12.6 3.4l-.9.9M4.3 11.7l-.9.9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
   </div>
 
-  <div class="win-divider"></div>
+  <div class="aw-sep"></div>
 
   <!-- ── Input area ── -->
-  <div class="win-input-wrap">
-    <div class="win-input" id="win-input-el">
-      <div class="win-input-text mono" id="win-type-text" aria-live="polite"></div>
-      <span class="win-cursor" id="win-cursor" aria-hidden="true"></span>
+  <div class="aw-input-section">
+    <div class="aw-input-well" id="input-well">
+      <div class="aw-input-text mono" id="aw-input-text" aria-live="polite"></div>
+      <!-- Placeholder -->
+      <div class="aw-placeholder" id="aw-placeholder">Type or paste your messy prompt here...</div>
+      <!-- Blinking cursor -->
+      <span class="aw-cursor" id="aw-cursor" aria-hidden="true"></span>
+      <!-- Clear btn (hidden until there's text) -->
+      <button class="aw-clear" id="aw-clear" style="display:none" tabindex="-1" aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="rgba(235,235,245,0.3)"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="rgba(0,0,0,0.5)" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
     </div>
-    <div class="win-input-footer">
-      <span class="mono" id="win-char-count">0 characters</span>
-    </div>
+    <span class="aw-char-count mono" id="aw-chars">0 characters</span>
   </div>
 
-  <!-- ── Style pills ── -->
-  <div class="win-styles">
-    <div class="win-styles-scroll">
-      <button class="wp wp-active" tabindex="-1" aria-hidden="true">
-        <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M8 2L2 14h12L8 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+  <!-- ── Style selector ── -->
+  <div class="aw-styles-wrap">
+    <div class="aw-styles-scroll" id="aw-styles">
+      <!-- Templates pill -->
+      <button class="aw-pill aw-templates-pill" tabindex="-1" aria-hidden="true">
+        <svg viewBox="0 0 13 13" fill="none"><rect x="1.5" y="1.5" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.1"/><circle cx="9.5" cy="9.5" r="3" fill="rgba(28,28,30,1)" stroke="currentColor" stroke-width="1"/><path d="M8 9.5h3M9.5 8v3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+        Templates
+      </button>
+      <!-- General — active by default -->
+      <button class="aw-pill aw-pill-active" data-pill="general" tabindex="-1" aria-hidden="true">
+        <svg viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5l1.5 3 3.5.5-2.5 2.5.5 3.5-3-1.5-3 1.5.5-3.5-2.5-2.5 3.5-.5z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
         General
       </button>
-      <button class="wp" tabindex="-1" aria-hidden="true">
-        <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 8h6M5 5h6M5 11h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <!-- Engineering -->
+      <button class="aw-pill" data-pill="engineering" tabindex="-1" aria-hidden="true">
+        <svg viewBox="0 0 13 13" fill="none"><path d="M9 4L5 11M4 7h5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><rect x="1" y="1" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.1"/></svg>
         Engineering
       </button>
-      <button class="wp" tabindex="-1" aria-hidden="true">
-        <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 8.5L7 10l3.5-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <!-- Research -->
+      <button class="aw-pill" data-pill="research" tabindex="-1" aria-hidden="true">
+        <svg viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="3.5" stroke="currentColor" stroke-width="1.2"/><path d="M8.5 8.5L11.5 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         Research
       </button>
-      <button class="wp" tabindex="-1" aria-hidden="true">
-        <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h7M3 12h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <!-- Content -->
+      <button class="aw-pill" data-pill="content" tabindex="-1" aria-hidden="true">
+        <svg viewBox="0 0 13 13" fill="none"><path d="M2 3h9M2 6h7M2 9h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         Content
       </button>
-      <button class="wp wp-plus" tabindex="-1" aria-hidden="true">+</button>
+      <!-- Analysis -->
+      <button class="aw-pill" data-pill="analysis" tabindex="-1" aria-hidden="true">
+        <svg viewBox="0 0 13 13" fill="none"><path d="M2 10L5 7l2.5 2L11 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Analysis
+      </button>
+      <!-- Add -->
+      <button class="aw-pill aw-plus-pill" tabindex="-1" aria-hidden="true">+</button>
     </div>
-    <div class="win-verbosity mono" id="win-verb">
-      <span class="verb-dot"></span>
-      <span id="win-verb-text">Concise</span>
-    </div>
+    <!-- Style description -->
+    <p class="aw-style-desc" id="aw-style-desc">Balanced general-purpose optimization</p>
   </div>
 
-  <!-- ── Optimize button ── -->
-  <div class="win-optimize-wrap">
-    <button class="win-optimize" id="win-opt-btn" tabindex="-1" aria-hidden="true">
-      <span id="win-opt-label">Optimize</span>
-      <span class="mono win-shortcut" id="win-shortcut">⌘↩</span>
+  <!-- ── Verbosity chip + Optimize button ── -->
+  <div class="aw-action-wrap">
+    <button class="aw-verbosity" id="aw-verb" title="Change verbosity" aria-label="Change verbosity">
+      <span class="aw-verb-dot" id="aw-verb-dot"></span>
+      <span id="aw-verb-label">Concise</span>
+      <span class="aw-verb-caret">▾</span>
+    </button>
+
+    <button class="aw-optimize" id="aw-optimize" tabindex="-1" aria-hidden="true">
+      <span id="aw-opt-label">Optimize</span>
+      <span class="aw-cmd">⌘↩</span>
     </button>
   </div>
 
   <!-- ── Output area ── -->
-  <div class="win-output-wrap">
-    <div class="win-output" id="win-output-el">
-      <div class="win-output-empty" id="win-empty-state">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M8 9h8M8 13h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 6a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6z" stroke="currentColor" stroke-width="1.5"/></svg>
+  <div class="aw-output-section">
+    <div class="aw-output-well" id="aw-output-well">
+      <!-- Empty state -->
+      <div class="aw-empty-state" id="aw-empty">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M3 21l1.65-3.8a9 9 0 113.4 2.9L3 21" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/>
+          <path d="M7.5 12h9M7.5 8h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity=".4"/>
+        </svg>
         <span>Your optimized prompt will appear here</span>
       </div>
-      <div class="win-output-text mono" id="win-output-text" aria-live="polite" style="display:none"></div>
-      <div class="win-output-actions" id="win-output-actions" style="display:none">
-        <button class="win-small-btn" tabindex="-1" aria-hidden="true">
-          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 11V3h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Copy
+      <!-- Output text (hidden until demo completes) -->
+      <div class="aw-output-text mono" id="aw-output-text" style="display:none" aria-live="polite"></div>
+
+      <!-- Right side live animation rail -->
+      <div class="aw-live-strip" id="aw-live-strip" aria-hidden="true" style="display:none">
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- Output action row (hidden until output exists) -->
+    <div class="aw-output-row" id="aw-output-row" style="visibility:hidden">
+      <span class="aw-clipboard-tag mono" id="aw-clipboard-tag" style="display:none">
+        <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 11V3h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        On clipboard
+      </span>
+      <div class="aw-row-right">
+        <!-- Export icon -->
+        <button class="aw-act-btn" tabindex="-1" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 3v9M4 9l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="win-small-btn" tabindex="-1" aria-hidden="true">
-          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 3v8M4 8l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Export
+        <!-- Copy icon (becomes checkmark after copy) -->
+        <button class="aw-act-btn" id="aw-copy-btn" tabindex="-1" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 11V3h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         </button>
-        <button class="win-small-btn win-small-btn-clear" tabindex="-1" aria-hidden="true">
-          <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <!-- Clear output -->
+        <button class="aw-act-btn" id="aw-clear-out-btn" tabindex="-1" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" fill="rgba(235,235,245,0.18)"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="rgba(235,235,245,0.5)" stroke-width="1.3" stroke-linecap="round"/></svg>
         </button>
       </div>
     </div>
   </div>
 
-  <div class="win-divider"></div>
+  <div class="aw-sep"></div>
 
-  <!-- ── Footer ── -->
-  <div class="win-footer">
-    <span class="mono win-f-shortcut">⌘⇧Space to toggle</span>
-    <span class="win-f-trial mono" id="win-trial-pill">
-      <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.2"/><path d="M5 3v2.5L6.5 7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-      14 days left
-    </span>
-    <span class="win-f-privacy mono">
-      <svg width="9" height="9" viewBox="0 0 16 16" fill="none"><path d="M8 1L2 4v5c0 3.31 2.45 6.41 6 7.16C11.55 15.41 14 12.31 14 9V4L8 1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
-      Local & Private
-    </span>
+  <!-- ── Footer bar (height:44) ── -->
+  <div class="aw-footer">
+    <span class="aw-footer-shortcut">⌘⇧Space to toggle</span>
+
+    <!-- Trial pill (center) -->
+    <div class="aw-trial-pill">
+      <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5v3L7.5 8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+      Trial: 14 days left
+    </div>
+
+    <!-- Privacy (right) -->
+    <button class="aw-privacy-btn" tabindex="-1" aria-hidden="true">
+      <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M6 1L1.5 3v4c0 2.5 1.8 4.8 4.5 5.4C8.7 11.8 10.5 9.5 10.5 7V3L6 1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
+      Local &amp; Private
+    </button>
   </div>
 </div>
 
 <style>
-  .mac-window {
+  /* ── Window container ─────────────────────── */
+  .app-win {
     width: 420px;
-    background: var(--win-bg);
-    border-radius: 13px;
+    height: 580px;
+    background: #1C1C1E;   /* NSColor.windowBackgroundColor dark */
+    border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.12);
     box-shadow:
-      0 0 0 0.5px rgba(0,0,0,0.4),
-      0 8px 24px rgba(0,0,0,0.25),
-      0 24px 80px rgba(0,0,0,0.18),
-      0 60px 120px rgba(0,0,0,0.12);
-    overflow: hidden;
-    color: var(--win-text);
-    user-select: none;
-    font-size: 13px;
-  }
-
-  /* Title bar */
-  .win-titlebar {
-    display: flex; align-items: center;
-    height: 44px; padding: 0 14px;
-    background: var(--win-bg-2);
-    gap: 10px;
-  }
-  .traffic-lights { display: flex; gap: 7px; }
-  .tl {
-    width: 12px; height: 12px; border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .tl-r { background: #FF5F57; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.3); }
-  .tl-y { background: #FEBC2E; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.3); }
-  .tl-g { background: #28C840; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.3); }
-
-  .win-title {
-    flex: 1; text-align: center;
-    font-size: 13px; font-weight: 500; letter-spacing: -0.01em;
-    color: var(--win-text);
-  }
-
-  .win-actions { display: flex; gap: 2px; }
-  .win-btn {
-    width: 28px; height: 28px;
-    border-radius: 7px;
-    background: transparent; border: none;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--win-text-2);
-    transition: background .15s, color .15s;
-    cursor: none;
-  }
-  .win-btn:hover { background: rgba(255,255,255,0.08); color: var(--win-text); }
-
-  /* Divider */
-  .win-divider { height: 1px; background: var(--win-border); }
-
-  /* Input */
-  .win-input-wrap {
-    padding: 10px 14px 6px;
-  }
-  .win-input {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 8px;
-    padding: 9px 10px;
-    min-height: 80px;
-    position: relative;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
-  }
-  .win-input-text {
-    font-size: 12px;
-    line-height: 1.6;
-    color: var(--win-text);
-    min-height: 60px;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .win-cursor {
-    display: inline-block;
-    width: 2px; height: 14px;
-    background: var(--win-blue);
-    vertical-align: text-bottom;
-    margin-left: 1px;
-    animation: blink-cur .9s step-end infinite;
-  }
-  @keyframes blink-cur { 0%,100%{opacity:1} 50%{opacity:0} }
-
-  .win-input-footer {
-    padding: 3px 2px 0;
-  }
-  .win-input-footer span {
-    font-size: 10px;
-    color: var(--win-text-3);
-    letter-spacing: 0.03em;
-  }
-
-  /* Styles */
-  .win-styles {
-    padding: 0 14px 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .win-styles-scroll {
-    display: flex; gap: 6px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    flex: 1;
-  }
-  .win-styles-scroll::-webkit-scrollbar { display: none; }
-
-  .wp {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.06);
-    border: 0.5px solid rgba(255,255,255,0.1);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px; font-weight: 500;
-    color: var(--win-text-2);
-    white-space: nowrap;
-    cursor: none;
-    transition: background .15s, color .15s;
-  }
-  .wp:hover { background: rgba(255,255,255,0.1); color: var(--win-text); }
-  .wp-active {
-    background: var(--win-blue);
-    border-color: transparent;
-    color: #fff;
-  }
-  .wp-plus {
-    width: 24px; padding: 4px; justify-content: center;
-    font-size: 14px; line-height: 1;
-  }
-
-  .win-verbosity {
-    display: flex; align-items: center; gap: 5px;
-    padding: 3px 9px;
-    border-radius: 999px;
-    background: rgba(10,132,255,0.1);
-    border: 0.5px solid rgba(10,132,255,0.2);
-    font-size: 10px; font-weight: 500;
-    color: var(--win-blue);
-    white-space: nowrap;
-    flex-shrink: 0;
-    cursor: none;
-  }
-  .verb-dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--win-blue);
-    flex-shrink: 0;
-  }
-
-  /* Optimize button */
-  .win-optimize-wrap {
-    padding: 4px 14px 8px;
-  }
-  .win-optimize {
-    width: 100%;
-    display: flex; align-items: center; justify-content: center;
-    gap: 8px;
-    height: 36px;
-    border-radius: 8px;
-    background: var(--win-blue);
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 600;
-    color: #fff;
-    cursor: none;
-    position: relative;
-    overflow: hidden;
-    transition: background .15s;
-  }
-  .win-optimize:hover { background: #0A7BE8; }
-  .win-shortcut {
-    font-size: 11px;
-    opacity: 0.7;
-    letter-spacing: 0.02em;
-  }
-
-  /* Output */
-  .win-output-wrap {
-    padding: 0 14px 8px;
-    flex: 1;
-  }
-  .win-output {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 8px;
-    min-height: 120px;
-    max-height: 140px;
+      0 0 0 0.5px rgba(0,0,0,0.5),
+      0 4px 6px rgba(0,0,0,0.15),
+      0 12px 28px rgba(0,0,0,0.22),
+      0 32px 80px rgba(0,0,0,0.18),
+      0 0 60px rgba(10,132,255,0.04);   /* subtle blue glow from accent */
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
+    font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    color: #FFFFFF;
+    position: relative;
+    user-select: none;
+  }
+
+  /* ── Separator ────────────────────────────── */
+  .aw-sep {
+    height: 1px;
+    background: rgba(84,84,88,0.65);   /* NSColor.separatorColor dark */
+    flex-shrink: 0;
+  }
+
+  /* ── Header ───────────────────────────────── */
+  .aw-header {
+    height: 44px;
+    display: flex; align-items: center;
+    padding: 0 16px;
+    flex-shrink: 0;
+  }
+  .aw-title {
+    font-size: 15px; font-weight: 600;
+    color: rgba(255,255,255,0.92);
+    flex: 1;
+    letter-spacing: -0.01em;
+  }
+  .aw-header-btns { display: flex; gap: 0; }
+  .aw-icon-btn {
+    width: 32px; height: 32px;
+    background: transparent; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    color: rgba(235,235,245,0.6);   /* .secondary */
+    transition: background .12s, color .12s;
+    padding: 0;
+  }
+  .aw-icon-btn svg { width: 14px; height: 14px; }
+  .aw-icon-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
+
+  /* ── Input section ────────────────────────── */
+  .aw-input-section {
+    padding: 8px 16px;
+    flex-shrink: 0;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .aw-input-well {
+    background: rgba(44,44,46,0.6);   /* textBackgroundColor.opacity(0.5) dark approx */
+    border: 0.5px solid rgba(84,84,88,0.65);
+    border-radius: 8px;
+    padding: 8px;
+    min-height: 88px;
+    position: relative;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.03);
+  }
+
+  .aw-input-text {
+    font-size: 13px; font-family: 'SF Mono', 'Fira Code', monospace;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.92);
+    white-space: pre-wrap; word-break: break-word;
+    min-height: 60px;
+  }
+
+  .aw-placeholder {
+    position: absolute; top: 8px; left: 8px;
+    font-size: 13px;
+    color: rgba(235,235,245,0.3);   /* .secondary placeholder */
+    pointer-events: none;
+    transition: opacity .15s;
+  }
+  .aw-placeholder.hidden { opacity: 0; }
+
+  .aw-cursor {
+    display: inline-block;
+    width: 2px; height: 14px;
+    background: #0A84FF;
+    border-radius: 2px;
+    vertical-align: text-bottom;
+    margin-left: 0.5px;
+    animation: aw-blink .9s step-end infinite;
+    pointer-events: none;
+  }
+  @keyframes aw-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .aw-clear {
+    position: absolute; top: 6px; right: 6px;
+    background: none; border: none; cursor: pointer; padding: 0;
+    width: 18px; height: 18px;
+  }
+  .aw-clear svg { width: 100%; height: 100%; }
+
+  .aw-char-count {
+    font-size: 10px;
+    color: rgba(235,235,245,0.28);   /* .tertiary */
+    letter-spacing: 0.02em;
+    padding-left: 2px;
+  }
+
+  /* ── Style selector ───────────────────────── */
+  .aw-styles-wrap {
+    padding: 0 16px 6px;
+    flex-shrink: 0;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .aw-styles-scroll {
+    display: flex; gap: 7px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 1px;
+  }
+  .aw-styles-scroll::-webkit-scrollbar { display: none; }
+
+  .aw-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: #2C2C2E;   /* controlBackgroundColor dark */
+    border: 0.5px solid rgba(84,84,88,0.65);
+    font-size: 12px; font-weight: 500;
+    color: rgba(235,235,245,0.85);   /* .primary */
+    white-space: nowrap; cursor: pointer;
+    font-family: -apple-system, sans-serif;
+    transition: background .12s, color .12s;
+    flex-shrink: 0;
+  }
+  .aw-pill svg { width: 11px; height: 11px; flex-shrink: 0; }
+  .aw-pill:hover { background: rgba(58,58,60,0.9); }
+
+  .aw-pill-active {
+    background: #0A84FF !important;   /* accentColor */
+    border-color: transparent !important;
+    color: #FFFFFF !important;
+  }
+
+  .aw-templates-pill { color: rgba(235,235,245,0.5); }
+  .aw-plus-pill { padding: 5px 9px; font-size: 14px; font-weight: 400; }
+
+  .aw-style-desc {
+    font-size: 11px;
+    color: rgba(235,235,245,0.4);
+    padding-left: 2px;
+    margin: 0;
+  }
+
+  /* ── Action area (verbosity + optimize) ───── */
+  .aw-action-wrap {
+    padding: 0 16px 8px;
+    display: flex; flex-direction: column; gap: 7px;
+    flex-shrink: 0;
+  }
+
+  .aw-verbosity {
+    align-self: center;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(10,132,255,0.1);
+    font-size: 10px; font-weight: 500;
+    color: #0A84FF;
+    border: 1px solid rgba(10,132,255,0.24);
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  .aw-verbosity:hover { background: rgba(10,132,255,0.16); border-color: rgba(10,132,255,0.34); }
+  .aw-verb-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(10,132,255,0.7); flex-shrink: 0;
+    transition: background .15s;
+  }
+  .aw-verb-caret { font-size: 9px; opacity: .7; margin-left: 2px; }
+
+  .aw-verbosity.mode-concise { color: #0A84FF; border-color: rgba(10,132,255,0.24); background: rgba(10,132,255,0.1); }
+  .aw-verbosity.mode-balanced { color: #30D158; border-color: rgba(48,209,88,0.24); background: rgba(48,209,88,0.12); }
+  .aw-verbosity.mode-detailed { color: #FF9F0A; border-color: rgba(255,159,10,0.28); background: rgba(255,159,10,0.14); }
+
+  .aw-optimize {
+    width: 100%; height: 36px;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    border-radius: 8px;
+    background: linear-gradient(to bottom, #0A84FF, #0070E0);
+    border: none; cursor: pointer;
+    font-size: 14px; font-weight: 600;
+    color: #FFFFFF;
+    font-family: -apple-system, sans-serif;
+    transition: background .15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .aw-optimize:hover { background: linear-gradient(to bottom, #1A8EFF, #0078F0); }
+  .aw-optimize.processing { background: linear-gradient(to bottom, #FF9F0A, #E8850A); }
+
+  .aw-cmd { font-size: 11px; opacity: 0.65; }
+
+  /* ── Output section ───────────────────────── */
+  .aw-output-section {
+    padding: 0 16px 8px;
+    flex: 1; display: flex; flex-direction: column; gap: 4px;
+    min-height: 0;
+  }
+
+  .aw-output-well {
+    flex: 1;
+    background: rgba(44,44,46,0.6);
+    border: 0.5px solid rgba(84,84,88,0.65);
+    border-radius: 8px;
+    padding: 8px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.03);
     overflow: hidden;
     position: relative;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
   }
-  .win-output-empty {
+
+  .aw-empty-state {
     display: flex; flex-direction: column;
     align-items: center; gap: 8px;
-    color: var(--win-text-3);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
+    color: rgba(235,235,245,0.3);
+    font-size: 13px;
+    text-align: center;
+    animation: aw-pulse 3s ease-in-out infinite;
   }
-  .win-output-text {
-    width: 100%;
-    padding: 9px 10px;
-    font-size: 11px;
-    line-height: 1.6;
-    color: var(--win-text);
+  @keyframes aw-pulse { 0%,100%{opacity:0.6} 50%{opacity:0.4} }
+
+  .aw-output-text {
+    width: 100%; height: 100%;
+    font-size: 13px; font-family: 'SF Mono', 'Fira Code', monospace;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.92);
     overflow-y: auto;
     scrollbar-width: none;
+    white-space: pre-wrap; word-break: break-word;
+    align-self: flex-start;
   }
-  .win-output-text::-webkit-scrollbar { display: none; }
+  .aw-output-text::-webkit-scrollbar { display: none; }
 
-  .win-output-actions {
-    position: absolute; bottom: 8px; right: 8px;
-    display: flex; gap: 4px;
+  .aw-live-strip {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 6px; height: calc(100% - 20px);
+    display: flex; flex-direction: column; justify-content: space-between;
+    pointer-events: none;
   }
-  .win-small-btn {
-    display: inline-flex; align-items: center; gap: 3px;
-    padding: 3px 8px;
-    border-radius: 5px;
-    background: rgba(255,255,255,0.07);
-    border: 0.5px solid rgba(255,255,255,0.1);
-    font-family: 'DM Mono', monospace;
-    font-size: 10px; color: var(--win-text-2);
-    cursor: none;
-    transition: background .15s, color .15s;
+  .aw-live-strip span {
+    width: 100%;
+    height: 18%;
+    border-radius: 4px;
+    background: linear-gradient(to bottom, rgba(10,132,255,0.9), rgba(10,132,255,0.3));
+    animation: aw-live-pulse 1.2s ease-in-out infinite;
   }
-  .win-small-btn:hover { background: rgba(255,255,255,0.12); color: var(--win-text); }
-  .win-small-btn-clear { padding: 3px 5px; }
+  .aw-live-strip span:nth-child(2) { animation-delay: .12s; }
+  .aw-live-strip span:nth-child(3) { animation-delay: .24s; }
+  .aw-live-strip span:nth-child(4) { animation-delay: .36s; }
+  @keyframes aw-live-pulse {
+    0%,100% { opacity: .25; transform: scaleY(.7); }
+    50% { opacity: .95; transform: scaleY(1); }
+  }
 
-  /* Footer */
-  .win-footer {
-    display: flex; align-items: center; gap: 0;
-    height: 36px; padding: 0 14px;
-    background: var(--win-bg-2);
+  .aw-output-row {
+    display: flex; align-items: center; height: 20px;
   }
-  .win-f-shortcut {
-    font-size: 10px; color: var(--win-text-3);
-    flex: 0; white-space: nowrap;
+  .aw-clipboard-tag {
+    display: flex; align-items: center; gap: 3px;
+    font-size: 10px; color: rgba(235,235,245,0.4);
   }
-  .win-f-trial {
-    display: flex; align-items: center; gap: 4px;
-    font-size: 10px; padding: 2px 7px;
-    border-radius: 999px;
-    background: rgba(255,160,0,0.1);
-    border: 0.5px solid rgba(255,160,0,0.2);
-    color: #FFAB00;
-    margin: 0 auto;
+  .aw-row-right { display: flex; gap: 4px; margin-left: auto; }
+  .aw-act-btn {
+    width: 24px; height: 20px;
+    background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(235,235,245,0.45);
+    border-radius: 4px; transition: color .12s, background .12s;
   }
-  .win-f-privacy {
-    display: flex; align-items: center; gap: 4px;
-    font-size: 10px; color: var(--win-text-3);
+  .aw-act-btn:hover { color: rgba(235,235,245,0.85); background: rgba(255,255,255,0.06); }
+
+  /* ── Footer ───────────────────────────────── */
+  .aw-footer {
+    height: 44px; flex-shrink: 0;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 16px;
+    column-gap: 8px;
+  }
+
+  .aw-footer-shortcut {
+    font-size: 9px;
+    color: rgba(235,235,245,0.28);
+    justify-self: start;
     white-space: nowrap;
+  }
+
+  .aw-trial-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 9px; font-weight: 500;
+    color: rgba(235,235,245,0.5);
+    padding: 3px 8px; border-radius: 999px;
+    background: rgba(84,84,88,0.18);
+    font-family: -apple-system, sans-serif;
+    justify-self: center;
+    white-space: nowrap;
+  }
+
+  .aw-privacy-btn {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 9px;
+    color: rgba(235,235,245,0.28);
+    background: none; border: none; cursor: pointer;
+    padding: 0;
+    font-family: -apple-system, sans-serif;
+    justify-self: end;
+    white-space: nowrap;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .app-win { width: 340px; height: auto; min-height: 520px; }
   }
 </style>
 
 <script>
-  // Live typing demo inside the app window
-  const demos = [
-    {
-      input: 'Tell me about climate change',
-      output: 'You are a climate scientist with expertise in IPCC assessment reports.\n\nTask: Provide a precise, evidence-based analysis of current climate change trajectory, including 3 key metrics, 2 feedback loops, and 5 ranked individual interventions by global impact.\n\nFormat: Start with a one-sentence summary, then structured sections. Cite confidence levels.',
+  // ── Interactive app demo with style + verbosity controls ─────────────
+  const fixedInput = 'summarize what i should know about LLMs';
+
+  const outputByStyle: Record<string, Record<string, string>> = {
+    general: {
+      concise: `LLMs in one view:
+1. Transformers + attention are the core architecture.
+2. Training quality is data quality plus scale plus objective tuning.
+3. Practical value comes from retrieval, tooling, and guardrails, not model alone.`,
+      balanced: `Large language models are transformer based systems trained to predict the next token from massive corpora.
+
+What matters in practice:
+1. Architecture and tokenizer choices
+2. Training data quality and post training alignment
+3. Runtime orchestration with retrieval and tools
+
+For engineering use, optimize prompts for role clarity, constraints, output format, and failure handling.`,
+      detailed: `Large language models are transformer based sequence models that represent context through self attention over token embeddings.
+
+Core pillars:
+1. Pretraining at scale on diverse corpora
+2. Post training alignment with instruction tuning and preference optimization
+3. Deployment architecture including retrieval augmented generation, tool calling, memory, and policy layers
+
+For real world products, model quality alone is not enough. Reliability comes from prompt engineering, deterministic output schemas, observability, and evaluation loops.`
     },
-    {
-      input: 'Write code for user login',
-      output: 'You are a senior backend engineer specializing in authentication security.\n\nTask: Implement a complete user authentication flow with JWT tokens, bcrypt hashing, rate limiting, and CSRF protection.\n\nConstraints: TypeScript, Express.js, PostgreSQL. Include error handling, input validation, and unit test stubs.',
+    engineering: {
+      concise: `Engineering focus:
+1. Add schema constrained outputs.
+2. Add retrieval for factual grounding.
+3. Add retry and fallback policies for failure paths.`,
+      balanced: `You are designing LLM systems for production.
+
+Checklist:
+1. Structured outputs with strict schema validation
+2. Retrieval grounding for domain context
+3. Latency budgets and timeout controls
+4. Guardrails for prompt injection and leakage
+5. Offline eval suite for regressions`,
+      detailed: `Production LLM engineering should prioritize deterministic orchestration over raw prompt quality.
+
+Recommended architecture:
+1. Input normalization and intent decomposition
+2. Retrieval context assembly with source scoring
+3. Prompt templating with explicit constraints
+4. Schema validated output parsing
+5. Tool execution sandbox with retries and circuit breakers
+6. Telemetry and eval harness for drift detection
+
+This yields stable behavior under load and model updates.`
     },
-    {
-      input: 'How do I improve my productivity',
-      output: 'You are an organizational psychologist specializing in cognitive performance and behavioral science.\n\nTask: Design a personalized productivity framework grounded in peer-reviewed research, addressing focus, energy management, and habit formation.\n\nDeliverables: 30-60-90 day implementation plan with measurable success criteria.',
+    research: {
+      concise: `Research focus:
+1. Attention scales context representation.
+2. Alignment methods improve usability but can mask uncertainty.
+3. Open questions remain in reasoning reliability and truthfulness.`,
+      balanced: `Research summary:
+Transformers enable long range dependency modeling with attention based token interactions.
+
+Current frontier:
+1. Better reasoning consistency
+2. Lower hallucination under sparse evidence
+3. Efficient inference and memory use
+
+Open problems include calibration, causal understanding, and robust evaluation beyond benchmark overfitting.`,
+      detailed: `Research summary for LLMs:
+
+Transformers replaced recurrence with attention, allowing parallel training and stronger long context modeling. Scaling laws showed predictable quality gains from compute, data, and parameter increases.
+
+Post training methods improved instruction following, but reliability gaps remain:
+1. Hallucination under ambiguous evidence
+2. Inconsistent multi step reasoning
+3. Weak calibration of confidence
+
+Current research directions include verifier guided decoding, synthetic data curation, retrieval quality metrics, and agentic planning with tool grounded execution.`
     },
-  ];
+    content: {
+      concise: `Content focus:
+1. Start with a concrete hook.
+2. Add one proof point.
+3. End with a clear action.`,
+      balanced: `For content teams, LLMs work best when prompts encode voice, audience, and outcome constraints.
 
-  const inputEl      = document.getElementById('win-type-text')!;
-  const cursorEl     = document.getElementById('win-cursor')!;
-  const outputEmpty  = document.getElementById('win-empty-state')!;
-  const outputText   = document.getElementById('win-output-text')!;
-  const outputActs   = document.getElementById('win-output-actions')!;
-  const charCount    = document.getElementById('win-char-count')!;
-  const optBtn       = document.getElementById('win-opt-btn')!;
-  const optLabel     = document.getElementById('win-opt-label')!;
-  const verbText     = document.getElementById('win-verb-text')!;
+Template:
+1. Role
+2. Audience
+3. Message objective
+4. Format and length
+5. Style exclusions
 
-  let dIdx = 0;
+This removes generic writing and increases conversion oriented output quality.`,
+      detailed: `Content strategy with LLMs:
 
-  function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)); }
+High quality outputs require explicit narrative structure. Define role, audience, emotional tone, and conversion goal before generation.
 
-  async function runWindowDemo() {
-    const demo = demos[dIdx++ % demos.length];
+Recommended scaffold:
+1. Core angle
+2. Supporting proof
+3. Objection handling
+4. Call to action
+5. Channel specific constraints
 
-    // Reset
-    inputEl.textContent = '';
-    outputText.textContent = '';
-    outputText.style.display = 'none';
-    outputActs.style.display = 'none';
-    outputEmpty.style.display = 'flex';
-    charCount.textContent = '0 characters';
-    optLabel.textContent = 'Optimize';
-    optBtn.style.background = 'var(--win-blue)';
-    cursorEl.style.display = 'inline-block';
+With this structure, outputs become campaign ready instead of generic draft text.`
+    },
+    analysis: {
+      concise: `Analysis focus:
+1. Define the decision first.
+2. Compare options against weighted criteria.
+3. Return ranked recommendations with rationale.`,
+      balanced: `Analytical prompt structure:
+1. Decision objective
+2. Constraints and assumptions
+3. Evaluation criteria with weights
+4. Scenario based recommendation
 
-    // Type input
-    for (const ch of demo.input) {
-      inputEl.textContent += ch;
-      charCount.textContent = inputEl.textContent.length + ' characters';
-      await sleep(45);
+This format improves consistency and reduces vague model responses.`,
+      detailed: `A reliable analytical workflow for LLMs should enforce explicit decision framing.
+
+Use this order:
+1. Define objective and time horizon
+2. Enumerate constraints and non negotiables
+3. Build weighted scoring matrix
+4. Evaluate alternatives with evidence tags
+5. Produce ranked recommendation plus risk register
+
+This drives executive grade outputs instead of generic commentary.`
     }
-    await sleep(600);
-    cursorEl.style.display = 'none';
+  };
 
-    // Processing state
-    optLabel.textContent = 'Optimizing...';
-    optBtn.style.background = '#E17900';
+  const styleDescMap: Record<string, string> = {
+    general:     'Balanced general-purpose optimization',
+    engineering: 'Technical precision with spec-grade constraints',
+    research:    'Academic rigor with source-awareness',
+    content:     'Narrative structure with audience-aware tone',
+    analysis:    'Structured analytical frameworks',
+  };
 
-    // Animate stages
-    for (let i = 1; i <= 7; i++) {
-      await sleep(260);
-    }
+  const verbModes = [
+    { key: 'concise',  label: 'Concise',  className: 'mode-concise',  dot: 'rgba(10,132,255,0.75)', typingMs: 7 },
+    { key: 'balanced', label: 'Balanced', className: 'mode-balanced', dot: 'rgba(48,209,88,0.75)', typingMs: 6 },
+    { key: 'detailed', label: 'Detailed', className: 'mode-detailed', dot: 'rgba(255,159,10,0.75)', typingMs: 4 },
+  ] as const;
 
-    // Show output
-    optLabel.textContent = 'Optimize';
-    optBtn.style.background = 'var(--win-blue)';
-    outputEmpty.style.display = 'none';
-    outputText.style.display = 'block';
-    outputActs.style.display = 'flex';
+  let currentStyle: keyof typeof outputByStyle = 'research';
+  let currentVerb = 0;
+  let runToken = 0;
 
-    for (const ch of demo.output) {
-      outputText.textContent += ch;
-      await sleep(9);
-    }
+  const inputEl     = document.getElementById('aw-input-text')! as HTMLElement;
+  const placeholder = document.getElementById('aw-placeholder')! as HTMLElement;
+  const charCount   = document.getElementById('aw-chars')! as HTMLElement;
+  const clearBtn    = document.getElementById('aw-clear')! as HTMLElement;
+  const cursorEl    = document.getElementById('aw-cursor')! as HTMLElement;
+  const optBtn      = document.getElementById('aw-optimize')! as HTMLElement;
+  const optLabel    = document.getElementById('aw-opt-label')! as HTMLElement;
+  const emptyState  = document.getElementById('aw-empty')! as HTMLElement;
+  const outputText  = document.getElementById('aw-output-text')! as HTMLElement;
+  const outputRow   = document.getElementById('aw-output-row')! as HTMLElement;
+  const styleDesc   = document.getElementById('aw-style-desc')! as HTMLElement;
+  const liveStrip   = document.getElementById('aw-live-strip')! as HTMLElement;
+  const verbBtn     = document.getElementById('aw-verb')! as HTMLButtonElement;
+  const verbLabel   = document.getElementById('aw-verb-label')! as HTMLElement;
+  const verbDot     = document.getElementById('aw-verb-dot')! as HTMLElement;
 
-    await sleep(3500);
+  const inputTextNode = document.createTextNode('');
+  inputEl.appendChild(inputTextNode);
+  inputEl.appendChild(cursorEl);
 
-    // Clear
-    inputEl.textContent = '';
-    outputText.textContent = '';
-    outputText.style.display = 'none';
-    outputActs.style.display = 'none';
-    outputEmpty.style.display = 'flex';
-    charCount.textContent = '0 characters';
-    cursorEl.style.display = 'inline-block';
-
-    await sleep(800);
-    runWindowDemo();
+  function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  setTimeout(runWindowDemo, 1200);
+  function setInputText(text: string) {
+    inputTextNode.nodeValue = text;
+    if (text.length > 0) {
+      placeholder.classList.add('hidden');
+      clearBtn.style.display = 'block';
+    } else {
+      placeholder.classList.remove('hidden');
+      clearBtn.style.display = 'none';
+    }
+    charCount.textContent = `${text.length} characters`;
+    if (cursorEl.parentElement !== inputEl) inputEl.appendChild(cursorEl);
+  }
+
+  function setStyle(name: keyof typeof outputByStyle) {
+    currentStyle = name;
+    document.querySelectorAll('.aw-pill[data-pill]').forEach(p => p.classList.remove('aw-pill-active'));
+    const target = document.querySelector(`[data-pill="${name}"]`);
+    if (target) target.classList.add('aw-pill-active');
+    styleDesc.textContent = styleDescMap[name] || '';
+  }
+
+  function setVerbosity(index: number) {
+    currentVerb = index;
+    const mode = verbModes[index];
+    verbLabel.textContent = mode.label;
+    verbDot.style.background = mode.dot;
+    verbBtn.classList.remove('mode-concise', 'mode-balanced', 'mode-detailed');
+    verbBtn.classList.add(mode.className);
+  }
+
+  function getOutputText() {
+    const mode = verbModes[currentVerb].key;
+    return outputByStyle[currentStyle][mode] || '';
+  }
+
+  async function typeInputAnimated(token: number) {
+    setInputText('');
+    cursorEl.style.display = 'inline-block';
+
+    let txt = '';
+    for (const ch of fixedInput) {
+      if (token !== runToken) return;
+      txt += ch;
+      setInputText(txt);
+      await sleep(28);
+    }
+
+    if (token !== runToken) return;
+    cursorEl.style.display = 'none';
+  }
+
+  async function runOptimization({ animateInput = false } = {}) {
+    const token = ++runToken;
+
+    if (animateInput) {
+      await typeInputAnimated(token);
+      if (token !== runToken) return;
+      await sleep(180);
+    } else {
+      setInputText(fixedInput);
+      cursorEl.style.display = 'none';
+    }
+
+    outputText.textContent = '';
+    outputText.style.display = 'none';
+    outputRow.style.visibility = 'hidden';
+    emptyState.style.display = 'flex';
+
+    optLabel.textContent = 'Optimizing...';
+    optBtn.classList.add('processing');
+    liveStrip.style.display = 'flex';
+
+    await sleep(820);
+    if (token !== runToken) return;
+
+    optBtn.classList.remove('processing');
+    optLabel.textContent = 'Optimize';
+
+    emptyState.style.display = 'none';
+    outputText.style.display = 'block';
+    outputRow.style.visibility = 'visible';
+
+    const finalOutput = getOutputText();
+    const speed = verbModes[currentVerb].typingMs;
+    for (const ch of finalOutput) {
+      if (token !== runToken) return;
+      outputText.textContent += ch;
+      await sleep(speed);
+    }
+
+    if (token !== runToken) return;
+    liveStrip.style.display = 'none';
+  }
+
+  // Style selection clicks
+  document.querySelectorAll<HTMLElement>('.aw-pill[data-pill]').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const key = pill.getAttribute('data-pill') as keyof typeof outputByStyle | null;
+      if (!key || !(key in outputByStyle)) return;
+      setStyle(key);
+      runOptimization({ animateInput: false });
+    });
+  });
+
+  // Verbosity cycles through 3 methods
+  verbBtn.addEventListener('click', () => {
+    setVerbosity((currentVerb + 1) % 3);
+    runOptimization({ animateInput: false });
+  });
+
+  // Optimize button reruns current style + method
+  optBtn.addEventListener('click', () => {
+    runOptimization({ animateInput: false });
+  });
+
+  // Init default state
+  setStyle('research');
+  setVerbosity(0);
+  runOptimization({ animateInput: true });
 </script>

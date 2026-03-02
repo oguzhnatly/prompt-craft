@@ -1,341 +1,428 @@
 ---
 const stages = [
   {
-    step: '01',
-    name: 'Intent Decomposer',
-    desc: 'Parses raw input into distinct action intents. Separates emotional noise and urgency from task logic. Compound requests split into independent directives.',
-    output: 'intents[], urgency_level, cleaned_input',
-    color: '#00E5A0',
-    icon: `<path d="M4 6h16M4 12h10M4 18h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`,
+    id: 'intent',
+    n: '01', name: 'Intent Decomposer',
+    tag: 'NLP · Parsing',
+    headline: 'Parses what you actually meant, not what you typed.',
+    body: 'Your raw input is tokenized and analyzed to extract the primary verb, subject, object, and desired outcome. Intent Decomposer distinguishes between imperative instructions ("build X"), exploratory questions ("how does Y work"), and creative briefs ("write Z in the style of"). This classification routes your request to the appropriate assembly strategy in stage 5.',
+    in:  'make a login endpoint with proper error handling',
+    out: 'intent: CREATE\ndomain: backend-api\nsubject: authentication-endpoint\nconstraints: implied[security, error-handling, input-validation]',
   },
   {
-    step: '02',
-    name: 'Entity Extractor',
-    desc: 'Finds persons, projects, environments, technical terms, temporal markers, and organizations. Builds structured metadata for context injection.',
-    output: 'entities{persons, projects, envs, terms, orgs}',
-    color: '#818CF8',
-    icon: `<circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M3 21v-2a7 7 0 0114 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`,
+    id: 'entity',
+    n: '02', name: 'Entity Extractor',
+    tag: 'NER · Pinning',
+    headline: 'Locks every technical term so nothing gets paraphrased away.',
+    body: 'Named entity recognition identifies and pins all domain-critical tokens: proper nouns, version numbers, library names, acronyms, quoted strings, and technical identifiers. These entities receive immutable flags so no downstream stage synonymizes, paraphrases, or drops them. What you named is what the model sees.',
+    in:  'write a test for the UserAuthService.login() method',
+    out: 'PINNED: [UserAuthService] [login()]\ntype: class-ref, method-ref\nimmutable: true\nscope: test-coverage',
   },
   {
-    step: '03',
-    name: 'Complexity Classifier',
-    desc: 'Computes ambiguity score and maps input to one of four tiers. Complexity comes from task load, not template habit. Simple stays simple.',
-    output: 'tier(1-4), ambiguity_score, context_signals[]',
-    color: '#C084FC',
-    icon: `<path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14l3.5 3.5M14 21l7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`,
+    id: 'complexity',
+    n: '03', name: 'Complexity Classifier',
+    tag: 'Scoring · Routing',
+    headline: 'Scores the request on four dimensions and routes accordingly.',
+    body: 'Four orthogonal dimensions are scored 0–1: scope, depth, ambiguity, and technicality. The combined score selects one of 12 assembly strategies and determines how much context the Context Engine injects in stage 4. A casual request gets a different treatment than a deep expert-level task.',
+    in:  'explain how transformers work',
+    out: 'scope: 0.72\ndepth: 0.81\nambiguity: 0.38\ntechnicality: 0.64\nstrategy: pedagogical-depth',
   },
   {
-    step: '04',
-    name: 'Context Engine',
-    desc: 'Retrieves semantic matches from your context store. Injects learned project details into existing sentences instead of appending new sections.',
-    output: 'context_block, injected_entities[], clusters[]',
-    color: '#FCD34D',
-    icon: `<circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`,
+    id: 'context',
+    n: '04', name: 'Context Engine',
+    tag: 'Context · Memory',
+    headline: 'Reads what you are working on and injects it silently.',
+    body: 'The Context Engine reads the macOS accessibility layer to determine your active application and selected text, queries the local clipboard history ring for recent content, and applies domain priors derived from your style profile. All injected as structured annotations in the assembly buffer without you writing any of it manually.',
+    in:  '(active: Xcode, selection: 42 lines Swift, clipboard: UserDefaults key)',
+    out: 'context.lang = swift\ncontext.framework = swiftui\ncontext.recently_edited = UserDefaults\ncontext.scope = mobile-development',
   },
   {
-    step: '05',
-    name: 'Prompt Assembler',
-    desc: 'Builds system and user messages with tier calibration, context injection, and tier-matched few-shot examples. Structure is earned, never assumed.',
-    output: 'system_message, user_message, token_budget',
-    color: '#F472B6',
-    icon: `<rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><rect x="14" y="3" width="7" height="7" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><rect x="3" y="14" width="7" height="7" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M17.5 14v7M14 17.5h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`,
+    id: 'assembler',
+    n: '05', name: 'Prompt Assembler',
+    tag: 'Assembly · Templates',
+    headline: 'Builds the final prompt from every upstream signal.',
+    body: 'The Assembler takes classified intent, pinned entities, complexity score, and injected context and renders the final prompt using the active style template. Engineering adds role specification, constraint enumeration, format requirements, and test directives. Every template is composable, not static.',
+    in:  'pinned entities + intent + context + style=Engineering',
+    out: 'You are a senior iOS engineer. Task: refactor selected Swift code using SwiftUI best practices. Constraints: preserve UserDefaults key compatibility, add unit test stubs for each public method. Format: annotated code + change rationale.',
   },
   {
-    step: '06',
-    name: 'Model Execution',
-    desc: 'Routes assembled messages to your configured provider. Supports Claude, GPT-4o, DeepSeek V3, and local Ollama. Zero configuration required for Cloud users.',
-    output: 'raw_response, provider, model, tokens_used',
-    color: '#FB923C',
-    icon: `<path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M13 2v7h7" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`,
+    id: 'execution',
+    n: '06', name: 'Model Execution',
+    tag: 'Routing · Streaming',
+    headline: 'Routes to your provider and streams back without delay.',
+    body: 'The assembled prompt routes to your configured endpoint, local Ollama, or a cloud provider via PromptCraft Cloud. Responses stream token by token with timeout handling, retry on transient errors, and request deduplication handled automatically.',
+    in:  'assembled prompt to configured provider',
+    out: 'provider: Claude 3.5 Sonnet\nlatency: 178ms to first token\nstreaming: active @ 48 tok/s\nstatus: 200 OK',
   },
   {
-    step: '07',
-    name: 'Post Processor',
-    desc: 'Enforces word budget, removes forbidden structure in simple tiers, blocks meta leakage. The output has exactly the complexity the task earned.',
-    output: 'final_directive, compression_applied, clean',
-    color: '#00E5A0',
-    icon: `<path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`,
+    id: 'post',
+    n: '07', name: 'Post Processor',
+    tag: 'Validation · Cleanup',
+    headline: 'Strips model artifacts before output reaches you.',
+    body: 'The raw response passes through format validation, artifact stripping, verbosity enforcement, and structural cleanup. The result lands in the output area with copy, export, and clear actions ready immediately.',
+    in:  'raw model response with preamble + filler',
+    out: 'preamble: stripped\nformat: validated\nverbosity: enforced\noutput: ready to copy',
   },
 ];
 ---
 
-<section id="pipeline" class="pipeline-section ambient-top">
-  <div class="container">
+<section id="pipeline" aria-labelledby="pipeline-heading">
+  <div class="wrap">
+    <div class="pl-header" data-reveal>
+      <span class="eyebrow"><span class="eyebrow-dot"></span>Under the hood</span>
+      <h2 id="pipeline-heading" class="pl-h2">The pipeline, in full.</h2>
+      <p class="pl-sub">When you scroll into this section, it walks through 01 to 07 automatically, then continues to the next section.</p>
+    </div>
+  </div>
 
-    <div class="pipeline-header">
-      <div class="section-tag reveal">
-        <span class="mono">Recursive Meta Prompt Architecture</span>
+  <div id="pl-scroll-wrapper">
+    <div id="pl-sticky">
+
+      <div class="pl-ide" id="pl-ide" role="tablist" aria-label="Pipeline stage inspector">
+
+        <div class="pl-stages">
+          {stages.map((s, i) => (
+            <button
+              class={`pl-stage${i === 0 ? ' active' : ''}`}
+              id={`pls-tab-${s.id}`}
+              role="tab"
+              aria-selected={i === 0 ? 'true' : 'false'}
+              aria-controls={`pls-panel-${s.id}`}
+              data-idx={i}
+              tabindex={i === 0 ? 0 : -1}
+            >
+              <span class="pls-n mono">{s.n}</span>
+              <div class="pls-info">
+                <span class="pls-name">{s.name}</span>
+                <span class="pls-tag mono">{s.tag}</span>
+              </div>
+              <div class="pls-indicator" aria-hidden="true"></div>
+            </button>
+          ))}
+        </div>
+
+        <div class="pl-panel-wrap">
+          {stages.map((s, i) => (
+            <div
+              class={`pl-panel${i === 0 ? ' active' : ''}`}
+              id={`pls-panel-${s.id}`}
+              role="tabpanel"
+              aria-labelledby={`pls-tab-${s.id}`}
+            >
+              <div class="plp-top">
+                <span class="plp-n mono">{s.n} / 07</span>
+                <h3 class="plp-name">{s.name}</h3>
+                <p class="plp-headline">{s.headline}</p>
+              </div>
+              <p class="plp-body">{s.body}</p>
+              <div class="plp-io">
+                <div class="plp-io-pane">
+                  <span class="plp-io-label mono">input</span>
+                  <code class="plp-io-code mono">{s.in}</code>
+                </div>
+                <div class="plp-io-arrow" aria-hidden="true">
+                  <iconify-icon icon="lucide:arrow-down" style="font-size:14px;color:var(--acc);"></iconify-icon>
+                </div>
+                <div class="plp-io-pane plp-io-out">
+                  <span class="plp-io-label mono">output</span>
+                  <code class="plp-io-code mono">{s.out}</code>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
       </div>
-      <h2 class="section-title reveal reveal-d1">
-        Seven stages.<br />
-        <span class="gradient-text">Zero guesswork.</span>
-      </h2>
-      <p class="section-desc reveal reveal-d2">
-        Every optimization follows a deterministic pipeline.
-        Understanding happens before generation. Complexity is measured, not assumed.
-      </p>
-    </div>
 
-    <div class="pipeline-list">
-      {stages.map((stage, i) => (
-        <div class="pipeline-item reveal" data-reveal-delay={String((i % 4) + 1)}>
-
-          <!-- Step badge + connector -->
-          <div class="step-col">
-            <div class="step-badge" style={`border-color: ${stage.color}35; background: ${stage.color}10; color: ${stage.color}`}>
-              {stage.step}
-            </div>
-            {i < stages.length - 1 && (
-              <div class="step-connector" style={`background: linear-gradient(180deg, ${stage.color}40, ${stages[i+1].color}20)`}></div>
-            )}
-          </div>
-
-          <!-- Content -->
-          <div class="item-content">
-            <div class="item-header">
-              <div class="item-icon" style={`border-color: ${stage.color}25; background: ${stage.color}08`}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" set:html={stage.icon} style={`color: ${stage.color}`} />
-              </div>
-              <div>
-                <h3 class="item-name">{stage.name}</h3>
-                <code class="item-output mono">{stage.output}</code>
-              </div>
-            </div>
-            <p class="item-desc">{stage.desc}</p>
-          </div>
-
-          <!-- Stage number accent -->
-          <div class="item-accent mono" style={`color: ${stage.color}15`}>{stage.step}</div>
+      <div class="pl-progress" aria-hidden="true">
+        <div class="pl-progress-track">
+          <div class="pl-progress-bar" id="pl-progress-bar"></div>
         </div>
-      ))}
+        <span class="pl-progress-label mono" id="pl-progress-label">01 / 07</span>
+      </div>
     </div>
+  </div>
 
-    <!-- Design principles -->
-    <div class="principles reveal">
-      {[
-        { title: 'Complexity earned, not assumed', desc: 'Simple inputs stay compact. Structure appears only when task load demands it.', icon: '◈' },
-        { title: 'Context adds precision, not length', desc: 'Learned entities inject into existing sentences. Output length stays constant.', icon: '◎' },
-        { title: 'Emotional noise, filtered', desc: 'Urgency preserved as signal. Profanity and frustration stripped before analysis.', icon: '◉' },
-      ].map(p => (
-        <div class="principle-card">
-          <span class="principle-icon mono">{p.icon}</span>
-          <h4 class="principle-title">{p.title}</h4>
-          <p class="principle-desc">{p.desc}</p>
-        </div>
-      ))}
+  <div class="wrap">
+    <div class="pl-footer mono" data-reveal>
+      <span class="plf-acc">pipeline.execute(input)</span>
+      <iconify-icon icon="lucide:arrow-right" style="font-size:12px;vertical-align:middle;" aria-hidden="true"></iconify-icon>
+      optimized, model-ready · avg <strong>140ms</strong>
     </div>
   </div>
 </section>
 
 <style>
-  .pipeline-section {
-    padding: 120px 24px;
-    background: var(--base);
-  }
+  #pipeline { padding: 100px 0 80px; }
 
-  .container {
-    max-width: 1000px;
-    margin: 0 auto;
+  .pl-header {
+    max-width: 620px; margin-bottom: 44px;
+    display: flex; flex-direction: column; gap: 16px;
   }
-
-  .pipeline-header {
-    max-width: 640px;
-    margin-bottom: 72px;
+  .pl-h2 {
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 700; letter-spacing: -0.05em; line-height: 1.06;
+    color: var(--ink);
   }
+  .pl-sub { font-size: 15px; color: var(--mid); line-height: 1.7; }
 
-  .section-tag {
-    display: inline-flex;
-    font-size: 11px;
-    color: var(--teal);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-    padding: 5px 12px;
-    border: 1px solid rgba(0,229,160,0.18);
-    border-radius: 100px;
-    background: rgba(0,229,160,0.05);
-  }
-
-  .section-title {
-    font-size: clamp(40px, 5vw, 60px);
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    line-height: 1.1;
-    color: var(--text-primary);
-    margin-bottom: 20px;
-  }
-
-  .gradient-text {
-    background: linear-gradient(135deg, var(--teal), #818CF8);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .section-desc {
-    font-size: 17px;
-    color: var(--text-secondary);
-    line-height: 1.7;
-  }
-
-  .pipeline-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .pipeline-item {
-    display: grid;
-    grid-template-columns: 56px 1fr auto;
-    gap: 24px;
-    padding: 28px 28px 28px 0;
-    border-bottom: 1px solid var(--border);
+  #pl-scroll-wrapper {
     position: relative;
-    transition: background 0.3s;
-    cursor: default;
+    margin-bottom: 28px;
   }
 
-  .pipeline-item:last-child { border-bottom: none; }
-
-  .pipeline-item:hover {
-    background: rgba(255,255,255,0.015);
-    border-radius: 12px;
-  }
-
-  .step-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-  }
-
-  .step-badge {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    border: 1px solid;
-    display: flex;
-    align-items: center;
+  #pl-sticky {
+    width: 100%;
+    min-height: calc(100vh - 84px);
+    display: flex; flex-direction: column;
     justify-content: center;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 600;
-    flex-shrink: 0;
-    transition: transform 0.3s, box-shadow 0.3s;
   }
 
-  .pipeline-item:hover .step-badge {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px currentColor;
+  .pl-ide {
+    width: 100%;
+    min-height: clamp(560px, 78vh, 760px);
+    display: grid; grid-template-columns: 300px 1fr;
+    border-top: 1px solid var(--bdr);
+    border-bottom: 1px solid var(--bdr);
+    background: var(--bg);
+    overflow: hidden;
   }
 
-  .step-connector {
-    width: 1px;
-    flex: 1;
-    min-height: 20px;
-    margin-top: 6px;
+  .pl-stages {
+    border-right: 1px solid var(--bdr);
+    display: flex; flex-direction: column;
+    background: var(--bg);
   }
-
-  .item-content {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .item-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-  }
-
-  .item-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 9px;
-    border: 1px solid;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: transform 0.3s;
-  }
-
-  .pipeline-item:hover .item-icon { transform: rotate(5deg); }
-
-  .item-name {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: -0.02em;
-    margin-bottom: 4px;
-  }
-
-  .item-output {
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.02em;
-  }
-
-  .item-desc {
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    max-width: 580px;
-  }
-
-  .item-accent {
-    font-size: 80px;
-    font-weight: 900;
-    letter-spacing: -0.05em;
-    line-height: 1;
-    align-self: center;
-    user-select: none;
-  }
-
-  .principles {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-top: 64px;
-  }
-
-  .principle-card {
-    padding: 24px;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: var(--surface);
+  .pl-stage {
+    display: grid; grid-template-columns: 44px 1fr 4px;
+    align-items: center; gap: 10px;
+    padding: 14px 16px;
+    border: none; border-bottom: 1px solid var(--bdr);
+    background: var(--bg); text-align: left;
+    cursor: pointer;
+    transition: background .15s;
     position: relative;
-    transition: border-color 0.3s, transform 0.3s;
+  }
+  .pl-stage:last-child { border-bottom: none; }
+  .pl-stage:hover { background: var(--bg2); }
+  .pl-stage.active { background: var(--bg2); }
+
+  .pls-n { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--dim); }
+  .pl-stage.active .pls-n { color: var(--acc); }
+  .pls-info { display: flex; flex-direction: column; gap: 2px; }
+  .pls-name { font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: -0.015em; }
+  .pls-tag  { font-size: 10px; color: var(--dim); letter-spacing: 0.04em; }
+  .pls-indicator {
+    height: 100%; width: 3px; border-radius: 2px;
+    background: transparent;
+    position: absolute; left: 0; top: 0; bottom: 0;
+    transition: background .2s;
+  }
+  .pl-stage.active .pls-indicator { background: var(--acc); }
+
+  .pl-panel-wrap {
+    position: relative;
+    overflow: hidden;
+    min-height: 100%;
+  }
+  .pl-panel {
+    position: absolute; inset: 0;
+    padding: 38px 44px;
+    display: flex; flex-direction: column; gap: 18px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .42s var(--out), transform .42s var(--out);
+    pointer-events: none;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .pl-panel::-webkit-scrollbar { display: none; }
+  .pl-panel.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
-  .principle-card:hover {
-    border-color: rgba(0,229,160,0.2);
-    transform: translateY(-4px);
+  .plp-top { display: flex; flex-direction: column; gap: 8px; }
+  .plp-n { font-size: 10px; color: var(--dim); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .plp-name { font-size: 24px; font-weight: 700; letter-spacing: -0.035em; color: var(--ink); line-height: 1.2; }
+  .plp-headline { font-size: 15px; font-weight: 500; color: var(--acc); line-height: 1.45; }
+  .plp-body { font-size: 14px; line-height: 1.8; color: var(--mid); max-width: 640px; }
+
+  .plp-io {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--bdr); border-radius: 10px;
+    overflow: hidden; max-width: 620px;
+  }
+  .plp-io-pane { padding: 12px 16px; display: flex; flex-direction: column; gap: 5px; }
+  .plp-io-out { background: rgba(26,107,64,0.03); }
+  .plp-io-label { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+  .plp-io-out .plp-io-label { color: var(--acc); opacity: .7; }
+  .plp-io-code { font-size: 12px; line-height: 1.65; color: var(--mid); white-space: pre-wrap; word-break: break-word; }
+  .plp-io-out .plp-io-code { color: var(--acc); }
+  .plp-io-arrow {
+    display: flex; align-items: center; padding: 5px 16px;
+    border-top: 1px solid var(--bdr); border-bottom: 1px solid var(--bdr);
+    background: var(--bg2);
   }
 
-  .principle-icon {
-    display: block;
-    font-size: 20px;
-    color: var(--teal);
-    margin-bottom: 14px;
+  .pl-progress {
+    margin-top: 10px;
+    display: flex; align-items: center; gap: 14px;
+    padding: 8px 0;
+  }
+  .pl-progress-track {
+    flex: 1; height: 6px; background: var(--bdr);
+    border-radius: 999px; overflow: hidden;
+  }
+  .pl-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--acc), var(--acc-hi));
+    width: calc(1/7 * 100%);
+    border-radius: 999px;
+    transition: width .5s var(--out);
+  }
+  .pl-progress-label {
+    font-size: 11px; color: var(--ink2); letter-spacing: 0.08em;
+    width: 48px; text-align: right;
   }
 
-  .principle-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
+  .pl-footer {
+    font-size: 12px; color: var(--dim);
+    padding: 13px 18px; border: 1px solid var(--bdr);
+    border-radius: 8px; background: var(--bg2);
+    display: inline-flex; gap: 6px; align-items: center;
   }
+  .plf-acc { color: var(--acc); }
+  .pl-footer strong { color: var(--ink2); }
 
-  .principle-desc {
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-  }
-
-  @media (max-width: 768px) {
-    .principles { grid-template-columns: 1fr; }
-    .item-accent { display: none; }
+  @media (max-width: 900px) {
+    #pl-sticky { min-height: auto; }
+    .pl-ide { grid-template-columns: 1fr; min-height: 520px; }
+    .pl-stages { border-right: none; border-bottom: 1px solid var(--bdr); display: grid; grid-template-columns: 1fr 1fr; }
+    .pl-panel-wrap { min-height: 380px; }
+    .pl-panel { padding: 24px 20px; }
   }
 </style>
+
+<script>
+  const tabs = Array.from(document.querySelectorAll('.pl-stage'));
+  const panels = Array.from(document.querySelectorAll('.pl-panel'));
+  const progressBar = document.getElementById('pl-progress-bar');
+  const progressLabel = document.getElementById('pl-progress-label');
+  const wrapper = document.getElementById('pl-scroll-wrapper');
+  const nextSection = document.getElementById('features');
+
+  const TOTAL = 7;
+  let currentStage = 0;
+  let isAutoPlaying = false;
+  let hasAutoPlayed = false;
+  let autoTimer = null;
+
+  function activateStage(i) {
+    currentStage = Math.max(0, Math.min(TOTAL - 1, i));
+
+    tabs.forEach((t, ti) => {
+      const on = ti === currentStage;
+      t.classList.toggle('active', on);
+      t.setAttribute('aria-selected', String(on));
+      t.setAttribute('tabindex', on ? '0' : '-1');
+    });
+
+    panels.forEach((p, pi) => {
+      p.classList.toggle('active', pi === currentStage);
+    });
+
+    if (progressBar) progressBar.style.width = `${((currentStage + 1) / TOTAL) * 100}%`;
+    if (progressLabel) progressLabel.textContent = `${String(currentStage + 1).padStart(2, '0')} / 07`;
+  }
+
+  function stopAuto() {
+    if (autoTimer !== null) {
+      clearInterval(autoTimer);
+      autoTimer = null;
+    }
+    isAutoPlaying = false;
+  }
+
+  function startAutoSequence() {
+    if (isAutoPlaying || hasAutoPlayed || window.innerWidth < 900) return;
+
+    isAutoPlaying = true;
+    let stage = 0;
+    activateStage(0);
+
+    autoTimer = setInterval(() => {
+      stage += 1;
+      if (stage <= TOTAL - 1) activateStage(stage);
+      if (stage >= TOTAL - 1) {
+        stopAuto();
+        hasAutoPlayed = true;
+        if (nextSection) {
+          setTimeout(() => {
+            const target = Math.max(0, nextSection.offsetTop - 90);
+            window.scrollTo({ top: target, behavior: 'smooth' });
+          }, 420);
+        }
+      }
+    }, 820);
+  }
+
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => {
+      stopAuto();
+      hasAutoPlayed = true;
+      activateStage(i);
+    });
+
+    t.addEventListener('keydown', e => {
+      const key = e.key;
+      if (key === 'ArrowDown') {
+        e.preventDefault();
+        const n = Math.min(TOTAL - 1, i + 1);
+        stopAuto();
+        hasAutoPlayed = true;
+        activateStage(n);
+        tabs[n].focus();
+      }
+      if (key === 'ArrowUp') {
+        e.preventDefault();
+        const n = Math.max(0, i - 1);
+        stopAuto();
+        hasAutoPlayed = true;
+        activateStage(n);
+        tabs[n].focus();
+      }
+    });
+  });
+
+  let lastY = window.scrollY;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    const down = y > lastY;
+    const up = y < lastY;
+    lastY = y;
+
+    if (!wrapper) return;
+
+    if (up && isAutoPlaying) {
+      stopAuto();
+      hasAutoPlayed = false;
+      return;
+    }
+
+    // Reset replay if user scrolls back above pipeline
+    if (y < wrapper.offsetTop - window.innerHeight * 0.4) {
+      hasAutoPlayed = false;
+      activateStage(0);
+    }
+
+    if (!down || hasAutoPlayed || isAutoPlaying || window.innerWidth < 900) return;
+
+    const r = wrapper.getBoundingClientRect();
+    const inGate = r.top <= window.innerHeight * 0.34 && r.bottom >= window.innerHeight * 0.66;
+    if (inGate) startAutoSequence();
+  }, { passive: true });
+
+  activateStage(0);
+</script>

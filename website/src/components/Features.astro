@@ -1,412 +1,263 @@
 ---
 ---
-<section id="features" class="section feat-section">
-  <div class="container">
-    <div class="feat-head">
-      <div class="badge" data-reveal>FEATURES</div>
-      <h2 class="feat-title syne" data-reveal data-reveal-d="1">
-        Built for power users.<br>
-        <span style="color:var(--teal-d)">Invisible to everyone else.</span>
-      </h2>
+
+<section id="features" aria-labelledby="features-heading">
+
+  <div class="wrap ft-head" data-reveal>
+    <span class="eyebrow"><span class="eyebrow-dot"></span>Why it works</span>
+    <h2 id="features-heading" class="ft-h2">The AI already has your context.<br>You just don't have to write it.</h2>
+  </div>
+
+  <!-- Row 1: Context → full-width alternating -->
+  <div class="ft-row ft-row-a" data-reveal>
+    <div class="ftr-visual">
+      <!-- Terminal-style context display -->
+      <div class="ft-terminal">
+        <div class="ftt-bar">
+          <span class="fttb-dot" style="background:#FF5F57"></span>
+          <span class="fttb-dot" style="background:#FFBD2E"></span>
+          <span class="fttb-dot" style="background:#28C840"></span>
+          <span class="fttb-title mono">context-engine.log</span>
+        </div>
+        <div class="ftt-body mono">
+          <div class="fttl"><span class="fttl-key">active_app</span><span class="fttl-sep"> = </span><span class="fttl-val">Xcode.app</span></div>
+          <div class="fttl"><span class="fttl-key">lang</span><span class="fttl-sep"> = </span><span class="fttl-val">swift</span></div>
+          <div class="fttl"><span class="fttl-key">framework</span><span class="fttl-sep"> = </span><span class="fttl-val">swiftui</span></div>
+          <div class="fttl"><span class="fttl-key">selected_lines</span><span class="fttl-sep"> = </span><span class="fttl-val">42</span></div>
+          <div class="fttl"><span class="fttl-key">clipboard[0]</span><span class="fttl-sep"> = </span><span class="fttl-val">UserDefaults.standard.string(forKey:)</span></div>
+          <div class="fttl"><span class="fttl-key">clipboard[1]</span><span class="fttl-sep"> = </span><span class="fttl-val">@AppStorage("onboarding_done")</span></div>
+          <div class="fttl fttl-dim"><span class="fttl-key">scope</span><span class="fttl-sep"> = </span><span class="fttl-val">mobile-dev · ios-engineering</span></div>
+          <div class="fttl fttl-dim"><span class="fttl-key">style_profile</span><span class="fttl-sep"> = </span><span class="fttl-val">Engineering</span></div>
+          <div class="fttl fttl-hi">
+            <span class="fttl-tag">
+              <iconify-icon icon="lucide:check-circle-2" style="font-size:11px;vertical-align:middle;margin-right:3px;" aria-hidden="true"></iconify-icon>
+              injected into assembler
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- Feature rows -->
-    <div class="feat-rows">
-
-      <!-- Row 1: Menu bar -->
-      <div class="feat-row" data-reveal>
-        <div class="feat-text">
-          <div class="ft-num mono">01</div>
-          <h3 class="ft-name syne">Lives in your menu bar.</h3>
-          <p class="ft-desc">
-            No extra windows. No context-switching. PromptCraft is always one click away,
-            anchored in the macOS status bar. The global keyboard shortcut <kbd>⌘⇧Space</kbd>
-            fires it from any application.
-          </p>
-          <ul class="ft-bullets">
-            <li>Native macOS popover — zero UI clutter</li>
-            <li>Global keyboard shortcut from any app</li>
-            <li>Auto-hides when not in use</li>
-            <li>Window mode for extended sessions</li>
-          </ul>
+    <div class="ftr-text">
+      <span class="ftr-n mono">01</span>
+      <h3 class="ftr-h3">Context you never have to write.</h3>
+      <p class="ftr-body">
+        The Context Engine reads your active application, selected text, and clipboard history before assembling any prompt. Coding in Xcode with a SwiftUI file open? It knows. Writing in Notion? It adjusts tone. The pipeline always knows what you were working on — without you ever saying it.
+      </p>
+      <div class="ftr-detail">
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Active app and language detected automatically
         </div>
-        <div class="feat-visual fv-menubar">
-          <div class="fv-menubar-sim" aria-hidden="true">
-            <div class="fvm-bar">
-              <span class="fvm-apple">&#63743;</span>
-              <span class="fvm-item">Finder</span>
-              <span class="fvm-item">File</span>
-              <div class="fvm-right">
-                <span class="fvm-sys mono">14:07</span>
-                <div class="fvm-pc-wrap">
-                  <div class="fvm-pc-icon">
-                    <svg width="16" height="16" viewBox="0 0 22 22" fill="none">
-                      <circle cx="11" cy="11" r="2" fill="#00C896"/>
-                      <line x1="11" y1="2"  x2="11" y2="7"  stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
-                      <line x1="11" y1="15" x2="11" y2="20" stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
-                      <line x1="2"  y1="11" x2="7"  y2="11" stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
-                      <line x1="15" y1="11" x2="20" y2="11" stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
-                    </svg>
-                  </div>
-                  <div class="fvm-dropdown">
-                    <div class="fvd-arrow" aria-hidden="true"></div>
-                    <div class="fvd-content">
-                      <div class="fvd-row">
-                        <div class="fvd-input mono">Write tests for my auth module...</div>
-                      </div>
-                      <div class="fvd-styles">
-                        <span class="fvd-pill active">Engineering</span>
-                        <span class="fvd-pill">Research</span>
-                        <span class="fvd-pill">Content</span>
-                      </div>
-                      <div class="fvd-btn mono">Optimize ⌘↩</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="fv-shortcut-tag mono" aria-hidden="true">
-            <kbd>⌘</kbd><kbd>⇧</kbd><kbd>Space</kbd>
-            <span>anywhere</span>
-          </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Clipboard history ring (last 8 items)
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Accessibility permission is read-only, sandboxed
         </div>
       </div>
-
-      <!-- Row 2: Styles -->
-      <div class="feat-row feat-row-rev" data-reveal>
-        <div class="feat-text">
-          <div class="ft-num mono">02</div>
-          <h3 class="ft-name syne">Optimization styles.</h3>
-          <p class="ft-desc">
-            Different tasks need different prompt architectures. Engineering prompts need precision
-            and type safety. Content prompts need narrative structure. Each style applies a
-            specialized RMPA configuration — or build your own.
-          </p>
-          <ul class="ft-bullets">
-            <li>7 built-in styles: General, Engineering, Research, Content, Analysis, Academic, Creative</li>
-            <li>Custom style editor with full RMPA control</li>
-            <li>Style templates for recurring prompt patterns</li>
-            <li>Context engine learns from your usage</li>
-          </ul>
-        </div>
-        <div class="feat-visual fv-styles">
-          <div class="fv-styles-grid" aria-hidden="true">
-            <div class="fvs-card fvs-active">
-              <div class="fvs-icon" style="color:#00C896">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M8 2L2 14h12L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
-              </div>
-              <div class="fvs-name mono">General</div>
-              <div class="fvs-desc">Balanced optimization for any prompt</div>
-            </div>
-            <div class="fvs-card">
-              <div class="fvs-icon" style="color:#4F3FF0">
-                <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M5 5h6M5 11h4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
-              </div>
-              <div class="fvs-name mono">Engineering</div>
-              <div class="fvs-desc">Precision specs, type constraints</div>
-            </div>
-            <div class="fvs-card">
-              <div class="fvs-icon" style="color:#FF5441">
-                <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M6 8l1.5 1.5L10 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
-              <div class="fvs-name mono">Research</div>
-              <div class="fvs-desc">Academic rigor, source awareness</div>
-            </div>
-            <div class="fvs-card">
-              <div class="fvs-icon" style="color:#F5A623">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 7h7M3 10h8M3 13h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-              </div>
-              <div class="fvs-name mono">Content</div>
-              <div class="fvs-desc">Narrative structure, tone control</div>
-            </div>
-            <div class="fvs-card fvs-custom">
-              <div class="fvs-icon" style="color:var(--ink-3)">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </div>
-              <div class="fvs-name mono">Your Style</div>
-              <div class="fvs-desc">Build custom RMPA configuration</div>
-            </div>
-            <div class="fvs-card">
-              <div class="fvs-icon" style="color:#AF52DE">
-                <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M7 6c0-1.1.9-2 2-2h0a2 2 0 010 4H7v1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-              </div>
-              <div class="fvs-name mono">Analysis</div>
-              <div class="fvs-desc">Structured reasoning, frameworks</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Row 3: Cloud -->
-      <div class="feat-row" data-reveal>
-        <div class="feat-text">
-          <div class="ft-num mono">03</div>
-          <h3 class="ft-name syne">Cloud or local.<br>Your choice.</h3>
-          <p class="ft-desc">
-            Pro mode uses your own API keys — your data flows directly to the provider,
-            zero intermediaries. Cloud mode routes through our edge proxy,
-            adding persistent context memory and cross-device sync.
-          </p>
-          <ul class="ft-bullets">
-            <li>Pro: direct to Claude, GPT-4o, DeepSeek with your keys</li>
-            <li>Cloud: global Cloudflare edge proxy, no cold starts</li>
-            <li>Context engine learns your patterns locally</li>
-            <li>All prompt content processed in-memory, never stored</li>
-          </ul>
-          <div class="ft-privacy-tag">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1L2 4v5c0 3.31 2.45 6.41 6 7.16C11.55 15.41 14 12.31 14 9V4L8 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
-            <span class="mono">Your prompts are never stored</span>
-          </div>
-        </div>
-        <div class="feat-visual fv-cloud">
-          <div class="fv-cloud-diagram" aria-hidden="true">
-            <!-- Node: App -->
-            <div class="fvc-node fvc-app">
-              <div class="fvc-node-icon">
-                <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </div>
-              <span class="mono">PromptCraft</span>
-            </div>
-            <!-- Arrow -->
-            <div class="fvc-arrow fvc-arrow-1">
-              <svg viewBox="0 0 60 20" fill="none"><path d="M4 10h52M48 4l8 6-8 6" stroke="var(--teal-d)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span class="mono">RMPA pipeline</span>
-            </div>
-            <!-- Node: Proxy -->
-            <div class="fvc-node fvc-proxy">
-              <div class="fvc-node-icon" style="color:var(--teal-d)">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="currentColor" stroke-width="1.5"/><path d="M2 12h4M18 12h4M12 2v4M12 18v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </div>
-              <span class="mono">CF Edge</span>
-            </div>
-            <!-- Arrow -->
-            <div class="fvc-arrow fvc-arrow-2">
-              <svg viewBox="0 0 60 20" fill="none"><path d="M4 10h52M48 4l8 6-8 6" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span class="mono">optimized prompt</span>
-            </div>
-            <!-- Node: AI -->
-            <div class="fvc-node fvc-ai">
-              <div class="fvc-node-icon" style="color:#4F3FF0">
-                <svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><circle cx="18" cy="7" r="2.5" stroke="currentColor" stroke-width="1.5"/><circle cx="18" cy="17" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M12 12h3M12 10.5l3-2M12 13.5l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </div>
-              <span class="mono">AI Model</span>
-            </div>
-          </div>
-          <div class="fvc-legend mono">
-            <span class="fvc-leg-item"><span class="fvc-leg-dot" style="background:var(--teal)"></span>Cloud mode</span>
-            <span class="fvc-leg-item"><span class="fvc-leg-dot" style="background:var(--ink-3)"></span>Pro mode (direct)</span>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
+
+  <!-- Row 2: Styles → visual right -->
+  <div class="ft-row ft-row-b" data-reveal>
+    <div class="ftr-text">
+      <span class="ftr-n mono">02</span>
+      <h3 class="ftr-h3">Seven optimization styles. Immediately.</h3>
+      <p class="ftr-body">
+        Engineering adds role specification, constraint enumeration, format requirements, and test stubs. Research adds academic framing and source awareness. Content adds narrative structure and audience tone. You switch styles with one click — and the same rough input produces a completely different, equally precise result.
+      </p>
+      <div class="ftr-detail">
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          7 built-in styles: General, Engineering, Research, Content, Analysis, Academic, Creative
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Custom templates you define, save, and reuse
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Same input, different style = completely different optimized output
+        </div>
+      </div>
+    </div>
+    <div class="ftr-visual">
+      <!-- Style comparison -->
+      <div class="ft-styles-demo">
+        <div class="ftsd-input">
+          <span class="ftsd-label mono">You type</span>
+          <p class="ftsd-text">write a test for the login method</p>
+        </div>
+        <div class="ftsd-outputs">
+          <div class="ftsd-out">
+            <span class="ftsd-tag mono">Engineering</span>
+            <p class="ftsd-out-text mono">You are a senior backend QA engineer. Task: write an integration test suite for the login endpoint. Constraints: Jest, supertest, test success (200), bad credentials (401), rate limit (429), locked account (423)...</p>
+          </div>
+          <div class="ftsd-out ftsd-out-b">
+            <span class="ftsd-tag mono">General</span>
+            <p class="ftsd-out-text mono">Write a comprehensive test for the login function covering the happy path and at least three failure scenarios with appropriate assertions...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 3: Speed + privacy → visual left -->
+  <div class="ft-row ft-row-a" data-reveal>
+    <div class="ftr-visual">
+      <div class="ft-spec-grid">
+        <div class="ftsg-item">
+          <span class="ftsg-n">140ms</span>
+          <span class="ftsg-l mono">avg pipeline end-to-end</span>
+        </div>
+        <div class="ftsg-item">
+          <span class="ftsg-n">0</span>
+          <span class="ftsg-l mono">external servers before your AI</span>
+        </div>
+        <div class="ftsg-item">
+          <span class="ftsg-n">Local</span>
+          <span class="ftsg-l mono">full Ollama support, offline capable</span>
+        </div>
+        <div class="ftsg-item">
+          <span class="ftsg-n">1</span>
+          <span class="ftsg-l mono">permission required (Accessibility, read-only)</span>
+        </div>
+      </div>
+    </div>
+    <div class="ftr-text">
+      <span class="ftr-n mono">03</span>
+      <h3 class="ftr-h3">Faster than you can blink. Private by design.</h3>
+      <p class="ftr-body">
+        The entire 7-stage pipeline runs on your Mac in under 200ms. Your prompts never reach an external server until they touch your chosen AI provider — and with Ollama, that never happens at all. One read-only Accessibility permission. No telemetry. No logging. No account required for the app itself.
+      </p>
+      <div class="ftr-detail">
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Zero telemetry — not even anonymous usage data
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Signed with Developer ID, notarized by Apple
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Works fully offline with any Ollama model
+        </div>
+      </div>
+    </div>
+  </div>
+
 </section>
 
 <style>
-  .feat-section { padding: 100px 0; background: var(--paper); }
+  #features { padding: 80px 0 80px; }
 
-  .feat-head { margin-bottom: 72px; }
-  .feat-head .badge { margin-bottom: 24px; }
-  .feat-title {
-    font-size: clamp(32px, 3.8vw, 50px);
-    font-weight: 800; letter-spacing: -0.045em;
-    line-height: 1.1; color: var(--ink);
-  }
+  .ft-head { margin-bottom: 64px; display: flex; flex-direction: column; gap: 16px; }
+  .ft-h2 { font-size: clamp(26px, 3.8vw, 46px); font-weight: 700; letter-spacing: -0.045em; line-height: 1.1; color: var(--ink); }
 
-  /* Feature rows */
-  .feat-rows { display: flex; flex-direction: column; gap: 100px; }
+  /* Alternating rows */
+  .ft-row {
+    display: grid; gap: 0;
+    border-top: 1px solid var(--bdr);
+    align-items: stretch;
+  }
+  .ft-row:last-child { border-bottom: 1px solid var(--bdr); }
 
-  .feat-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px; align-items: center;
-  }
-  .feat-row-rev { direction: rtl; }
-  .feat-row-rev > * { direction: ltr; }
+  .ft-row-a { grid-template-columns: 1fr 1fr; }
+  .ft-row-b { grid-template-columns: 1fr 1fr; }
 
-  /* Text side */
-  .ft-num { font-size: 11px; color: var(--ink-4); letter-spacing: 0.1em; margin-bottom: 16px; }
-  .ft-name {
-    font-size: clamp(24px, 2.8vw, 34px);
-    font-weight: 800; letter-spacing: -0.04em;
-    line-height: 1.15; color: var(--ink);
-    margin-bottom: 18px;
+  .ftr-visual {
+    padding: 56px 48px;
+    background: var(--bg2);
+    display: flex; align-items: center; justify-content: center;
   }
-  .ft-desc { font-size: 15px; line-height: 1.75; color: var(--ink-2); margin-bottom: 20px; }
-  .ft-bullets {
-    list-style: none; display: flex; flex-direction: column; gap: 8px;
-    margin-bottom: 24px;
+  .ft-row-a .ftr-visual { border-right: 1px solid var(--bdr); }
+  .ft-row-b .ftr-visual { border-left: 1px solid var(--bdr); order: 2; }
+
+  .ftr-text {
+    padding: 56px 52px;
+    display: flex; flex-direction: column; gap: 20px;
   }
-  .ft-bullets li {
+  .ft-row-b .ftr-text { order: 1; }
+
+  .ftr-n { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: var(--acc); }
+  .ftr-h3 { font-size: clamp(20px, 2.5vw, 28px); font-weight: 700; letter-spacing: -0.035em; color: var(--ink); line-height: 1.2; }
+  .ftr-body { font-size: 14px; line-height: 1.8; color: var(--mid); }
+
+  .ftr-detail { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .ftrd-item {
     display: flex; align-items: flex-start; gap: 10px;
-    font-size: 14px; color: var(--ink-2); line-height: 1.5;
+    font-size: 13px; line-height: 1.5; color: var(--mid);
   }
-  .ft-bullets li::before {
-    content: '';
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--teal); flex-shrink: 0;
-    margin-top: 7px;
-  }
+  .ftrd-item svg { flex-shrink: 0; margin-top: 1px; }
 
-  .ft-privacy-tag {
-    display: inline-flex; align-items: center; gap: 7px;
-    padding: 7px 12px;
-    background: rgba(0,200,150,0.06);
-    border: 1px solid rgba(0,200,150,0.2);
-    border-radius: var(--r-sm);
-    font-size: 12px; color: var(--teal-d);
-    font-family: 'DM Mono', monospace;
-  }
-
-  kbd {
-    display: inline-flex; align-items: center;
-    padding: 2px 5px;
-    background: var(--paper-2); border: 1px solid var(--border);
-    border-radius: 4px; font-family: 'DM Mono', monospace;
-    font-size: 11px; color: var(--ink-2);
-    box-shadow: 0 1px 0 var(--border);
-  }
-
-  /* Visual side */
-  .feat-visual {
-    background: var(--paper-2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-xl);
-    padding: 40px;
-    min-height: 320px;
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column;
-    gap: 20px;
-    position: relative;
+  /* Terminal widget */
+  .ft-terminal {
+    width: 100%; max-width: 460px;
+    background: var(--dk); border-radius: 10px;
     overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.08);
   }
-  .feat-visual::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(0,200,150,0.06), transparent 60%);
-    pointer-events: none;
+  .ftt-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 14px; background: var(--dk2);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
+  .fttb-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .fttb-title { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 0.04em; margin-left: 8px; }
 
-  /* Menu bar vis */
-  .fvm-bar {
-    background: rgba(25,25,28,0.98);
-    border-radius: 10px;
-    height: 26px;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 12px;
-    width: 100%;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
-  }
-  .fvm-apple, .fvm-item { color: rgba(255,255,255,0.8); font-size: 12px; font-family: -apple-system,sans-serif; }
-  .fvm-right { display: flex; align-items: center; gap: 12px; }
-  .fvm-sys { font-size: 11px; color: rgba(255,255,255,0.5); }
-  .fvm-pc-wrap { position: relative; }
-  .fvm-pc-icon {
-    display: flex; align-items: center; justify-content: center;
-    width: 22px; height: 22px; border-radius: 4px;
-    cursor: none;
-    background: rgba(0,200,150,0.12);
-  }
-  .fvm-dropdown {
-    position: absolute;
-    top: calc(100% + 8px);
-    right: -20px;
-    width: 260px;
-    background: rgba(22,22,24,0.97);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    padding: 12px;
-    z-index: 10;
-  }
-  .fvd-arrow {
-    position: absolute;
-    top: -6px; right: 28px;
-    width: 12px; height: 6px;
-    background: rgba(22,22,24,0.97);
-    clip-path: polygon(50% 0, 100% 100%, 0 100%);
-  }
-  .fvd-input {
-    font-size: 11px; color: rgba(255,255,255,0.4);
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 6px;
-    padding: 7px 9px;
-    margin-bottom: 8px;
-  }
-  .fvd-styles { display: flex; gap: 5px; margin-bottom: 8px; }
-  .fvd-pill {
-    padding: 3px 8px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.06);
-    border: 0.5px solid rgba(255,255,255,0.1);
-    font-size: 10px; color: rgba(255,255,255,0.5);
-    font-family: 'DM Sans', sans-serif;
-  }
-  .fvd-pill.active { background: #0A84FF; color: #fff; border-color: transparent; }
-  .fvd-btn {
-    width: 100%; height: 32px;
-    background: #0A84FF; border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; color: #fff; font-weight: 600;
-  }
+  .ftt-body { padding: 16px; display: flex; flex-direction: column; gap: 5px; }
+  .fttl { display: flex; gap: 0; font-size: 11px; line-height: 1.6; }
+  .fttl-key { color: rgba(100,160,255,0.7); }
+  .fttl-sep { color: rgba(255,255,255,0.25); padding: 0 4px; }
+  .fttl-val { color: rgba(255,255,255,0.75); }
+  .fttl-dim .fttl-key,
+  .fttl-dim .fttl-val { opacity: .5; }
+  .fttl-tag { color: var(--acc-hi); font-size: 11px; margin-top: 4px; opacity: .8; }
 
-  .fv-shortcut-tag {
-    display: flex; align-items: center; gap: 4px;
-    font-size: 11px; color: var(--ink-3);
-  }
+  /* Style demo */
+  .ft-styles-demo { width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 16px; }
 
-  /* Styles grid */
-  .fv-styles-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;
-  }
-  .fvs-card {
-    background: white; border: 1px solid var(--border);
-    border-radius: var(--r-md); padding: 14px;
+  .ftsd-input {
+    padding: 16px; background: var(--bg3); border-radius: 8px;
+    border: 1px solid var(--bdr-hi);
     display: flex; flex-direction: column; gap: 6px;
-    transition: transform .2s var(--ease-spring), box-shadow .2s;
-    cursor: none;
   }
-  .fvs-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(12,11,24,0.08); }
-  .fvs-active { border-color: rgba(0,200,150,0.3); box-shadow: 0 0 0 3px rgba(0,200,150,0.06); }
-  .fvs-custom { border-style: dashed; background: var(--paper); }
-  .fvs-icon { width: 22px; height: 22px; } .fvs-icon svg { width: 100%; height: 100%; }
-  .fvs-name { font-size: 11px; font-weight: 600; color: var(--ink); }
-  .fvs-desc { font-size: 10px; color: var(--ink-3); line-height: 1.4; }
+  .ftsd-label { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+  .ftsd-text  { font-size: 14px; color: var(--ink2); font-weight: 500; }
 
-  /* Cloud diagram */
-  .fv-cloud-diagram {
-    display: flex; align-items: center;
-    gap: 0; width: 100%; justify-content: center; flex-wrap: wrap;
+  .ftsd-outputs { display: flex; flex-direction: column; gap: 8px; }
+  .ftsd-out {
+    padding: 14px 16px; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--bdr);
+    display: flex; flex-direction: column; gap: 6px;
   }
-  .fvc-node {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 6px;
-    background: white; border: 1px solid var(--border);
-    border-radius: var(--r-md); padding: 14px 16px;
-  }
-  .fvc-node-icon { width: 32px; height: 32px; color: var(--ink-2); }
-  .fvc-node-icon svg { width: 100%; height: 100%; }
-  .fvc-node span { font-size: 10px; color: var(--ink-3); letter-spacing: 0.04em; }
-  .fvc-arrow {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 3px;
-    padding: 0 4px; flex-shrink: 0;
-  }
-  .fvc-arrow svg { width: 50px; }
-  .fvc-arrow span { font-size: 9px; color: var(--ink-4); letter-spacing: 0.04em; }
-  .fvc-legend {
-    display: flex; gap: 16px; font-size: 10px; color: var(--ink-3);
-  }
-  .fvc-leg-item { display: flex; align-items: center; gap: 5px; }
-  .fvc-leg-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .ftsd-out-b { opacity: .55; }
+  .ftsd-tag { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--acc); }
+  .ftsd-out-text { font-size: 11px; line-height: 1.6; color: var(--mid); white-space: pre-wrap; }
 
-  @media (max-width: 768px) {
-    .feat-row { grid-template-columns: 1fr; gap: 32px; }
-    .feat-row-rev { direction: ltr; }
-    .feat-rows { gap: 60px; }
-    .feat-visual { min-height: 220px; padding: 24px; }
+  /* Spec grid */
+  .ft-spec-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--bdr);
+    border: 1px solid var(--bdr); border-radius: 10px;
+    overflow: hidden; width: 100%; max-width: 460px;
+  }
+  .ftsg-item {
+    padding: 24px 20px; background: var(--bg);
+    display: flex; flex-direction: column; gap: 6px;
+    transition: background .15s;
+  }
+  .ftsg-item:hover { background: var(--bg3); }
+  .ftsg-n { font-size: 28px; font-weight: 700; letter-spacing: -0.05em; color: var(--ink); line-height: 1; }
+  .ftsg-l { font-size: 11px; color: var(--dim); letter-spacing: 0.03em; }
+
+  @media (max-width: 900px) {
+    .ft-row-a, .ft-row-b { grid-template-columns: 1fr; }
+    .ft-row-a .ftr-visual, .ft-row-b .ftr-visual { border-right: none; border-left: none; border-bottom: 1px solid var(--bdr); order: 0; }
+    .ft-row-b .ftr-text { order: 0; }
+    .ftr-text, .ftr-visual { padding: 36px 20px; }
   }
 </style>

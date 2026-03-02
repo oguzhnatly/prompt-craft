@@ -1,239 +1,175 @@
 ---
-const PRO_URL   = 'https://buy.stripe.com/test_00w00l55neEv6itf354ow00';
-const CLOUD_URL = 'https://buy.stripe.com/test_14AdRbdBT8g7eOZ7AD4ow01';
+const proFeatures = [
+  { text: 'All 7 pipeline stages, every request',      note: null },
+  { text: 'Runs fully local — no data leaves your Mac', note: null },
+  { text: '7 built-in optimization styles',             note: 'General, Engineering, Research, Content, Analysis, Academic, Creative' },
+  { text: 'Custom style templates',                     note: 'Define and save your own prompt architecture' },
+  { text: 'Unlimited clipboard history',                note: 'Every prompt and result stored locally, searchable' },
+  { text: 'Any Ollama model (local, offline)',           note: 'llama3.2, mistral, deepseek, phi-3, qwen, and every future model' },
+  { text: 'Global keyboard shortcut',                   note: 'Cmd+Shift+Space from any app, any window, any Space' },
+  { text: 'Activate on up to 3 Macs',                   note: null },
+  { text: 'All future updates',                         note: null },
+];
+
+const cloudFeatures = [
+  { text: 'Everything in Pro',                          note: null },
+  { text: 'Cloud routing: Claude, GPT-4o, Gemini',      note: 'No API key required' },
+  { text: 'DeepSeek V3 and Mistral Large',              note: null },
+  { text: 'Priority response queue',                    note: null },
+  { text: 'Activate on up to 5 Macs',                   note: null },
+  { text: 'Cancel any time',                            note: null },
+];
 ---
 
-<section id="pricing" class="section pricing-section">
-  <div class="container">
-    <div class="pricing-head" data-reveal>
-      <div class="badge teal" style="margin-bottom:20px">
-        <span class="badge-dot"></span>
-        PRICING
-      </div>
-      <h2 class="pricing-title syne">
-        Own it or<br>run it in the cloud.
+<section id="pricing" aria-labelledby="pricing-heading">
+  <div class="wrap">
+
+    <div class="pr-header" data-reveal>
+      <span class="eyebrow"><span class="eyebrow-dot"></span>Pricing</span>
+      <h2 id="pricing-heading" class="pr-h2">
+        $99 once.<br>No annual renewal trap.
       </h2>
-      <p class="pricing-sub">
-        No usage-based billing. No seat fees. No surprises.
-        Buy once or subscribe — both tiers get the full pipeline.
+      <p class="pr-sub">
+        Pro is a one-time purchase. You own it, it updates forever, and you never get an
+        invoice again. Cloud adds managed AI routing for people who don't want to manage API keys.
       </p>
     </div>
 
-    <div class="pricing-grid" data-reveal data-reveal-d="2">
+    <div class="pr-cards">
 
-      <!-- Pro -->
-      <div class="price-card">
-        <div class="pc-top">
-          <div class="badge" style="margin-bottom:16px">PRO</div>
-          <div class="pc-price">
-            <span class="pc-amount syne">$99</span>
-            <div class="pc-freq">
-              <span class="mono">one-time</span>
-              <span class="pc-detail mono">2 years of updates included</span>
-            </div>
+      <!-- Pro card -->
+      <div class="pr-card pr-pro" data-reveal>
+        <div class="prc-toprow">
+          <div>
+            <span class="prc-label mono">Pro</span>
+            <p class="prc-sub">One-time · owns forever</p>
           </div>
-          <p class="pc-tagline">Full pipeline. All 7 stages. No subscription. Pay once, own it forever.</p>
+          <span class="prc-popular">Most popular</span>
         </div>
 
-        <div class="pc-feats">
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Full RMPA pipeline — all 7 stages
-          </div>
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Use your own API keys (Claude, GPT-4o, DeepSeek)
-          </div>
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Up to 3 Macs
-          </div>
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Local context engine
-          </div>
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Custom styles + templates
-          </div>
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Lifetime license · 30-day refund
+        <div class="prc-price">
+          <span class="prc-amt">$99</span>
+          <div class="prc-price-note">
+            <span>one-time payment</span>
+            <span class="mono prc-tax">USD · no tax in most countries</span>
           </div>
         </div>
 
-        <a href={PRO_URL} class="btn btn-outline pc-cta" target="_blank" rel="noopener">
-          Buy Pro License
-          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <a href="https://buy.stripe.com/test_00w00l55neEv6itf354ow00" target="_blank" rel="noopener" class="btn btn-ink prc-cta">
+          Buy Pro — $99
         </a>
+
+        <ul class="prc-list" role="list">
+          {proFeatures.map(f => (
+            <li class="prc-item" role="listitem">
+              <iconify-icon icon="lucide:check" class="prc-check" aria-hidden="true"></iconify-icon>
+              <div>
+                <span>{f.text}</span>
+                {f.note && <span class="prc-note mono">{f.note}</span>}
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <!-- Cloud -->
-      <div class="price-card price-card-feat">
-        <div class="pc-popular mono">MOST POPULAR</div>
-        <div class="pc-top">
-          <div class="badge teal" style="margin-bottom:16px"><span class="badge-dot"></span> CLOUD</div>
-          <div class="pc-price">
-            <span class="pc-amount syne" style="color:var(--teal-d)">$12</span>
-            <div class="pc-freq">
-              <span class="mono">/month</span>
-              <span class="pc-detail mono">cancel anytime</span>
-            </div>
-          </div>
-          <p class="pc-tagline">Everything in Pro, plus context memory, cross-device sync, and zero-config cloud relay.</p>
-        </div>
-
-        <div class="pc-feats">
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Everything in Pro
-          </div>
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Cloudflare edge proxy — no API keys needed
-          </div>
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Persistent cross-device context memory
-          </div>
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Up to 5 Macs
-          </div>
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Priority access to new models
-          </div>
-          <div class="pc-feat">
-            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            14-day free trial · cancel anytime
+      <!-- Cloud card -->
+      <div class="pr-card pr-cloud" data-reveal data-d="2">
+        <div class="prc-toprow">
+          <div>
+            <span class="prc-label prc-label-cloud mono">Cloud</span>
+            <p class="prc-sub">Monthly · cancel any time</p>
           </div>
         </div>
 
-        <a href={CLOUD_URL} class="btn btn-accent pc-cta" target="_blank" rel="noopener">
-          Start Free Trial
-          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="prc-price">
+          <span class="prc-amt">$12</span>
+          <div class="prc-price-note">
+            <span>per month</span>
+            <span class="mono prc-tax">no lock-in · cancel in settings</span>
+          </div>
+        </div>
+
+        <a href="https://buy.stripe.com/test_14AdRbdBT8g7eOZ7AD4ow01" target="_blank" rel="noopener" class="btn btn-ghost prc-cta prc-cta-cloud">
+          Start Cloud — $12/mo
         </a>
 
-        <p class="pc-trial-note mono">14 days free · no credit card required</p>
+        <ul class="prc-list" role="list">
+          {cloudFeatures.map(f => (
+            <li class="prc-item prc-item-cloud" role="listitem">
+              <iconify-icon icon="lucide:check" class="prc-check prc-check-cloud" aria-hidden="true"></iconify-icon>
+              <div>
+                <span>{f.text}</span>
+                {f.note && <span class="prc-note mono">{f.note}</span>}
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
 
     </div>
 
-    <!-- Compare note -->
-    <div class="pricing-compare" data-reveal data-reveal-d="3">
-      <p class="mono">
-        Not sure?
-        <a href="/download">Try the 14-day trial</a> — full access, no card, no commitment.
-      </p>
+    <div class="pr-refund" data-reveal>
+      <iconify-icon icon="lucide:shield-check" style="font-size:16px;color:var(--acc);flex-shrink:0;" aria-hidden="true"></iconify-icon>
+      30-day full refund on Pro, no questions. Email hello@promptcraft.app with your order number.
     </div>
+
   </div>
 </section>
 
 <style>
-  .pricing-section {
-    padding: 100px 0;
-    background: var(--paper);
-  }
+  #pricing { padding: 80px 0 100px; }
 
-  .pricing-head { text-align: center; margin-bottom: 56px; }
-  .pricing-title {
-    font-size: clamp(32px, 4vw, 52px);
-    font-weight: 800; letter-spacing: -0.045em;
-    line-height: 1.1; color: var(--ink);
-    margin-bottom: 16px;
+  .pr-header { margin-bottom: 56px; display: flex; flex-direction: column; gap: 16px; max-width: 600px; }
+  .pr-h2 {
+    font-size: clamp(28px, 4.5vw, 56px);
+    font-weight: 700; letter-spacing: -0.055em; line-height: 1.06; color: var(--ink);
   }
-  .pricing-sub {
-    font-size: 16px; line-height: 1.65;
-    color: var(--ink-2); max-width: 480px;
-    margin: 0 auto;
-  }
+  .pr-sub { font-size: 15px; line-height: 1.75; color: var(--mid); max-width: 480px; }
 
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    max-width: 860px;
-    margin: 0 auto 32px;
-  }
+  .pr-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 800px; margin-bottom: 20px; }
 
-  .price-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: var(--r-xl);
-    padding: 36px 32px;
+  .pr-card {
+    border: 1px solid var(--bdr); border-radius: 14px; padding: 36px;
     display: flex; flex-direction: column;
-    gap: 28px;
-    position: relative;
-    transition: box-shadow .3s, transform .3s var(--ease-spring);
-    cursor: none;
+    transition: box-shadow .2s, transform .2s var(--spring);
   }
-  .price-card:hover {
-    box-shadow: 0 8px 40px rgba(12,11,24,0.08);
-    transform: translateY(-3px);
+  .pr-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+  .pr-pro  { background: var(--bg); border-color: var(--bdr-hi); }
+  .pr-cloud{ background: var(--bg2); }
+
+  .prc-toprow {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px; margin-bottom: 24px;
+  }
+  .prc-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--acc); display: block; margin-bottom: 4px; }
+  .prc-label-cloud { color: #4A90FF; }
+  .prc-sub { font-size: 12px; color: var(--dim); }
+  .prc-popular {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--bg); background: var(--ink); padding: 4px 9px; border-radius: 4px;
+    flex-shrink: 0;
   }
 
-  .price-card-feat {
-    border-color: rgba(0,200,150,0.3);
-    background: linear-gradient(160deg, rgba(0,200,150,0.03) 0%, white 40%);
-    box-shadow: 0 0 0 1px rgba(0,200,150,0.1) inset;
-  }
-  .price-card-feat:hover { box-shadow: 0 12px 50px rgba(0,200,150,0.12), 0 0 0 1px rgba(0,200,150,0.1) inset; }
+  .prc-price { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; }
+  .prc-amt  { font-size: 56px; font-weight: 700; letter-spacing: -0.065em; line-height: 1; color: var(--ink); }
+  .prc-price-note { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--mid); }
+  .prc-tax  { font-size: 10px; color: var(--dim); }
 
-  .pc-popular {
-    position: absolute;
-    top: -11px; left: 50%; transform: translateX(-50%);
-    padding: 3px 14px;
-    background: var(--teal);
-    color: white;
-    border-radius: 999px;
-    font-size: 10px; font-weight: 600;
-    letter-spacing: 0.08em;
-    white-space: nowrap;
+  .prc-cta { width: 100%; justify-content: center; margin-bottom: 28px; padding: 13px; font-size: 14px; border-radius: 9px; }
+  .prc-cta-cloud { border-color: var(--bdr-hi); }
+
+  .prc-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .prc-item { display: flex; align-items: flex-start; gap: 9px; font-size: 13px; color: var(--mid); }
+  .prc-check { flex-shrink: 0; font-size: 14px; color: var(--acc); margin-top: 1px; }
+  .prc-check-cloud { color: #4A90FF; }
+  .prc-note { display: block; font-size: 10px; color: var(--dim); margin-top: 2px; }
+
+  .pr-refund {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--mid);
+    padding: 12px 18px; border-radius: 8px;
+    background: var(--acc-low); border: 1px solid var(--acc-bdr);
   }
 
-  .pc-top { display: flex; flex-direction: column; }
-
-  .pc-price {
-    display: flex; align-items: flex-end;
-    gap: 10px; margin-bottom: 12px;
-  }
-  .pc-amount {
-    font-size: 56px; font-weight: 800;
-    letter-spacing: -0.05em; line-height: 1;
-    color: var(--ink);
-  }
-  .pc-freq {
-    display: flex; flex-direction: column; gap: 2px;
-    padding-bottom: 4px;
-  }
-  .pc-freq span { font-size: 13px; color: var(--ink-3); }
-  .pc-detail { font-size: 10px !important; color: var(--ink-4) !important; }
-
-  .pc-tagline { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
-
-  .pc-feats { display: flex; flex-direction: column; gap: 12px; flex: 1; }
-  .pc-feat {
-    display: flex; align-items: flex-start;
-    gap: 10px;
-    font-size: 13px; color: var(--ink-2); line-height: 1.4;
-  }
-  .pf-check { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
-
-  .pc-cta { width: 100%; justify-content: center; border-radius: var(--r-md); }
-  .pc-trial-note { font-size: 11px; color: var(--ink-4); text-align: center; margin-top: -16px; }
-
-  .pricing-compare {
-    text-align: center;
-    font-size: 14px; color: var(--ink-3);
-    padding-top: 12px;
-  }
-  .pricing-compare a { color: var(--teal-d); font-weight: 500; }
-  .pricing-compare a:hover { text-decoration: underline; }
-
-  @media (max-width: 680px) {
-    .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
-    .price-card { padding: 28px 24px; }
-    .pc-amount { font-size: 44px; }
-  }
+  @media (max-width: 700px) { .pr-cards { grid-template-columns: 1fr; max-width: 440px; } }
 </style>

@@ -1,338 +1,160 @@
 ---
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
-import AppWindow from '../components/AppWindow.astro';
 import Footer from '../components/Footer.astro';
 ---
-
-<Base title="Download PromptCraft — macOS App" description="Download PromptCraft for macOS 14+. Developer ID signed, notarized by Apple. Free 14-day trial.">
+<Base
+  title="Download PromptCraft for macOS"
+  description="Download PromptCraft — the macOS menu bar app that engineers every prompt before it reaches any AI. Free 14-day trial. No account required."
+>
   <Nav />
-
   <main class="dl-page">
+    <div class="wrap">
 
-    <!-- Hero -->
-    <section class="dl-hero">
-      <div class="container dl-hero-inner">
-        <div class="dl-left">
-          <div class="badge teal" style="margin-bottom:28px" data-reveal>
-            <span class="badge-dot"></span>
-            v1.1.0 · macOS 14 Sonoma+
+      <header class="dl-head" data-r>
+        <span class="lbl g"><span class="ldot"></span>Download</span>
+        <h1 class="dl-h1">PromptCraft for macOS</h1>
+        <p class="dl-sub">
+          macOS 14 Sonoma or later &nbsp;·&nbsp; Apple Silicon and Intel &nbsp;·&nbsp; 14-day free trial
+        </p>
+      </header>
+
+      <!-- Download card -->
+      <div class="dl-card" data-r>
+        <div class="dlc-left">
+          <div class="dlc-icon">
+            <svg viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="5" fill="var(--g)"/>
+              <path d="M32 8v18M32 38v18M8 32h18M38 32h18" stroke="var(--g)" stroke-width="3.5" stroke-linecap="round"/>
+              <circle cx="32" cy="32" r="14" stroke="var(--g)" stroke-width="1.3" opacity=".25" stroke-dasharray="3 4"/>
+            </svg>
           </div>
-          <h1 class="syne dl-h1" data-reveal data-reveal-d="1">
-            PromptCraft<br>
-            <span style="color:var(--teal-d)">for macOS</span>
-          </h1>
-          <p class="dl-sub" data-reveal data-reveal-d="2">
-            A precision menu bar utility. Installs in 30 seconds.
-            Runs silently. Makes every AI interaction measurably better.
-          </p>
-          <div class="dl-btns" data-reveal data-reveal-d="3">
-            <a href="https://github.com/oguzhnatly/prompt-craft/releases/latest"
-               target="_blank" rel="noopener"
-               class="btn btn-teal dl-main-btn">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M3 8l5 5 5-5M1 14h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Download for macOS
-              <span class="dl-size mono">~18 MB</span>
-            </a>
-          </div>
-          <div class="dl-trust mono" data-reveal data-reveal-d="4">
-            <span>
-              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 1L2 4v5c0 3.31 2.45 6.41 6 7.16C11.55 15.41 14 12.31 14 9V4L8 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
-              Developer ID Signed
-            </span>
-            <span class="dl-dot">·</span>
-            <span>Notarized by Apple</span>
-            <span class="dl-dot">·</span>
-            <span>No App Store required</span>
-            <span class="dl-dot">·</span>
-            <span>macOS 14 Sonoma+</span>
+          <div>
+            <p class="dlc-name">PromptCraft</p>
+            <p class="dlc-meta mono">v1.1.0 &nbsp;·&nbsp; macOS 14+ &nbsp;·&nbsp; ~12 MB</p>
           </div>
         </div>
-
-        <!-- App window preview -->
-        <div class="dl-right" data-reveal data-reveal-d="2">
-          <div class="dl-win-wrap">
-            <div class="dl-win-glow" aria-hidden="true"></div>
-            <AppWindow />
-          </div>
-        </div>
+        <a href="https://github.com/oguzhnatly/prompt-craft/releases" target="_blank" rel="noopener" class="btn btn-g dlc-btn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 1v9M2 7l5 5 5-5M1 13h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Download .dmg
+        </a>
       </div>
-    </section>
 
-    <!-- Install steps -->
-    <section class="dl-steps">
-      <div class="container">
-        <div class="badge" style="margin-bottom:24px" data-reveal>INSTALLATION</div>
-        <h2 class="syne dl-steps-title" data-reveal data-reveal-d="1">Up and running in 3 steps.</h2>
-
-        <div class="steps-grid" data-reveal data-reveal-d="2">
-          <div class="step-card">
-            <div class="sc-num syne">1</div>
-            <div class="sc-body">
-              <h3 class="sc-t">Download & Open</h3>
-              <p class="sc-d">Download the .dmg file. Open it and drag PromptCraft to your Applications folder.</p>
-              <div class="sc-cmd mono">
-                <span class="cmd-icon">📦</span>
-                PromptCraft-1.1.0.dmg
+      <!-- Install steps -->
+      <section class="dl-steps" aria-labelledby="install-heading">
+        <h2 id="install-heading" class="dl-steps-h">Up and running in 60 seconds</h2>
+        <div class="dl-step-list">
+          {[
+            {
+              n: '01',
+              title: 'Open the .dmg and drag to Applications',
+              body: 'Mount the disk image and drag PromptCraft.app to your Applications folder. Eject the disk image when done.',
+            },
+            {
+              n: '02',
+              title: 'Launch — Gatekeeper will clear it',
+              body: 'The app is signed with a Developer ID certificate and notarized by Apple. macOS Gatekeeper will clear it on first launch. If prompted, click Open in System Settings.',
+            },
+            {
+              n: '03',
+              title: 'Grant Accessibility permission',
+              body: 'PromptCraft needs one Accessibility permission to read selected text from your active application and enable the global Cmd+Shift+Space shortcut. Grant it once in System Settings to Privacy & Security to Accessibility. It cannot be revoked per-app after granted — you choose to add it yourself.',
+            },
+            {
+              n: '04',
+              title: 'Press Cmd+Shift+Space from anywhere',
+              body: 'The app is now running silently in your menu bar. Press Cmd+Shift+Space from any application, on any desktop Space, to open PromptCraft. Type a rough idea, press Optimize, copy the result. Done.',
+            },
+          ].map(s => (
+            <div class="dl-step" data-r>
+              <span class="dls-n mono">{s.n}</span>
+              <div>
+                <p class="dls-title">{s.title}</p>
+                <p class="dls-body">{s.body}</p>
               </div>
             </div>
-          </div>
-
-          <div class="step-connector" aria-hidden="true">
-            <svg viewBox="0 0 40 24" fill="none"><path d="M4 12h32M28 6l8 6-8 6" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-
-          <div class="step-card">
-            <div class="sc-num syne">2</div>
-            <div class="sc-body">
-              <h3 class="sc-t">Grant Permissions</h3>
-              <p class="sc-d">PromptCraft needs Accessibility access to detect selected text and inject the optimized result.</p>
-              <div class="sc-cmd mono">
-                System Settings → Privacy → Accessibility
-              </div>
-            </div>
-          </div>
-
-          <div class="step-connector" aria-hidden="true">
-            <svg viewBox="0 0 40 24" fill="none"><path d="M4 12h32M28 6l8 6-8 6" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-
-          <div class="step-card">
-            <div class="sc-num syne">3</div>
-            <div class="sc-body">
-              <h3 class="sc-t">Set Your Shortcut</h3>
-              <p class="sc-d">Open PromptCraft from the menu bar, go to Preferences → Shortcuts, and set your global trigger.</p>
-              <div class="sc-cmd mono">
-                Default: <kbd>⌘</kbd><kbd>⇧</kbd><kbd>Space</kbd>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Requirements -->
-    <section class="dl-reqs">
-      <div class="container">
-        <div class="reqs-grid" data-reveal>
-          <div class="req-card">
-            <div class="rc-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <!-- System requirements -->
+      <section class="dl-req" data-r aria-labelledby="req-heading">
+        <h2 id="req-heading" class="dl-req-h">System requirements</h2>
+        <div class="dl-req-grid">
+          {[
+            ['macOS version', 'macOS 14 Sonoma or later'],
+            ['Architecture', 'Apple Silicon (M1/M2/M3/M4) and Intel'],
+            ['RAM', '4 GB minimum, 8 GB recommended'],
+            ['Disk space', '~12 MB for the app'],
+            ['AI provider', 'Ollama (local), or internet access for cloud models'],
+            ['Permission', 'Accessibility (one-time grant, read-only)'],
+          ].map(([k, v]) => (
+            <div class="dl-req-row">
+              <span class="dl-req-k mono">{k}</span>
+              <span class="dl-req-v">{v}</span>
             </div>
-            <h3 class="rc-t">System Requirements</h3>
-            <div class="rc-rows">
-              <div class="rc-row">
-                <span class="mono rc-key">macOS</span>
-                <span class="rc-val">14.0 Sonoma or later</span>
-              </div>
-              <div class="rc-row">
-                <span class="mono rc-key">Chip</span>
-                <span class="rc-val">Apple Silicon or Intel</span>
-              </div>
-              <div class="rc-row">
-                <span class="mono rc-key">Memory</span>
-                <span class="rc-val">4 GB RAM minimum</span>
-              </div>
-              <div class="rc-row">
-                <span class="mono rc-key">Storage</span>
-                <span class="rc-val">50 MB disk space</span>
-              </div>
-              <div class="rc-row">
-                <span class="mono rc-key">Internet</span>
-                <span class="rc-val">Required for Cloud mode</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="req-card">
-            <div class="rc-icon" style="color:var(--teal-d)">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <h3 class="rc-t">What's in v1.1.0</h3>
-            <div class="rc-rows">
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px"></span>
-                <span class="rc-val">Full RMPA pipeline — all 7 stages</span>
-              </div>
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px"></span>
-                <span class="rc-val">Context engine with learned patterns</span>
-              </div>
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px"></span>
-                <span class="rc-val">7 optimization styles + custom style editor</span>
-              </div>
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px"></span>
-                <span class="rc-val">Template system with placeholder editor</span>
-              </div>
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px"></span>
-                <span class="rc-val">Compare mode (up to 3 providers)</span>
-              </div>
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px"></span>
-                <span class="rc-val">Clipboard history integration</span>
-              </div>
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px"></span>
-                <span class="rc-val">123 passing tests</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="req-card">
-            <div class="rc-icon" style="color:#4F3FF0">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-            </div>
-            <h3 class="rc-t">Security & Privacy</h3>
-            <div class="rc-rows">
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px;background:var(--teal)"></span>
-                <span class="rc-val">Developer ID signed &amp; notarized by Apple</span>
-              </div>
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px;background:var(--teal)"></span>
-                <span class="rc-val">Prompt content never stored or logged</span>
-              </div>
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px;background:var(--teal)"></span>
-                <span class="rc-val">API keys stored in macOS Keychain</span>
-              </div>
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px;background:var(--teal)"></span>
-                <span class="rc-val">Context engine runs entirely locally</span>
-              </div>
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px;background:var(--teal)"></span>
-                <span class="rc-val">Zero telemetry or analytics</span>
-              </div>
-              <div class="rc-row">
-                <span class="pf-dot" style="margin-top:2px;background:var(--teal)"></span>
-                <span class="rc-val">No App Store — direct download</span>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
-      </div>
-    </section>
+      </section>
+
+    </div>
   </main>
-
   <Footer />
 </Base>
 
 <style>
-  .dl-page { padding-top: 64px; background: var(--paper); }
+  .dl-page { padding-top: 100px; padding-bottom: 80px; min-height: 90vh; }
 
-  .dl-hero { padding: 80px 0 60px; }
-  .dl-hero-inner {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 60px; align-items: center;
-  }
+  .dl-head { margin-bottom: 48px; display: flex; flex-direction: column; gap: 16px; }
+  .dl-h1   { font-size: clamp(32px, 5vw, 64px); font-weight: 800; letter-spacing: -0.05em; color: var(--snow); line-height: 1.02; }
+  .dl-sub  { font-size: 14px; color: var(--mute); }
 
-  .dl-h1 {
-    font-size: clamp(40px, 5vw, 60px);
-    font-weight: 800; letter-spacing: -0.045em;
-    line-height: 1.05; color: var(--ink);
-    margin-bottom: 20px;
+  .dl-card {
+    background: var(--s1); border: 1px solid var(--bdr);
+    border-radius: 14px; padding: 28px 32px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    margin-bottom: 56px;
+    transition: border-color .2s;
   }
-  .dl-sub { font-size: 16px; line-height: 1.75; color: var(--ink-2); margin-bottom: 32px; }
-  .dl-btns { margin-bottom: 24px; }
+  .dl-card:hover { border-color: rgba(45,255,138,0.2); }
+  .dlc-left { display: flex; align-items: center; gap: 20px; }
+  .dlc-icon { width: 52px; height: 52px; flex-shrink: 0; }
+  .dlc-icon svg { width: 100%; height: 100%; }
+  .dlc-name { font-size: 18px; font-weight: 700; letter-spacing: -0.03em; color: var(--snow); }
+  .dlc-meta { font-size: 11px; color: var(--mute); margin-top: 4px; }
+  .dlc-btn  { flex-shrink: 0; padding: 13px 24px; font-size: 14px; border-radius: 10px; }
 
-  .dl-main-btn { flex-direction: column; gap: 3px; padding: 16px 28px; }
-  .dl-size { font-size: 10px; opacity: 0.55; letter-spacing: 0.04em; }
+  .dl-steps-h { font-size: 22px; font-weight: 700; letter-spacing: -0.035em; color: var(--snow); margin-bottom: 24px; }
 
-  .dl-trust {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 11px; color: var(--ink-3); flex-wrap: wrap;
+  .dl-step-list { display: flex; flex-direction: column; border-top: 1px solid var(--bdr); margin-bottom: 56px; }
+  .dl-step {
+    display: grid; grid-template-columns: 56px 1fr; gap: 0 24px;
+    padding: 28px 0; border-bottom: 1px solid var(--bdr);
   }
-  .dl-trust span { display: flex; align-items: center; gap: 4px; }
-  .dl-dot { opacity: 0.4; }
+  .dls-n     { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--mute); padding-top: 4px; transition: color .15s; }
+  .dl-step:hover .dls-n { color: var(--g); }
+  .dls-title { font-size: 16px; font-weight: 700; letter-spacing: -0.025em; color: var(--snow); margin-bottom: 8px; }
+  .dls-body  { font-size: 14px; line-height: 1.75; color: var(--mute); max-width: 580px; }
 
-  .dl-right { display: flex; justify-content: center; }
-  .dl-win-wrap { position: relative; }
-  .dl-win-glow {
-    position: absolute; inset: -60px;
-    background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(0,200,150,0.1), transparent 70%);
-    filter: blur(40px); pointer-events: none;
+  .dl-req-h { font-size: 22px; font-weight: 700; letter-spacing: -0.035em; color: var(--snow); margin-bottom: 20px; }
+  .dl-req-grid {
+    display: flex; flex-direction: column;
+    background: var(--s1); border-radius: 10px; border: 1px solid var(--bdr);
+    overflow: hidden;
   }
+  .dl-req-row {
+    display: grid; grid-template-columns: 180px 1fr;
+    padding: 14px 20px; border-bottom: 1px solid var(--bdr);
+    align-items: center; gap: 16px;
+  }
+  .dl-req-row:last-child { border-bottom: none; }
+  .dl-req-k  { font-size: 12px; color: var(--mute); }
+  .dl-req-v  { font-size: 14px; color: var(--pale); }
 
-  /* Steps */
-  .dl-steps {
-    padding: 80px 0;
-    background: var(--paper-2);
-    border-top: 1px solid var(--border);
-  }
-  .dl-steps-title {
-    font-size: clamp(26px, 3vw, 38px);
-    font-weight: 800; letter-spacing: -0.04em;
-    color: var(--ink); margin-bottom: 48px;
-  }
-  .steps-grid {
-    display: flex; align-items: center;
-    gap: 0; flex-wrap: wrap;
-  }
-  .step-card {
-    flex: 1; min-width: 220px;
-    background: white; border: 1px solid var(--border);
-    border-radius: var(--r-lg); padding: 28px 24px;
-    display: flex; gap: 16px;
-  }
-  .sc-num {
-    font-size: 36px; font-weight: 800;
-    color: var(--teal-d); letter-spacing: -0.05em;
-    line-height: 1; flex-shrink: 0;
-  }
-  .sc-body { display: flex; flex-direction: column; gap: 8px; }
-  .sc-t { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); font-family: 'Syne', sans-serif; }
-  .sc-d { font-size: 13px; line-height: 1.6; color: var(--ink-2); }
-  .sc-cmd {
-    font-size: 11px; color: var(--ink-2);
-    background: var(--paper-2); border: 1px solid var(--border);
-    border-radius: 6px; padding: 7px 10px;
-    display: flex; align-items: center; gap: 6px;
-  }
-
-  .step-connector { padding: 0 12px; flex-shrink: 0; }
-  .step-connector svg { width: 40px; display: block; }
-
-  kbd {
-    display: inline-flex; align-items: center;
-    padding: 1px 4px;
-    background: white; border: 1px solid var(--border);
-    border-radius: 3px; font-family: 'DM Mono', monospace;
-    font-size: 11px; color: var(--ink-2);
-    box-shadow: 0 1px 0 var(--border);
-  }
-
-  /* Requirements */
-  .dl-reqs {
-    padding: 80px 0 100px;
-    border-top: 1px solid var(--border);
-  }
-  .reqs-grid {
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
-  }
-  .req-card {
-    background: white; border: 1px solid var(--border);
-    border-radius: var(--r-lg); padding: 28px 24px;
-    display: flex; flex-direction: column; gap: 20px;
-  }
-  .rc-icon { width: 36px; height: 36px; color: var(--ink-2); }
-  .rc-icon svg { width: 100%; height: 100%; }
-  .rc-t { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); font-family: 'Syne', sans-serif; }
-  .rc-rows { display: flex; flex-direction: column; gap: 10px; }
-  .rc-row { display: flex; align-items: flex-start; gap: 10px; }
-  .rc-key { font-size: 11px; color: var(--ink-3); letter-spacing: 0.03em; width: 56px; flex-shrink: 0; padding-top: 1px; }
-  .rc-val { font-size: 13px; color: var(--ink-2); line-height: 1.4; }
-  .pf-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal-d); flex-shrink: 0; }
-
-  @media (max-width: 860px) {
-    .dl-hero-inner { grid-template-columns: 1fr; gap: 40px; }
-    .dl-right { order: -1; }
-    .reqs-grid { grid-template-columns: 1fr; }
-    .steps-grid { flex-direction: column; }
-    .step-connector { transform: rotate(90deg); }
+  @media (max-width: 640px) {
+    .dl-card { flex-direction: column; align-items: flex-start; }
+    .dl-req-row { grid-template-columns: 1fr; gap: 4px; }
   }
 </style>
