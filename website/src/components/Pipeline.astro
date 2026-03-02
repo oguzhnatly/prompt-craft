@@ -152,7 +152,7 @@ const stages = [
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding-top: clamp(64px, 18vh, 200px);
+    padding-top: 48px;
     box-sizing: border-box;
   }
 
@@ -319,7 +319,7 @@ const stages = [
   .plf-meta strong { color: var(--ink2); }
 
   @media (max-width: 900px) {
-    #pipeline { height: auto; overflow: visible; padding-top: 72px; }
+    #pipeline { height: auto; overflow: visible; padding-top: 48px; }
     .pl-header-wrap { padding: 0; }
     .pl-header { padding: 0 20px 16px; }
     .pl-ide { flex: none; }
@@ -365,7 +365,8 @@ const stages = [
   function inLock() {
     if (!section || window.innerWidth < 900) return false;
     const r = section.getBoundingClientRect();
-    return r.top <= 80 && r.bottom >= window.innerHeight * 0.7;
+    // Only lock when section is fully snapped to viewport (top within ±12px)
+    return r.top >= -12 && r.top <= 12 && r.bottom >= window.innerHeight - 12;
   }
 
   function tryAdvance(dir) {
@@ -378,8 +379,25 @@ const stages = [
     return true; // consumed
   }
 
-  // Wheel interception
+  let snapCooldown = false;
+
+  // Wheel interception + snap-on-entry
   window.addEventListener('wheel', e => {
+    if (!section || window.innerWidth < 900) return;
+    const r = section.getBoundingClientRect();
+    const vh = window.innerHeight;
+
+    // Section is entering viewport from below — snap it to top
+    if (e.deltaY > 0 && r.top > 12 && r.top < vh * 0.75) {
+      e.preventDefault();
+      if (!snapCooldown) {
+        snapCooldown = true;
+        window.scrollTo({ top: window.scrollY + r.top, behavior: 'smooth' });
+        setTimeout(() => { snapCooldown = false; }, 700);
+      }
+      return;
+    }
+
     if (!inLock()) return;
     const dir = e.deltaY > 0 ? 1 : -1;
     const consumed = tryAdvance(dir);
