@@ -3,43 +3,269 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 ---
-
-<Base title="Terms of Service — PromptCraft" description="PromptCraft terms of service.">
+<Base title="Terms of Service — PromptCraft" description="PromptCraft Terms of Service — license rights, permitted use, refund policy, and subscriber obligations.">
   <Nav />
-  <main style="padding-top: 100px; padding-bottom: 80px; min-height: 100vh; background: var(--base);">
-    <div style="max-width: 720px; margin: 0 auto; padding: 0 24px;">
+  <main class="legal-main">
+    <div class="wrap legal-wrap">
 
-      <div style="margin-bottom: 48px;">
-        <span class="mono" style="font-size:11px;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;display:block">Legal</span>
-        <h1 style="font-size:clamp(40px,5vw,56px);font-weight:900;letter-spacing:-0.04em;color:var(--text-primary);margin-bottom:16px">Terms of Service</h1>
-        <p class="mono" style="font-size:13px;color:var(--text-muted)">Last updated: March 2, 2026</p>
-      </div>
+      <aside class="legal-sidebar">
+        <p class="ls-head mono">On this page</p>
+        <a class="ls-link" href="#overview">Overview</a>
+        <a class="ls-link" href="#license-grant">License grant</a>
+        <a class="ls-link" href="#license-tiers">License tiers</a>
+        <a class="ls-link" href="#permitted-use">Permitted use</a>
+        <a class="ls-link" href="#prohibited-conduct">Prohibited conduct</a>
+        <a class="ls-link" href="#activation">Activation and machines</a>
+        <a class="ls-link" href="#cloud">Cloud service</a>
+        <a class="ls-link" href="#refunds">Refunds</a>
+        <a class="ls-link" href="#updates">Updates and support</a>
+        <a class="ls-link" href="#ip">Intellectual property</a>
+        <a class="ls-link" href="#disclaimer">Disclaimer of warranties</a>
+        <a class="ls-link" href="#liability">Limitation of liability</a>
+        <a class="ls-link" href="#termination">Termination</a>
+        <a class="ls-link" href="#governing-law">Governing law</a>
+        <a class="ls-link" href="#changes">Changes</a>
+        <a class="ls-link" href="#contact">Contact</a>
+      </aside>
 
-      <div class="prose">
-        <h2>License</h2>
-        <p>PromptCraft is proprietary commercial software. Purchasing a license grants you a non-exclusive, non-transferable right to use PromptCraft on the number of machines specified by your license tier.</p>
-        <ul>
-          <li><strong>Pro License:</strong> Up to 3 machines. Perpetual. No subscription required.</li>
-          <li><strong>Cloud License:</strong> Up to 5 machines. Monthly subscription. Access to the cloud relay and context memory features.</li>
-        </ul>
+      <div class="legal-body">
+        <div class="legal-head">
+          <span class="legal-eyebrow mono">Legal</span>
+          <h1 class="legal-h1">Terms of Service</h1>
+          <div class="legal-meta mono">
+            <span>Effective: March 2, 2026</span>
+            <span class="lm-sep">·</span>
+            <span>Last updated: March 2, 2026</span>
+          </div>
+          <div class="legal-summary">
+            <iconify-icon icon="lucide:file-check" style="font-size:16px;color:var(--acc);flex-shrink:0;margin-top:2px;"></iconify-icon>
+            <p>Plain-English summary: You buy a license, you own it. Pro is a one-time payment with no renewal. You can use it commercially. You cannot resell it, reverse-engineer it, or share it with others. 30-day money-back guarantee on Pro. Cancel Cloud anytime.</p>
+          </div>
+        </div>
 
-        <h2>Permitted use</h2>
-        <p>You may use PromptCraft for personal and commercial purposes on machines you own or control. You may not redistribute, reverse engineer, or resell PromptCraft or its license keys.</p>
+        <section id="overview">
+          <h2>Overview</h2>
+          <p>These Terms of Service ("Terms") govern your purchase and use of PromptCraft ("Software"), a macOS application published by Oguzhan Atalay ("we", "us", "our"). By downloading, installing, or using PromptCraft, you agree to these Terms. If you do not agree, do not use the Software.</p>
+          <p>These Terms constitute a legally binding End User License Agreement (EULA) between you and us. "You" means the individual who purchased the license or, if purchasing on behalf of an organization, that organization.</p>
+        </section>
 
-        <h2>Refunds</h2>
-        <p>We offer a 30-day money-back guarantee on Pro licenses. For Cloud subscriptions, you may cancel at any time. Refunds for Cloud subscriptions are handled on a case-by-case basis. Contact <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a>.</p>
+        <section id="license-grant">
+          <h2>License grant</h2>
+          <p>Subject to your compliance with these Terms and payment of the applicable license fee, we grant you a <strong>non-exclusive, non-transferable, non-sublicensable</strong> license to install and use PromptCraft on the number of macOS devices permitted by your license tier, solely for your personal or internal business purposes.</p>
+          <p>This license is a right to use the Software — you are not purchasing ownership of the Software, its source code, or any associated intellectual property. All rights not expressly granted are reserved.</p>
+        </section>
 
-        <h2>Service availability</h2>
-        <p>The Cloud relay is provided on a best-effort basis. We do not guarantee 100% uptime. Scheduled maintenance will be announced where possible. The local Pro tier is not affected by service availability.</p>
+        <section id="license-tiers">
+          <h2>License tiers</h2>
 
-        <h2>Prohibited conduct</h2>
-        <p>You may not use PromptCraft to generate illegal content, circumvent AI safety systems, or violate the terms of service of any AI provider integrated with PromptCraft.</p>
+          <div class="legal-tier-grid">
+            <div class="legal-tier">
+              <div class="lt-header">
+                <span class="lt-name">Pro License</span>
+                <span class="lt-price mono">$99 one-time</span>
+              </div>
+              <ul class="lt-list">
+                <li>Perpetual license — no annual renewal, no expiry</li>
+                <li>Activate on up to <strong>3 Macs</strong> simultaneously</li>
+                <li>All optimization styles including custom templates</li>
+                <li>Use your own API keys for any supported AI provider</li>
+                <li>Full Ollama local model support</li>
+                <li>All 1.x version updates included at no additional cost</li>
+                <li>30-day money-back guarantee</li>
+              </ul>
+            </div>
+            <div class="legal-tier legal-tier-cloud">
+              <div class="lt-header">
+                <span class="lt-name">Cloud License</span>
+                <span class="lt-price mono">$12 / month</span>
+              </div>
+              <ul class="lt-list">
+                <li>All Pro features</li>
+                <li>Activate on up to <strong>5 Macs</strong> simultaneously</li>
+                <li>PromptCraft Cloud routing (no API keys required)</li>
+                <li>Access to Claude, GPT-4o, Gemini, DeepSeek, Kimi via proxy</li>
+                <li>Context memory across sessions (Cloud-synced)</li>
+                <li>Cancel at any time — access continues until period end</li>
+              </ul>
+            </div>
+          </div>
 
-        <h2>Changes</h2>
-        <p>We may update these terms. Continued use of PromptCraft after changes constitutes acceptance of the new terms. Major changes will be communicated by email.</p>
+          <p>Feature availability may change between major version releases. We will provide at least 60 days notice before removing a Pro feature that was available at the time of purchase.</p>
+        </section>
 
-        <h2>Contact</h2>
-        <p>Questions: <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a></p>
+        <section id="permitted-use">
+          <h2>Permitted use</h2>
+          <p>You may use PromptCraft for any lawful purpose, including:</p>
+          <ul class="legal-ul">
+            <li>Personal use on Macs you own, lease, or control</li>
+            <li>Commercial use in your business or organization, subject to the per-machine limits of your license tier</li>
+            <li>Using PromptCraft to optimize prompts sent to any AI provider, including providers not natively supported, by pasting the output manually</li>
+            <li>Building internal workflows and automations that invoke PromptCraft through its AppleScript or URL scheme interface, if and when such interfaces are made available</li>
+          </ul>
+        </section>
+
+        <section id="prohibited-conduct">
+          <h2>Prohibited conduct</h2>
+          <p>You may not:</p>
+
+          <div class="legal-prohibited">
+            <div class="legal-proh-item">
+              <iconify-icon icon="lucide:ban" style="font-size:13px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <div>
+                <strong>Distribute or resell the Software</strong>
+                <p>You may not distribute, sell, sublicense, rent, lease, or lend PromptCraft or your license key to any third party. Each license key is for one named individual or organization.</p>
+              </div>
+            </div>
+            <div class="legal-proh-item">
+              <iconify-icon icon="lucide:ban" style="font-size:13px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <div>
+                <strong>Reverse-engineer or decompile</strong>
+                <p>You may not reverse-engineer, disassemble, decompile, decode, or otherwise attempt to derive or gain access to the source code of PromptCraft or any component of it, except to the limited extent permitted by applicable law.</p>
+              </div>
+            </div>
+            <div class="legal-proh-item">
+              <iconify-icon icon="lucide:ban" style="font-size:13px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <div>
+                <strong>Circumvent license enforcement</strong>
+                <p>You may not attempt to bypass, disable, or circumvent the license activation system, machine limits, or any other technical protection measures in the Software.</p>
+              </div>
+            </div>
+            <div class="legal-proh-item">
+              <iconify-icon icon="lucide:ban" style="font-size:13px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <div>
+                <strong>Generate illegal or harmful content</strong>
+                <p>You may not use PromptCraft to optimize prompts intended to generate illegal content, facilitate harm to any person or organization, violate applicable laws, or circumvent AI safety systems of any provider.</p>
+              </div>
+            </div>
+            <div class="legal-proh-item">
+              <iconify-icon icon="lucide:ban" style="font-size:13px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <div>
+                <strong>Violate provider terms</strong>
+                <p>You may not use PromptCraft to violate the acceptable use policies or terms of service of any AI provider integrated with or accessible through the Software.</p>
+              </div>
+            </div>
+            <div class="legal-proh-item">
+              <iconify-icon icon="lucide:ban" style="font-size:13px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <div>
+                <strong>Abuse the Cloud proxy</strong>
+                <p>You may not use the Cloud proxy to send automated bulk requests, scrape AI responses at scale, attempt to extract or reconstruct model weights, or otherwise abuse the service in a way that degrades performance for other subscribers.</p>
+              </div>
+            </div>
+            <div class="legal-proh-item">
+              <iconify-icon icon="lucide:ban" style="font-size:13px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <div>
+                <strong>Misrepresent the Software</strong>
+                <p>You may not remove copyright notices, claim authorship of the Software, or create a product that misrepresents itself as PromptCraft.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="activation">
+          <h2>Activation and machine limits</h2>
+          <p>Your license key activates PromptCraft on a per-machine basis. Activation is verified against our license server, which records a non-reversible hash of the machine identifier — not the identifier itself.</p>
+          <p><strong>Machine limits:</strong> Pro licenses may be active on up to 3 machines simultaneously. Cloud licenses may be active on up to 5 machines simultaneously.</p>
+          <p><strong>Transferring to a new Mac:</strong> Deactivate on the old machine via <strong>Settings → License → Deactivate</strong>, then activate on the new machine. If you cannot access the old machine (loss, failure, theft), email <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a> with your order ID. We will reset your activation count within 24 hours after verifying your identity.</p>
+          <p><strong>Loss of activation rights:</strong> If you exceed the machine limit through methods other than normal transfer (e.g., key sharing), we reserve the right to revoke the key without refund after providing written notice.</p>
+        </section>
+
+        <section id="cloud">
+          <h2>Cloud service</h2>
+          <p>The PromptCraft Cloud service (available to Cloud tier subscribers) provides API-key-free routing of prompts to third-party AI providers via our Cloudflare Workers proxy. The following terms apply:</p>
+          <ul class="legal-ul">
+            <li>Cloud service availability is on a <strong>best-effort basis</strong>. We do not guarantee 100% uptime or service continuity. Scheduled and unscheduled maintenance may occur.</li>
+            <li>We aim for 99.5% monthly uptime excluding scheduled maintenance. If we fail this target in any month, you may request a pro-rated credit for the downtime period by emailing us within 30 days of the affected month.</li>
+            <li>AI provider availability (Anthropic, OpenAI, Google, DeepSeek, Moonshot) is outside our control. Outages at a provider level do not entitle you to a Cloud subscription refund, but we will provide alternative routing where possible.</li>
+            <li>Rate limits apply per license key. Limits are designed to be generous for individual users and will be communicated in the app if reached.</li>
+            <li>We reserve the right to add, remove, or change AI providers available through the proxy. We will provide at least 14 days notice before removing a provider.</li>
+          </ul>
+        </section>
+
+        <section id="refunds">
+          <h2>Refund policy</h2>
+
+          <div class="legal-refund-grid">
+            <div class="legal-refund">
+              <div class="lr-header">
+                <iconify-icon icon="lucide:badge-check" style="font-size:16px;color:var(--acc);"></iconify-icon>
+                <strong>Pro License — 30-day guarantee</strong>
+              </div>
+              <p>If you are not satisfied with PromptCraft for any reason within 30 days of purchase, email <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a> with your order ID and we will issue a full refund, no questions asked. The refund will be processed through Stripe and will appear in 5 to 10 business days depending on your bank.</p>
+              <p>After 30 days, Pro licenses are non-refundable. The license remains valid indefinitely and all 1.x updates continue to be included.</p>
+            </div>
+            <div class="legal-refund">
+              <div class="lr-header">
+                <iconify-icon icon="lucide:refresh-cw" style="font-size:16px;color:var(--acc);"></iconify-icon>
+                <strong>Cloud License — cancel anytime</strong>
+              </div>
+              <p>You may cancel your Cloud subscription at any time. Access continues until the end of the current billing period. We do not pro-rate partial months on cancellation.</p>
+              <p>If you cancel within 7 days of your first Cloud subscription charge and have not used the Cloud proxy, we will refund the first month's payment. Subsequent monthly charges are non-refundable except at our discretion for service failures.</p>
+            </div>
+          </div>
+
+          <p>All refunds are credited back to the original payment method via Stripe. We cannot issue refunds to a different card or bank account.</p>
+        </section>
+
+        <section id="updates">
+          <h2>Updates and support</h2>
+          <p><strong>Pro license updates:</strong> All 1.x patch and minor updates (e.g., 1.1.0, 1.2.3) are included at no additional cost. Major version upgrades (e.g., 2.0.0) may require a separate purchase, which we will offer to existing Pro customers at a discounted upgrade price.</p>
+          <p><strong>Cloud license updates:</strong> Cloud subscribers receive all updates, including any major version upgrades, for as long as their subscription is active.</p>
+          <p><strong>Support:</strong> We provide email-based support at <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a>. We aim to respond within 2 business days. Support is provided in English. We do not offer phone or live chat support.</p>
+          <p><strong>End of life:</strong> We will provide at least 6 months notice before discontinuing PromptCraft entirely. In the event of discontinuation, Pro license holders will be offered a full refund of their original purchase price regardless of when the license was purchased.</p>
+        </section>
+
+        <section id="ip">
+          <h2>Intellectual property</h2>
+          <p>PromptCraft and all of its components, including the pipeline architecture, processing algorithms, UI design, documentation, and marketing materials, are and remain the exclusive intellectual property of Oguzhan Atalay.</p>
+          <p>Your license does not include any rights to the source code, design files, or underlying algorithms. You may not use our name, logo, or trademarks without prior written permission, except to truthfully describe your use of the Software.</p>
+          <p>Feedback you provide about the Software (bug reports, feature suggestions, improvement ideas) may be used by us to improve the Software without any obligation to compensate you or attribute the feedback to you.</p>
+        </section>
+
+        <section id="disclaimer">
+          <h2>Disclaimer of warranties</h2>
+          <p>PromptCraft is provided "as is" and "as available" without warranties of any kind, express or implied. We specifically disclaim all implied warranties of merchantability, fitness for a particular purpose, title, and non-infringement.</p>
+          <p>We do not warrant that: (a) the Software will meet your specific requirements; (b) the Software will be uninterrupted, error-free, or secure; (c) any errors in the Software will be corrected; (d) AI model outputs routed through the Software will be accurate, complete, or appropriate for any particular use.</p>
+          <p>Some jurisdictions do not allow the exclusion of implied warranties. If you are in such a jurisdiction, some of the above exclusions may not apply to you.</p>
+        </section>
+
+        <section id="liability">
+          <h2>Limitation of liability</h2>
+          <p>To the maximum extent permitted by applicable law, in no event will we be liable for any indirect, incidental, special, exemplary, consequential, or punitive damages, including but not limited to lost profits, lost data, loss of goodwill, service interruption, or computer damage, arising out of or in connection with these Terms or your use of the Software, even if we have been advised of the possibility of such damages.</p>
+          <p>Our total cumulative liability to you for any claims arising from or related to these Terms or the Software shall not exceed the amount you paid us in the 12 months immediately preceding the event giving rise to the claim, or $99 USD, whichever is greater.</p>
+          <p>This limitation of liability is a fundamental element of the basis of the bargain between us. The Software would not be provided to you without this limitation.</p>
+        </section>
+
+        <section id="termination">
+          <h2>Termination</h2>
+          <p>Your license to use PromptCraft terminates automatically if you breach any of these Terms. Upon termination, you must cease all use of the Software and delete all copies in your possession.</p>
+          <p>We may terminate or suspend your Cloud subscription immediately and without notice if: (a) you breach these Terms and fail to cure the breach within 7 days of written notice; (b) you use the Software or Cloud proxy for illegal purposes; (c) you attempt to circumvent license enforcement.</p>
+          <p>Termination for cause does not entitle you to a refund. Termination that we initiate without cause entitles you to a pro-rated refund of any prepaid Cloud subscription fees.</p>
+          <p>Sections of these Terms that by their nature should survive termination will survive, including Sections on Intellectual Property, Disclaimer of Warranties, Limitation of Liability, and Governing Law.</p>
+        </section>
+
+        <section id="governing-law">
+          <h2>Governing law</h2>
+          <p>These Terms are governed by and construed in accordance with the laws of Portugal, without regard to its conflict of law provisions. You agree that any dispute arising from these Terms or your use of the Software shall be subject to the exclusive jurisdiction of the courts of Portugal.</p>
+          <p>If you are a consumer in the European Union, mandatory consumer protection laws of your country of residence may apply to supplement or override these Terms to the extent required by law.</p>
+          <p>If any provision of these Terms is found to be unenforceable, that provision will be modified to the minimum extent necessary to make it enforceable, and the remaining provisions will remain in full force and effect.</p>
+        </section>
+
+        <section id="changes">
+          <h2>Changes to these Terms</h2>
+          <p>We may update these Terms from time to time. For material changes, we will notify you by email at the address associated with your purchase at least 14 days before the change takes effect. For minor or clarifying changes, we may update the Terms without individual notice but will update the "Last updated" date above.</p>
+          <p>Your continued use of PromptCraft after the effective date of updated Terms constitutes acceptance of the revised Terms. If you do not agree to the revised Terms, you may cancel your subscription (Cloud) or request a refund within the applicable refund window (Pro).</p>
+        </section>
+
+        <section id="contact">
+          <h2>Contact</h2>
+          <p>Questions about these Terms, license issues, refund requests, or abuse reports:</p>
+          <div class="legal-contact">
+            <iconify-icon icon="lucide:mail" style="font-size:15px;color:var(--acc);flex-shrink:0;"></iconify-icon>
+            <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a>
+          </div>
+          <p>We aim to respond within 2 business days.</p>
+        </section>
+
       </div>
     </div>
   </main>
@@ -47,25 +273,66 @@ import Footer from '../components/Footer.astro';
 </Base>
 
 <style>
-  .prose h2 {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: var(--text-primary);
-    margin: 40px 0 14px;
+  .legal-main { padding-top: 88px; padding-bottom: 80px; min-height: 100vh; }
+  .legal-wrap { display: grid; grid-template-columns: 200px 1fr; gap: 64px; align-items: start; }
+
+  .legal-sidebar { position: sticky; top: 100px; display: flex; flex-direction: column; gap: 4px; }
+  .ls-head { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
+  .ls-link { font-size: 13px; color: var(--mid); padding: 5px 12px; border-left: 2px solid transparent; margin-left: -2px; transition: color .15s, border-color .15s; }
+  .ls-link:hover { color: var(--ink); border-left-color: var(--acc); }
+
+  .legal-head { margin-bottom: 48px; }
+  .legal-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--acc); display: block; margin-bottom: 12px; }
+  .legal-h1 { font-size: clamp(32px,4vw,52px); font-weight: 800; letter-spacing: -0.04em; color: var(--ink); margin-bottom: 12px; }
+  .legal-meta { font-size: 12px; color: var(--dim); display: flex; gap: 8px; margin-bottom: 20px; }
+  .lm-sep { opacity: .4; }
+  .legal-summary { display: flex; gap: 12px; align-items: flex-start; padding: 16px 18px; background: rgba(26,107,64,0.06); border: 1px solid rgba(26,107,64,0.2); border-radius: 10px; }
+  .legal-summary p { font-size: 13px; line-height: 1.75; color: var(--mid); }
+
+  .legal-body section { border-top: 1px solid var(--bdr); padding: 40px 0; }
+  .legal-body h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); margin-bottom: 16px; }
+  .legal-body p { font-size: 14px; line-height: 1.8; color: var(--mid); margin-bottom: 14px; }
+  .legal-body p:last-child { margin-bottom: 0; }
+  .legal-body p a, .legal-body a { color: var(--acc); }
+  .legal-body p a:hover, .legal-body a:hover { opacity: .8; }
+
+  .legal-tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+  .legal-tier { padding: 22px; border: 1px solid var(--bdr); border-radius: 12px; background: var(--bg2); }
+  .legal-tier-cloud { border-color: rgba(26,107,64,0.3); background: rgba(26,107,64,0.04); }
+  .lt-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+  .lt-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .lt-price { font-size: 13px; color: var(--acc); }
+  .lt-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .lt-list li { font-size: 13px; line-height: 1.6; color: var(--mid); padding-left: 16px; position: relative; }
+  .lt-list li::before { content: '·'; position: absolute; left: 0; color: var(--acc); font-weight: 700; }
+  .lt-list strong { color: var(--ink); }
+
+  .legal-ul { display: flex; flex-direction: column; gap: 0; list-style: none; padding: 0; margin: 16px 0; border: 1px solid var(--bdr); border-radius: 10px; overflow: hidden; }
+  .legal-ul li { font-size: 13px; line-height: 1.75; color: var(--mid); padding: 12px 16px; border-bottom: 1px solid var(--bdr); background: var(--bg); }
+  .legal-ul li:last-child { border-bottom: none; }
+  .legal-ul strong { color: var(--ink); font-weight: 600; }
+
+  .legal-prohibited { display: flex; flex-direction: column; gap: 0; margin: 16px 0; }
+  .legal-proh-item { display: flex; gap: 14px; align-items: flex-start; padding: 18px 0; border-top: 1px solid var(--bdr); }
+  .legal-proh-item:last-child { border-bottom: 1px solid var(--bdr); }
+  .legal-proh-item div { display: flex; flex-direction: column; gap: 5px; }
+  .legal-proh-item strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .legal-proh-item p { font-size: 13px; line-height: 1.75; color: var(--mid); margin: 0; }
+
+  .legal-refund-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+  .legal-refund { padding: 22px; border: 1px solid var(--bdr); border-radius: 12px; background: var(--bg2); display: flex; flex-direction: column; gap: 12px; }
+  .lr-header { display: flex; align-items: center; gap: 10px; }
+  .lr-header strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .legal-refund p { font-size: 13px; line-height: 1.75; color: var(--mid); margin: 0; }
+  .legal-refund p a { color: var(--acc); }
+
+  .legal-contact { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 8px; margin: 12px 0; font-size: 14px; font-weight: 500; color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .legal-wrap { grid-template-columns: 1fr; gap: 32px; }
+    .legal-sidebar { position: relative; top: auto; flex-direction: row; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid var(--bdr); padding-bottom: 16px; }
+    .ls-head { display: none; }
+    .legal-tier-grid { grid-template-columns: 1fr; }
+    .legal-refund-grid { grid-template-columns: 1fr; }
   }
-  .prose p, .prose li {
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.8;
-    margin-bottom: 14px;
-  }
-  .prose ul {
-    padding-left: 24px;
-    margin-bottom: 14px;
-  }
-  .prose li { margin-bottom: 8px; }
-  .prose strong { color: var(--text-primary); font-weight: 600; }
-  .prose a { color: var(--teal); }
-  .prose a:hover { opacity: 0.8; }
 </style>

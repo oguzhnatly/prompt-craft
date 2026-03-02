@@ -67,16 +67,17 @@ const stages = [
 ---
 
 <section id="pipeline" aria-labelledby="pipeline-heading">
-  <div class="wrap">
-    <div class="pl-header" data-reveal>
-      <span class="eyebrow"><span class="eyebrow-dot"></span>Under the hood</span>
-      <h2 id="pipeline-heading" class="pl-h2">The pipeline, in full.</h2>
-      <p class="pl-sub">Scroll drives the sequence from 01 to 07 with smooth transitions, and you can always keep scrolling manually.</p>
-    </div>
-  </div>
 
   <div id="pl-scroll-wrapper">
     <div id="pl-sticky">
+
+      <div class="wrap">
+        <div class="pl-header">
+          <span class="eyebrow"><span class="eyebrow-dot"></span>Under the hood</span>
+          <h2 id="pipeline-heading" class="pl-h2">The pipeline, in full.</h2>
+          <p class="pl-sub">Scroll through 01 to 07 to explore each stage. Above 01 and below 07 normal scrolling resumes.</p>
+        </div>
+      </div>
 
       <div class="pl-ide" id="pl-ide" role="tablist" aria-label="Pipeline stage inspector">
 
@@ -153,11 +154,11 @@ const stages = [
 </section>
 
 <style>
-  #pipeline { padding: 72px 0 56px; }
+  #pipeline { padding: 0 0 48px; }
 
   .pl-header {
-    max-width: 620px; margin-bottom: 28px;
-    display: flex; flex-direction: column; gap: 16px;
+    max-width: 620px; margin-bottom: 20px;
+    display: flex; flex-direction: column; gap: 10px;
   }
   .pl-h2 {
     font-size: clamp(28px, 4vw, 52px);
@@ -168,23 +169,25 @@ const stages = [
 
   #pl-scroll-wrapper {
     position: relative;
-    height: 190vh;
+    height: calc(100vh + 560px);
     margin-bottom: 12px;
   }
 
   #pl-sticky {
     position: sticky;
-    top: 84px;
+    top: 0;
     width: 100%;
-    height: calc(100vh - 120px);
-    min-height: calc(100vh - 120px);
+    height: 100vh;
+    min-height: 100vh;
     display: flex; flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: 84px;
   }
 
   .pl-ide {
     width: 100%;
-    min-height: clamp(500px, 68vh, 690px);
+    flex: 1;
+    min-height: 0;
     display: grid; grid-template-columns: 300px 1fr;
     border-top: 1px solid var(--bdr);
     border-bottom: 1px solid var(--bdr);
@@ -271,9 +274,10 @@ const stages = [
   }
 
   .pl-progress {
-    margin-top: 10px;
+    margin-top: 8px;
     display: flex; align-items: center; gap: 8px;
     padding: 4px 14px;
+    flex-shrink: 0;
   }
   .pl-progress-track {
     flex: 1; height: 8px; background: var(--bdr);

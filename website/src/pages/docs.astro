@@ -2,109 +2,415 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-
-const sections = [
-  {
-    id: 'install',
-    title: 'Installation',
-    body: [
-      'Download the latest .dmg from the Releases page on GitHub.',
-      'Open the .dmg and drag PromptCraft.app to your Applications folder.',
-      'Launch PromptCraft. macOS will ask to open an app from an identified developer — click Open.',
-      'Grant Accessibility permission in System Settings to Privacy & Security to Accessibility.',
-      'The PromptCraft crosshair icon appears in your menu bar. You are ready.',
-    ],
-  },
-  {
-    id: 'shortcut',
-    title: 'Global shortcut',
-    body: [
-      'The default shortcut is Cmd+Shift+Space. It toggles the app from anywhere on macOS.',
-      'You can change the shortcut in Settings (gear icon in the header bar).',
-    ],
-  },
-  {
-    id: 'styles',
-    title: 'Optimization styles',
-    body: [
-      'Each style shapes how the 7-stage pipeline assembles the final prompt.',
-      'General — balanced, works for most requests.',
-      'Engineering — adds role specification, constraints, format requirements, test stubs.',
-      'Research — academic framing, source awareness, structured sections.',
-      'Content — narrative structure, audience tone, SEO awareness.',
-      'Analysis — analytical frameworks, hypothesis testing, structured conclusions.',
-      'Academic — formal register, citation structure, methodology.',
-      'Creative — open-ended framing, voice latitude, inspiration triggers.',
-      'Custom — define your own template and it appears in the pill row.',
-    ],
-  },
-  {
-    id: 'verbosity',
-    title: 'Verbosity modes',
-    body: [
-      'Concise — strips preamble, requests direct answers, limits response length.',
-      'Balanced — default. Preserves full context, standard response length.',
-      'Detailed — requests step-by-step reasoning, examples, edge cases.',
-    ],
-  },
-  {
-    id: 'license',
-    title: 'License activation',
-    body: [
-      'After purchase, a license key in the format PC-XXXX-XXXX-XXXX-XXXX is delivered to your email.',
-      'Open PromptCraft to Settings to Enter License Key.',
-      'Pro licenses activate on up to 3 Macs. Cloud on up to 5.',
-      'To transfer to a new machine, deactivate from the old one in Settings to Deactivate.',
-    ],
-  },
-  {
-    id: 'cloud',
-    title: 'Cloud routing (Cloud tier)',
-    body: [
-      'Cloud subscribers can route prompts to Claude, GPT-4o, DeepSeek, or Gemini without entering API keys.',
-      'Select the cloud provider in Settings to AI Provider to Cloud.',
-      'Cloud routing uses our proxy at promptcraft-cloud-proxy.ozzydev.workers.dev.',
-      'Your optimized prompt is encrypted in transit. We do not log prompt content.',
-    ],
-  },
-  {
-    id: 'local',
-    title: 'Local Ollama setup',
-    body: [
-      'Install Ollama from ollama.ai and pull a model: ollama pull llama3.2',
-      'In PromptCraft Settings to AI Provider to Local, set the base URL to http://localhost:11434.',
-      'Select your model from the dropdown.',
-      'All processing stays on your Mac. Nothing leaves your machine.',
-    ],
-  },
-];
 ---
-<Base title="Documentation — PromptCraft" description="PromptCraft documentation — installation, styles, verbosity, license activation, and cloud routing.">
+<Base title="Documentation — PromptCraft" description="PromptCraft documentation — installation, keyboard shortcut, optimization styles, verbosity, license activation, Ollama setup, and cloud routing.">
   <Nav />
   <main class="docs-main">
     <div class="wrap docs-wrap">
-      <div class="docs-sidebar">
-        <p class="ds-head mono">Docs</p>
-        {sections.map(s => (
-          <a class="ds-link" href={`#${s.id}`}>{s.title}</a>
-        ))}
-      </div>
+
+      <aside class="docs-sidebar">
+        <p class="ds-head mono">On this page</p>
+        <a class="ds-link" href="#install">Installation</a>
+        <a class="ds-link" href="#shortcut">Keyboard shortcut</a>
+        <a class="ds-link" href="#pipeline">7-stage pipeline</a>
+        <a class="ds-link" href="#styles">Optimization styles</a>
+        <a class="ds-link" href="#verbosity">Verbosity modes</a>
+        <a class="ds-link" href="#license">License activation</a>
+        <a class="ds-link" href="#ollama">Ollama setup</a>
+        <a class="ds-link" href="#cloud">Cloud routing</a>
+        <a class="ds-link" href="#faq">FAQ</a>
+        <a class="ds-link" href="#changelog">Changelog</a>
+      </aside>
+
       <div class="docs-body">
+
         <div class="db-head" data-r>
-          <span class="lbl g"><span class="ldot"></span>Documentation</span>
+          <span class="lbl"><iconify-icon icon="lucide:book-open" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Documentation</span>
           <h1 class="db-h1">PromptCraft docs</h1>
-          <p class="db-sub">Everything you need to set up and get the most out of PromptCraft.</p>
+          <p class="db-sub">Everything you need to get from download to optimized prompts in under 5 minutes. No account required. No configuration wizards.</p>
+          <div class="db-meta mono">
+            <span>Version 1.0</span>
+            <span class="db-sep">·</span>
+            <span>macOS 14 Sonoma+</span>
+            <span class="db-sep">·</span>
+            <span>Apple Silicon + Intel</span>
+          </div>
         </div>
-        {sections.map(s => (
-          <section class="db-section" id={s.id} data-r>
-            <h2 class="db-h2">{s.title}</h2>
-            <ul class="db-list">
-              {s.body.map(line => (
-                <li>{line}</li>
-              ))}
-            </ul>
-          </section>
-        ))}
+
+        <!-- INSTALLATION -->
+        <section class="db-section" id="install" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:download" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Getting started</div>
+          <h2 class="db-h2">Installation</h2>
+          <p class="db-p">PromptCraft ships as a signed and notarized <code>.dmg</code>. Apple's Gatekeeper will verify it on first launch — no approval hoops required.</p>
+
+          <div class="db-steps">
+            <div class="db-step">
+              <div class="dbs-n mono">01</div>
+              <div class="dbs-body">
+                <strong>Download the .dmg</strong>
+                <p>Go to the <a href="/download">Download page</a> and grab the latest release. The file is named <code>PromptCraft-1.0.0.dmg</code>.</p>
+              </div>
+            </div>
+            <div class="db-step">
+              <div class="dbs-n mono">02</div>
+              <div class="dbs-body">
+                <strong>Drag to Applications</strong>
+                <p>Open the <code>.dmg</code> and drag <code>PromptCraft.app</code> into your <code>/Applications</code> folder. Eject the disk image when done.</p>
+              </div>
+            </div>
+            <div class="db-step">
+              <div class="dbs-n mono">03</div>
+              <div class="dbs-body">
+                <strong>Open and grant Accessibility</strong>
+                <p>Double-click to launch. macOS will confirm you want to open an app from an identified developer — click <strong>Open</strong>. PromptCraft will guide you to <strong>System Settings → Privacy &amp; Security → Accessibility</strong> to grant the single read-only permission it needs.</p>
+              </div>
+            </div>
+            <div class="db-step">
+              <div class="dbs-n mono">04</div>
+              <div class="dbs-body">
+                <strong>Look for the crosshair in your menu bar</strong>
+                <p>The PromptCraft icon appears in the right side of your menu bar. Click it to open the app window, or use the global keyboard shortcut directly from any app.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="db-callout">
+            <iconify-icon icon="lucide:shield-check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;"></iconify-icon>
+            <p>PromptCraft is <strong>signed with Developer ID</strong> and <strong>notarized by Apple</strong>. It passes Gatekeeper on first launch without any bypass steps. If macOS blocks it, go to <strong>System Settings → Privacy &amp; Security</strong> and click <strong>Open Anyway</strong>.</p>
+          </div>
+        </section>
+
+        <!-- KEYBOARD SHORTCUT -->
+        <section class="db-section" id="shortcut" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:keyboard" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Global access</div>
+          <h2 class="db-h2">Keyboard shortcut</h2>
+          <p class="db-p">The shortcut is the core interaction model. You never need to click the menu bar icon — just press the keys from anywhere on macOS and the window appears over your current work.</p>
+
+          <div class="db-kbd-row">
+            <div class="db-kbd-block">
+              <div class="db-kbd-keys">
+                <kbd>⌘</kbd><span class="db-plus">+</span><kbd>⇧</kbd><span class="db-plus">+</span><kbd>Space</kbd>
+              </div>
+              <p class="db-kbd-desc mono">Default global shortcut — toggle PromptCraft from anywhere</p>
+            </div>
+          </div>
+
+          <p class="db-p">To change the shortcut: open PromptCraft, click the gear icon in the header bar, navigate to <strong>Shortcut</strong>. Click the field and press your new key combination. PromptCraft will register the new shortcut system-wide immediately.</p>
+
+          <div class="db-callout">
+            <iconify-icon icon="lucide:info" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;"></iconify-icon>
+            <p>If the shortcut conflicts with another app, PromptCraft will warn you. Common conflicts: <code>⌘⇧Space</code> is sometimes used by Raycast or Alfred. Pick something like <code>⌃⌥Space</code> or <code>⌘⌥P</code> if needed.</p>
+          </div>
+        </section>
+
+        <!-- 7-STAGE PIPELINE -->
+        <section class="db-section" id="pipeline" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:workflow" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Under the hood</div>
+          <h2 class="db-h2">The 7-stage pipeline</h2>
+          <p class="db-p">Every prompt you type passes through a seven-stage processing pipeline before it reaches any AI model. The whole sequence runs locally on your Mac in under 200ms.</p>
+
+          <div class="db-pipeline-list">
+            <div class="db-pl-item">
+              <span class="db-pl-n mono">01</span>
+              <div class="db-pl-body">
+                <strong>Intent Decomposer</strong> — Parses your raw input to identify the primary verb, subject, object, and desired output type (imperative, exploratory, creative). This classification routes the request to the correct assembly strategy in stage 05.
+              </div>
+            </div>
+            <div class="db-pl-item">
+              <span class="db-pl-n mono">02</span>
+              <div class="db-pl-body">
+                <strong>Entity Extractor</strong> — Runs named entity recognition (NER) to pin all domain-critical tokens: proper nouns, version numbers, library names, acronyms, quoted strings, and technical identifiers. Pinned entities cannot be paraphrased or dropped by downstream stages.
+              </div>
+            </div>
+            <div class="db-pl-item">
+              <span class="db-pl-n mono">03</span>
+              <div class="db-pl-body">
+                <strong>Complexity Classifier</strong> — Scores the request on four axes (scope, depth, ambiguity, technicality) from 0 to 1. The combined score selects one of 12 assembly strategies and controls how aggressively the Context Engine injects additional data.
+              </div>
+            </div>
+            <div class="db-pl-item">
+              <span class="db-pl-n mono">04</span>
+              <div class="db-pl-body">
+                <strong>Context Engine</strong> — Reads the macOS Accessibility layer for active app and selected text, queries the clipboard history ring for recent content, and applies domain priors from your style profile. All injected as structured annotations in the assembly buffer.
+              </div>
+            </div>
+            <div class="db-pl-item">
+              <span class="db-pl-n mono">05</span>
+              <div class="db-pl-body">
+                <strong>Prompt Assembler</strong> — Renders the final prompt using the active style template against all upstream signals. Engineering style adds role specification, constraint enumeration, format requirements, and test directives. Templates are composable, not static strings.
+              </div>
+            </div>
+            <div class="db-pl-item">
+              <span class="db-pl-n mono">06</span>
+              <div class="db-pl-body">
+                <strong>Model Execution</strong> — Routes the assembled prompt to your configured endpoint (local Ollama, OpenAI, Anthropic, Google, DeepSeek, or PromptCraft Cloud). Responses stream token by token. Timeout handling and retry on transient errors are automatic.
+              </div>
+            </div>
+            <div class="db-pl-item">
+              <span class="db-pl-n mono">07</span>
+              <div class="db-pl-body">
+                <strong>Post Processor</strong> — Strips model preamble and filler phrases, enforces verbosity constraints, validates format, and delivers the clean result to the output view with copy, export, and regenerate actions ready immediately.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STYLES -->
+        <section class="db-section" id="styles" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:layers" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Output shaping</div>
+          <h2 class="db-h2">Optimization styles</h2>
+          <p class="db-p">Styles are the top-level control over how the Prompt Assembler shapes your request. Switching style does not change your input — it changes the assembly template the pipeline uses, producing a completely different, equally precise output.</p>
+
+          <div class="db-styles-grid">
+            <div class="db-style-card">
+              <div class="dbsc-top">
+                <span class="dbsc-name">General</span>
+                <span class="dbsc-badge mono">default</span>
+              </div>
+              <p class="dbsc-desc">Balanced structure that works across most task types. Good for everyday requests where you do not need domain-specific framing.</p>
+            </div>
+            <div class="db-style-card">
+              <div class="dbsc-top">
+                <span class="dbsc-name">Engineering</span>
+              </div>
+              <p class="dbsc-desc">Adds role specification ("You are a senior…"), explicit constraint enumeration, format requirements (JSON / TypeScript / annotated code), and unit test directives. Ideal for code, architecture, and technical review tasks.</p>
+            </div>
+            <div class="db-style-card">
+              <div class="dbsc-top">
+                <span class="dbsc-name">Research</span>
+              </div>
+              <p class="dbsc-desc">Academic framing, source awareness instructions, structured section requirements (background / methodology / findings). Optimized for literature synthesis and evidence-based analysis.</p>
+            </div>
+            <div class="db-style-card">
+              <div class="dbsc-top">
+                <span class="dbsc-name">Content</span>
+              </div>
+              <p class="dbsc-desc">Narrative structure, audience tone calibration, SEO awareness, headline variants. Built for blog posts, landing copy, social, and long-form editorial.</p>
+            </div>
+            <div class="db-style-card">
+              <div class="dbsc-top">
+                <span class="dbsc-name">Analysis</span>
+              </div>
+              <p class="dbsc-desc">Analytical frameworks (SWOT, first-principles, root cause), hypothesis testing structure, structured conclusions with supporting evidence. For business analysis, data interpretation, and decision support.</p>
+            </div>
+            <div class="db-style-card">
+              <div class="dbsc-top">
+                <span class="dbsc-name">Academic</span>
+              </div>
+              <p class="dbsc-desc">Formal register, citation structure requests, methodology sections, abstract framing. For academic writing, research proposals, and peer-review style output.</p>
+            </div>
+            <div class="db-style-card">
+              <div class="dbsc-top">
+                <span class="dbsc-name">Creative</span>
+              </div>
+              <p class="dbsc-desc">Open-ended framing, voice latitude, inspiration triggers, sensory language instructions. For fiction, poetry, screenwriting, and imaginative brainstorming.</p>
+            </div>
+            <div class="db-style-card db-style-card-custom">
+              <div class="dbsc-top">
+                <span class="dbsc-name">Custom</span>
+                <span class="dbsc-badge dbsc-badge-green mono">Pro + Cloud</span>
+              </div>
+              <p class="dbsc-desc">Define your own template using the template editor. Custom styles appear in the pill row alongside built-ins. Build a house style once and reuse it across every request.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- VERBOSITY -->
+        <section class="db-section" id="verbosity" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:sliders-horizontal" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Response length</div>
+          <h2 class="db-h2">Verbosity modes</h2>
+          <p class="db-p">Verbosity controls how much the Post Processor asks the model to elaborate. It is applied per-request and does not persist between sessions unless you set a default in Settings.</p>
+
+          <div class="db-verb-row">
+            <div class="db-verb-card">
+              <span class="dbv-name">Concise</span>
+              <p class="dbv-desc">Strips preamble, requests direct answers, limits response length. Use when you know exactly what you need and want it immediately — quick refactors, short explanations, single-purpose answers.</p>
+              <div class="dbv-example mono">→ "Refactor this in 3 lines."</div>
+            </div>
+            <div class="db-verb-card db-verb-card-active">
+              <span class="dbv-name">Balanced <span class="dbv-badge mono">default</span></span>
+              <p class="dbv-desc">Preserves full context, standard response length. The pipeline uses this unless you select otherwise. Works for 90% of everyday use cases.</p>
+              <div class="dbv-example mono">→ "Explain this clearly with context."</div>
+            </div>
+            <div class="db-verb-card">
+              <span class="dbv-name">Detailed</span>
+              <p class="dbv-desc">Requests step-by-step reasoning, examples for edge cases, and full elaboration of any assumptions. Use for learning, debugging complex problems, or generating comprehensive documentation.</p>
+              <div class="dbv-example mono">→ "Walk through every step, with examples."</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- LICENSE -->
+        <section class="db-section" id="license" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:key-round" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Activation</div>
+          <h2 class="db-h2">License activation</h2>
+          <p class="db-p">After purchase, a license key in the format <code>PC-XXXX-XXXX-XXXX-XXXX</code> is delivered to your email within 60 seconds via our automated system. Check your spam folder if it does not arrive.</p>
+
+          <div class="db-steps">
+            <div class="db-step">
+              <div class="dbs-n mono">01</div>
+              <div class="dbs-body">
+                <strong>Copy the key from your email</strong>
+                <p>The key is 19 characters including hyphens, in the format <code>PC-XXXX-XXXX-XXXX-XXXX</code>. Copy it to your clipboard.</p>
+              </div>
+            </div>
+            <div class="db-step">
+              <div class="dbs-n mono">02</div>
+              <div class="dbs-body">
+                <strong>Open Settings in PromptCraft</strong>
+                <p>Click the gear icon in the PromptCraft header bar. Navigate to <strong>License</strong> and click <strong>Enter License Key</strong>.</p>
+              </div>
+            </div>
+            <div class="db-step">
+              <div class="dbs-n mono">03</div>
+              <div class="dbs-body">
+                <strong>Paste and activate</strong>
+                <p>Paste your key and click <strong>Activate</strong>. PromptCraft contacts our license server to verify and register the machine. Activation takes under 2 seconds with an internet connection.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="db-table">
+            <div class="db-th">
+              <span>Tier</span><span>Machines</span><span>Type</span>
+            </div>
+            <div class="db-tr">
+              <span><strong>Pro</strong></span><span class="mono">Up to 3</span><span>Perpetual — no renewal</span>
+            </div>
+            <div class="db-tr">
+              <span><strong>Cloud</strong></span><span class="mono">Up to 5</span><span>Monthly subscription</span>
+            </div>
+          </div>
+
+          <p class="db-p">To transfer to a new machine: go to <strong>Settings → License → Deactivate</strong> on the old Mac first, then activate on the new one. If you lost access to the old Mac, email <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a> with your order ID and we will reset the activation count manually within 24 hours.</p>
+        </section>
+
+        <!-- OLLAMA -->
+        <section class="db-section" id="ollama" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:server" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Local AI</div>
+          <h2 class="db-h2">Ollama setup</h2>
+          <p class="db-p">Ollama lets you run open-weight models locally — no API key, no internet, no cost per token. PromptCraft detects a running Ollama instance automatically.</p>
+
+          <div class="db-steps">
+            <div class="db-step">
+              <div class="dbs-n mono">01</div>
+              <div class="dbs-body">
+                <strong>Install Ollama</strong>
+                <p>Download from <a href="https://ollama.ai" target="_blank" rel="noopener">ollama.ai</a> and install. Ollama runs as a background service on <code>localhost:11434</code>.</p>
+              </div>
+            </div>
+            <div class="db-step">
+              <div class="dbs-n mono">02</div>
+              <div class="dbs-body">
+                <strong>Pull a model</strong>
+                <p>Open Terminal and run:</p>
+                <div class="db-code-block mono">ollama pull llama3.2</div>
+                <p>Other good options: <code>mistral</code>, <code>qwen2.5-coder</code>, <code>deepseek-r1</code>. The first pull downloads the weights — subsequent launches are instant.</p>
+              </div>
+            </div>
+            <div class="db-step">
+              <div class="dbs-n mono">03</div>
+              <div class="dbs-body">
+                <strong>Select Local in PromptCraft</strong>
+                <p>Open <strong>Settings → AI Provider → Local</strong>. Set the base URL to <code>http://localhost:11434</code> and select your downloaded model from the dropdown. PromptCraft will list all locally available models automatically.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="db-callout">
+            <iconify-icon icon="lucide:lock" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;"></iconify-icon>
+            <p>With Ollama selected, your prompts <strong>never leave your Mac</strong>. The entire pipeline runs on-device. No network traffic, no token costs, no rate limits. Works on flights, submarines, and cafes with bad Wi-Fi.</p>
+          </div>
+        </section>
+
+        <!-- CLOUD -->
+        <section class="db-section" id="cloud" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:cloud" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Cloud tier</div>
+          <h2 class="db-h2">Cloud routing</h2>
+          <p class="db-p">Cloud subscribers route prompts to frontier models without managing API keys. The proxy handles authentication, rate limiting, and retries automatically.</p>
+
+          <div class="db-table">
+            <div class="db-th">
+              <span>Provider</span><span>Models available</span>
+            </div>
+            <div class="db-tr"><span>Anthropic</span><span class="mono">Claude Opus, Sonnet, Haiku</span></div>
+            <div class="db-tr"><span>OpenAI</span><span class="mono">GPT-4o, o3-mini, o3</span></div>
+            <div class="db-tr"><span>Google</span><span class="mono">Gemini 2.5 Pro, Flash</span></div>
+            <div class="db-tr"><span>DeepSeek</span><span class="mono">DeepSeek V3, R1</span></div>
+            <div class="db-tr"><span>Moonshot</span><span class="mono">Kimi K2</span></div>
+          </div>
+
+          <p class="db-p">To enable: go to <strong>Settings → AI Provider → Cloud</strong>. Select your preferred provider and model. PromptCraft sends your assembled prompt to our Cloudflare Workers proxy at <code>promptcraft-cloud-proxy.ozzydev.workers.dev</code> over HTTPS. The proxy authenticates with the provider and streams the response back.</p>
+
+          <div class="db-callout">
+            <iconify-icon icon="lucide:shield" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;"></iconify-icon>
+            <p>We log only: a hash of your license key (not the key itself), the provider name, HTTP status code, and response latency. <strong>No prompt content is ever logged or stored.</strong> The hash is used solely for rate-limit enforcement.</p>
+          </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="db-section" id="faq" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:message-circle-question" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Common questions</div>
+          <h2 class="db-h2">FAQ</h2>
+
+          <div class="db-faq">
+            <div class="db-faq-item">
+              <strong>Does PromptCraft work with any AI chat app?</strong>
+              <p>Yes. PromptCraft works independently of any chat interface. It optimizes your prompt in a separate window, then you paste the result wherever you want — Claude.ai, ChatGPT, a terminal, or a custom app.</p>
+            </div>
+            <div class="db-faq-item">
+              <strong>Why does it need Accessibility permission?</strong>
+              <p>The Context Engine reads your active application name and selected text to inject relevant context automatically. The permission is read-only — PromptCraft cannot type, click, or control your Mac. You can revoke it at any time in System Settings.</p>
+            </div>
+            <div class="db-faq-item">
+              <strong>Can I use my own OpenAI or Anthropic key?</strong>
+              <p>Yes. Go to <strong>Settings → AI Provider → API Key</strong> and paste your key. PromptCraft connects directly to the provider without routing through any proxy.</p>
+            </div>
+            <div class="db-faq-item">
+              <strong>Is there a free trial?</strong>
+              <p>Yes. PromptCraft launches with a 7-day free trial, no credit card required. The full pipeline runs in trial mode — the only limitation is the trial banner in the window.</p>
+            </div>
+            <div class="db-faq-item">
+              <strong>What happens to my license if the app is updated?</strong>
+              <p>Nothing. Pro licenses are perpetual and cover all 1.x updates. The license key you activated today will keep working after every update.</p>
+            </div>
+            <div class="db-faq-item">
+              <strong>Can I use PromptCraft on multiple Macs?</strong>
+              <p>Pro licenses activate on up to 3 machines. Cloud licenses activate on up to 5. You can deactivate from one Mac and activate on another at any time.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- CHANGELOG -->
+        <section class="db-section" id="changelog" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:git-commit-horizontal" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Release history</div>
+          <h2 class="db-h2">Changelog</h2>
+
+          <div class="db-changelog">
+            <div class="db-cl-item">
+              <div class="db-cl-meta">
+                <span class="db-cl-v mono">v1.0.0</span>
+                <span class="db-cl-date mono">March 2026</span>
+                <span class="db-cl-tag">Latest</span>
+              </div>
+              <ul class="db-cl-list">
+                <li>Initial public release of PromptCraft</li>
+                <li>7-stage pipeline with full local execution</li>
+                <li>8 optimization styles including custom template support</li>
+                <li>3 verbosity modes (Concise, Balanced, Detailed)</li>
+                <li>Ollama integration with automatic model discovery</li>
+                <li>PromptCraft Cloud proxy with 5 AI providers</li>
+                <li>Pro and Cloud license tiers via Stripe</li>
+                <li>Signed and notarized for macOS 14 Sonoma and later</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <div class="db-footer-cta" data-r>
+          <p>Still have questions? Email us at <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a> — we reply within 24 hours.</p>
+        </div>
+
       </div>
     </div>
   </main>
@@ -112,7 +418,7 @@ const sections = [
 </Base>
 
 <style>
-  .docs-main { padding-top: 100px; padding-bottom: 80px; min-height: 90vh; }
+  .docs-main { padding-top: 88px; padding-bottom: 80px; min-height: 90vh; }
   .docs-wrap {
     display: grid;
     grid-template-columns: 200px 1fr;
@@ -120,37 +426,152 @@ const sections = [
     align-items: start;
   }
 
+  /* sidebar */
   .docs-sidebar {
-    position: sticky; top: 80px;
-    display: flex; flex-direction: column; gap: 6px;
+    position: sticky; top: 100px;
+    display: flex; flex-direction: column; gap: 4px;
   }
   .ds-head {
     font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--mute);
-    margin-bottom: 8px;
+    text-transform: uppercase; color: var(--dim);
+    margin-bottom: 10px;
   }
   .ds-link {
-    font-size: 13px; color: var(--mute);
-    padding: 5px 0; transition: color .15s;
+    font-size: 13px; color: var(--mid);
+    padding: 5px 12px;
     border-left: 2px solid transparent;
-    padding-left: 12px; margin-left: -2px;
+    margin-left: -2px;
     transition: color .15s, border-color .15s;
+    line-height: 1.3;
   }
-  .ds-link:hover { color: var(--snow); border-left-color: var(--g); }
+  .ds-link:hover { color: var(--ink); border-left-color: var(--acc); }
 
-  .db-head  { margin-bottom: 56px; display: flex; flex-direction: column; gap: 16px; }
-  .db-h1    { font-size: 40px; font-weight: 800; letter-spacing: -0.045em; line-height: 1.1; color: var(--snow); }
-  .db-sub   { font-size: 15px; color: var(--mute); }
+  /* header */
+  .db-head { margin-bottom: 56px; display: flex; flex-direction: column; gap: 14px; }
+  .db-h1 { font-size: clamp(32px,4vw,48px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; color: var(--ink); }
+  .db-sub { font-size: 16px; color: var(--mid); line-height: 1.7; max-width: 560px; }
+  .db-meta { font-size: 11px; color: var(--dim); display: flex; gap: 8px; align-items: center; }
+  .db-sep { opacity: .4; }
 
-  .db-section { border-top: 1px solid var(--bdr); padding: 36px 0; }
-  .db-h2      { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; color: var(--snow); margin-bottom: 16px; }
-  .db-list    { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .db-list li { font-size: 14px; line-height: 1.75; color: var(--pale); position: relative; padding-left: 16px; }
-  .db-list li::before { content: '·'; position: absolute; left: 0; color: var(--g); font-weight: 700; }
+  /* sections */
+  .db-section { border-top: 1px solid var(--bdr); padding: 48px 0; }
+  .dbs-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--acc); margin-bottom: 8px; }
+  .db-h2 { font-size: clamp(20px,2.5vw,28px); font-weight: 700; letter-spacing: -0.03em; color: var(--ink); margin-bottom: 14px; }
+  .db-p { font-size: 14px; line-height: 1.8; color: var(--mid); margin-bottom: 24px; max-width: 680px; }
+  .db-p:last-child { margin-bottom: 0; }
+  .db-p a { color: var(--acc); }
+  .db-p a:hover { opacity: .8; }
 
-  @media (max-width: 768px) {
-    .docs-wrap { grid-template-columns: 1fr; }
-    .docs-sidebar { position: relative; top: auto; flex-direction: row; flex-wrap: wrap; gap: 4px; margin-bottom: 32px; }
+  /* steps */
+  .db-steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 24px; }
+  .db-step {
+    display: grid; grid-template-columns: 48px 1fr;
+    gap: 16px; padding: 20px 0;
+    border-top: 1px solid var(--bdr);
+  }
+  .db-step:last-child { border-bottom: 1px solid var(--bdr); }
+  .dbs-n { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--acc); padding-top: 2px; }
+  .dbs-body { display: flex; flex-direction: column; gap: 6px; }
+  .dbs-body strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .dbs-body p { font-size: 14px; line-height: 1.75; color: var(--mid); }
+  .dbs-body p a { color: var(--acc); }
+  .dbs-body code { font-size: 12px; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 4px; padding: 1px 5px; color: var(--ink2); font-family: 'Geist Mono', monospace; }
+
+  /* callout */
+  .db-callout {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 16px 18px; border-radius: 10px;
+    background: var(--bg2); border: 1px solid var(--bdr);
+    margin-top: 20px;
+  }
+  .db-callout p { font-size: 13px; line-height: 1.75; color: var(--mid); }
+  .db-callout strong { color: var(--ink2); }
+
+  /* pipeline list */
+  .db-pipeline-list { display: flex; flex-direction: column; gap: 0; margin-top: 4px; }
+  .db-pl-item {
+    display: grid; grid-template-columns: 48px 1fr;
+    gap: 16px; padding: 18px 0;
+    border-top: 1px solid var(--bdr);
+  }
+  .db-pl-item:last-child { border-bottom: 1px solid var(--bdr); }
+  .db-pl-n { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--acc); padding-top: 2px; }
+  .db-pl-body { font-size: 14px; line-height: 1.75; color: var(--mid); }
+  .db-pl-body strong { color: var(--ink); font-weight: 600; }
+
+  /* styles grid */
+  .db-styles-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--bdr);
+    border: 1px solid var(--bdr); border-radius: 12px;
+    overflow: hidden; margin-top: 4px;
+  }
+  .db-style-card { padding: 20px 22px; background: var(--bg); display: flex; flex-direction: column; gap: 8px; }
+  .db-style-card:hover { background: var(--bg2); }
+  .db-style-card-custom { background: var(--bg2); }
+  .dbsc-top { display: flex; align-items: center; gap: 8px; }
+  .dbsc-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .dbsc-badge { font-size: 9px; padding: 2px 7px; border-radius: 999px; background: var(--bdr); color: var(--dim); letter-spacing: 0.06em; }
+  .dbsc-badge-green { background: rgba(26,107,64,0.1); color: var(--acc); }
+  .dbsc-desc { font-size: 13px; line-height: 1.7; color: var(--mid); }
+
+  /* verbosity */
+  .db-verb-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--bdr); border: 1px solid var(--bdr); border-radius: 12px; overflow: hidden; margin-top: 4px; margin-bottom: 20px; }
+  .db-verb-card { padding: 22px 20px; background: var(--bg); display: flex; flex-direction: column; gap: 10px; }
+  .db-verb-card-active { background: var(--bg2); }
+  .dbv-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .dbv-badge { font-size: 9px; padding: 2px 7px; border-radius: 999px; background: rgba(26,107,64,0.1); color: var(--acc); letter-spacing: 0.06em; margin-left: 6px; vertical-align: middle; }
+  .dbv-desc { font-size: 13px; line-height: 1.7; color: var(--mid); flex: 1; }
+  .dbv-example { font-size: 11px; color: var(--acc); opacity: .7; }
+
+  /* table */
+  .db-table { border: 1px solid var(--bdr); border-radius: 10px; overflow: hidden; margin: 20px 0; }
+  .db-th { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; padding: 10px 16px; background: var(--bg2); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--bdr); }
+  .db-tr { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; padding: 12px 16px; font-size: 13px; color: var(--mid); border-bottom: 1px solid var(--bdr); }
+  .db-tr:last-child { border-bottom: none; }
+  .db-tr strong { color: var(--ink); }
+  .db-th:has(+ .db-tr:nth-child(2)) { grid-template-columns: 1fr 1fr; }
+  .db-th:has(span:nth-child(2):last-child) { grid-template-columns: 1fr 1fr; }
+  .db-table:has(.db-tr span:nth-child(2):last-child) .db-th,
+  .db-table:has(.db-tr span:nth-child(2):last-child) .db-tr { grid-template-columns: 1fr 1fr; }
+
+  /* code block */
+  .db-code-block {
+    padding: 12px 16px; border-radius: 8px;
+    background: var(--bg3); border: 1px solid var(--bdr);
+    font-size: 12px; color: var(--acc); letter-spacing: 0.02em;
+    margin: 8px 0;
+  }
+
+  /* faq */
+  .db-faq { display: flex; flex-direction: column; }
+  .db-faq-item { padding: 20px 0; border-top: 1px solid var(--bdr); display: flex; flex-direction: column; gap: 8px; }
+  .db-faq-item:last-child { border-bottom: 1px solid var(--bdr); }
+  .db-faq-item strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .db-faq-item p { font-size: 14px; line-height: 1.75; color: var(--mid); }
+
+  /* changelog */
+  .db-changelog { display: flex; flex-direction: column; gap: 0; }
+  .db-cl-item { padding: 20px 0; border-top: 1px solid var(--bdr); }
+  .db-cl-item:last-child { border-bottom: 1px solid var(--bdr); }
+  .db-cl-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .db-cl-v { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .db-cl-date { font-size: 12px; color: var(--dim); }
+  .db-cl-tag { font-size: 9px; padding: 2px 8px; border-radius: 999px; background: rgba(26,107,64,0.12); color: var(--acc); font-weight: 600; letter-spacing: 0.06em; font-family: 'Geist Mono', monospace; }
+  .db-cl-list { display: flex; flex-direction: column; gap: 7px; list-style: none; padding: 0; }
+  .db-cl-list li { font-size: 13px; line-height: 1.65; color: var(--mid); padding-left: 18px; position: relative; }
+  .db-cl-list li::before { content: '·'; position: absolute; left: 0; color: var(--acc); font-weight: 700; }
+
+  /* footer cta */
+  .db-footer-cta { border-top: 1px solid var(--bdr); padding-top: 36px; margin-top: 8px; }
+  .db-footer-cta p { font-size: 14px; color: var(--mid); line-height: 1.7; }
+  .db-footer-cta a { color: var(--acc); }
+
+  @media (max-width: 900px) {
+    .docs-wrap { grid-template-columns: 1fr; gap: 32px; }
+    .docs-sidebar { position: relative; top: auto; flex-direction: row; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid var(--bdr); padding-bottom: 16px; }
     .ds-head { display: none; }
+    .db-styles-grid { grid-template-columns: 1fr; }
+    .db-verb-row { grid-template-columns: 1fr; }
   }
 </style>

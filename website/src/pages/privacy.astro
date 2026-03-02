@@ -3,48 +3,246 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 ---
-
-<Base title="Privacy Policy — PromptCraft" description="PromptCraft privacy policy. We collect the minimum possible. Your prompts are never stored.">
+<Base title="Privacy Policy — PromptCraft" description="PromptCraft privacy policy. We collect the minimum possible. Your prompts are never stored or logged.">
   <Nav />
-  <main style="padding-top: 100px; padding-bottom: 80px; min-height: 100vh; background: var(--base);">
-    <div style="max-width: 720px; margin: 0 auto; padding: 0 24px;">
+  <main class="legal-main">
+    <div class="wrap legal-wrap">
 
-      <div style="margin-bottom: 48px;">
-        <span class="mono" style="font-size:11px;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;display:block">Legal</span>
-        <h1 style="font-size:clamp(40px,5vw,56px);font-weight:900;letter-spacing:-0.04em;color:var(--text-primary);margin-bottom:16px">Privacy Policy</h1>
-        <p class="mono" style="font-size:13px;color:var(--text-muted)">Last updated: March 2, 2026</p>
-      </div>
+      <aside class="legal-sidebar">
+        <p class="ls-head mono">On this page</p>
+        <a class="ls-link" href="#overview">Overview</a>
+        <a class="ls-link" href="#what-we-collect">What we collect</a>
+        <a class="ls-link" href="#what-we-never-collect">What we never collect</a>
+        <a class="ls-link" href="#app-permissions">App permissions</a>
+        <a class="ls-link" href="#cloud-proxy">Cloud proxy</a>
+        <a class="ls-link" href="#data-storage">Data storage</a>
+        <a class="ls-link" href="#third-parties">Third parties</a>
+        <a class="ls-link" href="#cookies">Cookies and tracking</a>
+        <a class="ls-link" href="#children">Children</a>
+        <a class="ls-link" href="#your-rights">Your rights</a>
+        <a class="ls-link" href="#data-deletion">Data deletion</a>
+        <a class="ls-link" href="#changes">Changes</a>
+        <a class="ls-link" href="#contact">Contact</a>
+      </aside>
 
-      <div class="prose">
-        <h2>What we collect</h2>
-        <p>We collect the minimum possible information to operate PromptCraft:</p>
-        <ul>
-          <li><strong>Email address</strong> — to deliver your license key and send renewal notices.</li>
-          <li><strong>License metadata</strong> — your license key, tier (Pro or Cloud), and activated machine count. No machine identifiers are stored in readable form.</li>
-          <li><strong>Stripe payment data</strong> — handled entirely by Stripe. We never see or store your card details.</li>
-        </ul>
+      <div class="legal-body">
+        <div class="legal-head">
+          <span class="legal-eyebrow mono">Legal</span>
+          <h1 class="legal-h1">Privacy Policy</h1>
+          <div class="legal-meta mono">
+            <span>Effective: March 2, 2026</span>
+            <span class="lm-sep">·</span>
+            <span>Last updated: March 2, 2026</span>
+          </div>
+          <div class="legal-summary">
+            <iconify-icon icon="lucide:shield-check" style="font-size:16px;color:var(--acc);flex-shrink:0;margin-top:2px;"></iconify-icon>
+            <p>Plain-English summary: We collect only your email and license metadata. We never see, store, or analyze your prompts or AI responses. The app reads your active application name and selected text locally — this data never leaves your Mac.</p>
+          </div>
+        </div>
 
-        <h2>What we never collect</h2>
-        <ul>
-          <li>Your prompts, requests, or model outputs are <strong>never stored, logged, or analyzed</strong>.</li>
-          <li>We do not track your behavior, usage patterns, or session content.</li>
-          <li>We do not use analytics, tracking pixels, or third-party monitoring tools on this website.</li>
-        </ul>
+        <section id="overview">
+          <h2>Overview</h2>
+          <p>PromptCraft ("we", "us", "our") is a macOS application that optimizes prompts before they are sent to AI models. This policy describes what personal data we collect, why we collect it, how we store it, and what rights you have over it.</p>
+          <p>We designed PromptCraft with privacy as a constraint, not an afterthought. The result: our server-side data footprint is minimal by architecture, not by policy alone.</p>
+        </section>
 
-        <h2>Cloud proxy</h2>
-        <p>When you use PromptCraft Cloud, your requests are relayed through our Cloudflare Workers proxy to the AI provider of your choice. We log only: a hash of your license key, the provider name, HTTP status code, and latency in milliseconds. <strong>No content is logged.</strong></p>
+        <section id="what-we-collect">
+          <h2>What we collect</h2>
+          <p>We collect only what is strictly necessary to operate the service:</p>
 
-        <h2>Data storage</h2>
-        <p>License data is stored in Cloudflare KV, distributed globally across Cloudflare's infrastructure. Email addresses are used only to deliver your license key and are stored with your license record. We do not sell, rent, or share your email with third parties.</p>
+          <div class="legal-item-list">
+            <div class="legal-item">
+              <div class="li-icon"><iconify-icon icon="lucide:mail" style="font-size:14px;color:var(--acc);"></iconify-icon></div>
+              <div class="li-body">
+                <strong>Email address</strong>
+                <p>Collected at purchase via Stripe Checkout. Used to deliver your license key and, if applicable, send subscription renewal notices. We do not add you to marketing lists without explicit consent. You can opt out of transactional emails by contacting us at <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a>.</p>
+              </div>
+            </div>
+            <div class="legal-item">
+              <div class="li-icon"><iconify-icon icon="lucide:key-round" style="font-size:14px;color:var(--acc);"></iconify-icon></div>
+              <div class="li-body">
+                <strong>License metadata</strong>
+                <p>We store your license key (a random token we generate), your license tier (Pro or Cloud), activation timestamp, and the number of machines that have activated the license. We store a non-reversible hash of each machine's hardware identifier — not the identifier itself. This hash lets us enforce the per-machine limit without us knowing which specific device you own.</p>
+              </div>
+            </div>
+            <div class="legal-item">
+              <div class="li-icon"><iconify-icon icon="lucide:credit-card" style="font-size:14px;color:var(--acc);"></iconify-icon></div>
+              <div class="li-body">
+                <strong>Stripe payment data</strong>
+                <p>Payment processing is handled entirely by Stripe, Inc. We never see, handle, or store your card number, expiry date, CVV, or bank details. Stripe provides us with an opaque customer ID and a record of the transaction. For Stripe's data practices, see <a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a>.</p>
+              </div>
+            </div>
+            <div class="legal-item">
+              <div class="li-icon"><iconify-icon icon="lucide:activity" style="font-size:14px;color:var(--acc);"></iconify-icon></div>
+              <div class="li-body">
+                <strong>Cloud proxy request metadata (Cloud tier only)</strong>
+                <p>When you use PromptCraft Cloud, we log: a SHA-256 hash of your license key, the AI provider you routed to, the HTTP status code of the provider response, and the round-trip latency in milliseconds. These logs are used for rate-limit enforcement and service health monitoring. They are retained for 30 days and then automatically deleted. No prompt content is logged.</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <h2>Cookies</h2>
-        <p>This website uses no cookies. No tracking. No analytics. No third-party scripts except Google Fonts (loaded at page render from fonts.googleapis.com).</p>
+        <section id="what-we-never-collect">
+          <h2>What we never collect</h2>
+          <p>These are architectural guarantees, not just policy statements:</p>
+          <div class="legal-never-list">
+            <div class="legal-never-item">
+              <iconify-icon icon="lucide:x-circle" style="font-size:14px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <span>Your prompts, requests, or instructions typed into PromptCraft</span>
+            </div>
+            <div class="legal-never-item">
+              <iconify-icon icon="lucide:x-circle" style="font-size:14px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <span>AI model responses or outputs</span>
+            </div>
+            <div class="legal-never-item">
+              <iconify-icon icon="lucide:x-circle" style="font-size:14px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <span>Your clipboard contents</span>
+            </div>
+            <div class="legal-never-item">
+              <iconify-icon icon="lucide:x-circle" style="font-size:14px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <span>The text you have selected in any application</span>
+            </div>
+            <div class="legal-never-item">
+              <iconify-icon icon="lucide:x-circle" style="font-size:14px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <span>Your usage patterns, session frequency, or feature usage</span>
+            </div>
+            <div class="legal-never-item">
+              <iconify-icon icon="lucide:x-circle" style="font-size:14px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <span>Crash reports or diagnostics (we do not run a crash reporter)</span>
+            </div>
+            <div class="legal-never-item">
+              <iconify-icon icon="lucide:x-circle" style="font-size:14px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <span>Your IP address (beyond what is inherent in any HTTPS connection)</span>
+            </div>
+            <div class="legal-never-item">
+              <iconify-icon icon="lucide:x-circle" style="font-size:14px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <span>Device identifiers in readable or reversible form</span>
+            </div>
+            <div class="legal-never-item">
+              <iconify-icon icon="lucide:x-circle" style="font-size:14px;color:#dc2626;flex-shrink:0;margin-top:2px;"></iconify-icon>
+              <span>Location data of any kind</span>
+            </div>
+          </div>
+        </section>
 
-        <h2>Data deletion</h2>
-        <p>To delete your data, email <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a>. We will delete your license record and email address within 7 days. Note: deleting your data will deactivate your license.</p>
+        <section id="app-permissions">
+          <h2>App permissions</h2>
+          <p>PromptCraft requires one macOS permission:</p>
 
-        <h2>Contact</h2>
-        <p>Questions about privacy: <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a></p>
+          <div class="legal-perm">
+            <div class="lp-header">
+              <iconify-icon icon="lucide:accessibility" style="font-size:16px;color:var(--acc);"></iconify-icon>
+              <strong>Accessibility (read-only)</strong>
+            </div>
+            <p>Used by the Context Engine to read your active application name and any text you have selected. This data is processed entirely on your Mac, in memory, and is discarded after each pipeline run. It is never transmitted to our servers or any third party.</p>
+            <p>You can revoke this permission at any time in <strong>System Settings → Privacy &amp; Security → Accessibility</strong>. Revoking it disables context injection but does not affect prompt optimization or model routing.</p>
+          </div>
+
+          <p>No other permissions are required. PromptCraft does not request microphone, camera, location, contacts, photos, full disk access, or any other system permission.</p>
+        </section>
+
+        <section id="cloud-proxy">
+          <h2>Cloud proxy</h2>
+          <p>Cloud subscribers use our Cloudflare Workers proxy to route requests to AI providers without managing API keys. Here is exactly what happens at the network level:</p>
+          <ol class="legal-ol">
+            <li>Your Mac sends the assembled prompt over HTTPS to our proxy at <code>promptcraft-cloud-proxy.ozzydev.workers.dev</code>. The connection is encrypted end-to-end using TLS 1.3.</li>
+            <li>Our proxy validates your license key hash, selects the appropriate provider, and forwards the prompt. The prompt is held in memory only for the duration of the forwarding operation.</li>
+            <li>The provider's response is streamed back to your Mac. Our proxy does not buffer the full response — it acts as a streaming relay.</li>
+            <li>We log the metadata described in "What we collect" above. The prompt content is never written to disk, logged, or stored in any Cloudflare service including Cloudflare Logs, Workers KV, or R2.</li>
+          </ol>
+          <p>Cloudflare's infrastructure guarantees that Workers code runs in isolated V8 contexts. No other tenant's code can access your request data.</p>
+        </section>
+
+        <section id="data-storage">
+          <h2>Data storage</h2>
+          <p>License data (email, license key, tier, activation records) is stored in <strong>Cloudflare Workers KV</strong>, a globally distributed key-value store. Data is encrypted at rest using AES-256. Cloudflare's infrastructure is SOC 2 Type II certified.</p>
+          <p>We do not operate our own database servers for user data. The Cloudflare KV store is the single source of truth for license records.</p>
+          <p>Cloud proxy request logs are stored in Cloudflare's logging infrastructure for 30 days and then automatically purged. We do not export or back up these logs.</p>
+          <p>We do not transfer your personal data outside of Cloudflare's infrastructure except as inherent in forwarding your request to your chosen AI provider (Anthropic, OpenAI, Google, DeepSeek, or Moonshot).</p>
+        </section>
+
+        <section id="third-parties">
+          <h2>Third parties</h2>
+
+          <div class="legal-party-list">
+            <div class="legal-party">
+              <strong>Stripe</strong>
+              <span class="lp-role mono">Payment processing</span>
+              <p>Handles payment data. We share only what Stripe requires to process your order (email, order amount). See <a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a>.</p>
+            </div>
+            <div class="legal-party">
+              <strong>Cloudflare</strong>
+              <span class="lp-role mono">Infrastructure</span>
+              <p>Hosts our Workers proxy and KV store. Cloudflare processes data as a data processor on our behalf under their Data Processing Agreement. See <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">cloudflare.com/privacypolicy</a>.</p>
+            </div>
+            <div class="legal-party">
+              <strong>AI Providers (Cloud tier only)</strong>
+              <span class="lp-role mono">Model inference</span>
+              <p>When you use Cloud routing, your assembled prompt is sent to the provider you select. Each provider has their own data processing terms. We recommend reviewing their policies: <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener">Anthropic</a>, <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noopener">OpenAI</a>, <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google</a>.</p>
+            </div>
+            <div class="legal-party">
+              <strong>Google Fonts</strong>
+              <span class="lp-role mono">This website only</span>
+              <p>This website loads Instrument Sans and Geist Mono from Google Fonts CDN. Google's servers receive your IP address as part of this request. This affects the marketing website only, not the PromptCraft app.</p>
+            </div>
+          </div>
+
+          <p>We do not sell, rent, license, or trade your personal data to any other third party for any purpose.</p>
+        </section>
+
+        <section id="cookies">
+          <h2>Cookies and tracking</h2>
+          <p>This website sets no cookies. We use no analytics platforms (no Google Analytics, Plausible, Fathom, Mixpanel, or similar). We run no advertising pixels, retargeting scripts, or session recording tools.</p>
+          <p>The PromptCraft application itself sets no cookies, runs no trackers, and makes no network requests outside of license validation and, for Cloud subscribers, the proxy requests described in this policy.</p>
+        </section>
+
+        <section id="children">
+          <h2>Children</h2>
+          <p>PromptCraft is not directed at children under 13 years of age (or 16 in the European Economic Area). We do not knowingly collect personal data from children. If you believe we have inadvertently collected data from a child, contact us at <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a> and we will delete it within 7 days.</p>
+        </section>
+
+        <section id="your-rights">
+          <h2>Your rights</h2>
+          <p>Depending on your jurisdiction, you may have the following rights regarding your personal data:</p>
+          <ul class="legal-ul">
+            <li><strong>Access:</strong> Request a copy of the personal data we hold about you.</li>
+            <li><strong>Correction:</strong> Ask us to correct inaccurate data.</li>
+            <li><strong>Deletion:</strong> Ask us to delete your data (see "Data deletion" below).</li>
+            <li><strong>Portability:</strong> Receive your data in a structured, machine-readable format.</li>
+            <li><strong>Restriction:</strong> Ask us to limit how we use your data while a dispute is resolved.</li>
+            <li><strong>Objection:</strong> Object to processing based on legitimate interests.</li>
+            <li><strong>Withdraw consent:</strong> Where processing is based on consent, withdraw it at any time.</li>
+          </ul>
+          <p>To exercise any of these rights, email <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a>. We will respond within 30 days. We do not charge a fee for reasonable requests. If you are in the EU or UK and believe we have violated your rights, you may lodge a complaint with your local data protection authority.</p>
+        </section>
+
+        <section id="data-deletion">
+          <h2>Data deletion</h2>
+          <p>To delete all data we hold about you:</p>
+          <ol class="legal-ol">
+            <li>Email <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a> with the subject line "Data deletion request".</li>
+            <li>Include the email address you used at purchase so we can locate your record.</li>
+            <li>We will confirm deletion within 7 days.</li>
+          </ol>
+          <p>Deleting your data will deactivate your license key permanently. We cannot recover it after deletion. If you purchased a Pro license and want to delete your data, we recommend redeeming any remaining value first. Refunds are governed by the Terms of Service.</p>
+        </section>
+
+        <section id="changes">
+          <h2>Changes to this policy</h2>
+          <p>We may update this policy when we change how we operate. When we make material changes, we will notify existing customers by email at least 14 days before the change takes effect. The "Last updated" date at the top of this page reflects the most recent revision.</p>
+          <p>Your continued use of PromptCraft after the effective date of a revised policy constitutes acceptance of the changes.</p>
+        </section>
+
+        <section id="contact">
+          <h2>Contact</h2>
+          <p>Privacy questions, data requests, and concerns:</p>
+          <div class="legal-contact">
+            <iconify-icon icon="lucide:mail" style="font-size:15px;color:var(--acc);flex-shrink:0;"></iconify-icon>
+            <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a>
+          </div>
+          <p>We aim to respond within 2 business days.</p>
+        </section>
+
       </div>
     </div>
   </main>
@@ -52,25 +250,73 @@ import Footer from '../components/Footer.astro';
 </Base>
 
 <style>
-  .prose h2 {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: var(--text-primary);
-    margin: 40px 0 14px;
+  .legal-main { padding-top: 88px; padding-bottom: 80px; min-height: 100vh; }
+  .legal-wrap { display: grid; grid-template-columns: 200px 1fr; gap: 64px; align-items: start; }
+
+  .legal-sidebar { position: sticky; top: 100px; display: flex; flex-direction: column; gap: 4px; }
+  .ls-head { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
+  .ls-link { font-size: 13px; color: var(--mid); padding: 5px 12px; border-left: 2px solid transparent; margin-left: -2px; transition: color .15s, border-color .15s; }
+  .ls-link:hover { color: var(--ink); border-left-color: var(--acc); }
+
+  .legal-head { margin-bottom: 48px; }
+  .legal-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--acc); display: block; margin-bottom: 12px; }
+  .legal-h1 { font-size: clamp(32px,4vw,52px); font-weight: 800; letter-spacing: -0.04em; color: var(--ink); margin-bottom: 12px; }
+  .legal-meta { font-size: 12px; color: var(--dim); display: flex; gap: 8px; margin-bottom: 20px; }
+  .lm-sep { opacity: .4; }
+  .legal-summary { display: flex; gap: 12px; align-items: flex-start; padding: 16px 18px; background: rgba(26,107,64,0.06); border: 1px solid rgba(26,107,64,0.2); border-radius: 10px; }
+  .legal-summary p { font-size: 13px; line-height: 1.75; color: var(--mid); }
+
+  .legal-body section { border-top: 1px solid var(--bdr); padding: 40px 0; }
+  .legal-body h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); margin-bottom: 16px; }
+  .legal-body p { font-size: 14px; line-height: 1.8; color: var(--mid); margin-bottom: 16px; }
+  .legal-body p:last-child { margin-bottom: 0; }
+  .legal-body p a, .legal-body a { color: var(--acc); }
+  .legal-body p a:hover, .legal-body a:hover { opacity: .8; }
+  .legal-body code { font-size: 12px; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 4px; padding: 1px 5px; color: var(--ink2); font-family: 'Geist Mono', monospace; }
+
+  .legal-item-list { display: flex; flex-direction: column; gap: 0; margin: 16px 0; }
+  .legal-item { display: flex; gap: 14px; padding: 18px 0; border-top: 1px solid var(--bdr); }
+  .legal-item:last-child { border-bottom: 1px solid var(--bdr); }
+  .li-icon { flex-shrink: 0; padding-top: 2px; width: 20px; }
+  .li-body { display: flex; flex-direction: column; gap: 6px; }
+  .li-body strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .li-body p { font-size: 13px; line-height: 1.75; color: var(--mid); margin: 0; }
+  .li-body p a { color: var(--acc); }
+
+  .legal-never-list { display: flex; flex-direction: column; gap: 0; margin: 16px 0; border: 1px solid var(--bdr); border-radius: 10px; overflow: hidden; }
+  .legal-never-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-bottom: 1px solid var(--bdr); font-size: 13px; line-height: 1.65; color: var(--mid); background: var(--bg); }
+  .legal-never-item:last-child { border-bottom: none; }
+  .legal-never-item:hover { background: var(--bg2); }
+
+  .legal-perm { padding: 18px 20px; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 10px; margin: 16px 0; }
+  .lp-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .lp-header strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .legal-perm p { font-size: 13px; line-height: 1.75; color: var(--mid); margin-bottom: 10px; }
+  .legal-perm p:last-child { margin-bottom: 0; }
+
+  .legal-ol { padding-left: 20px; display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+  .legal-ol li { font-size: 14px; line-height: 1.75; color: var(--mid); }
+  .legal-ol li a { color: var(--acc); }
+  .legal-ol li code { font-size: 12px; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 4px; padding: 1px 5px; color: var(--ink2); font-family: 'Geist Mono', monospace; }
+
+  .legal-ul { display: flex; flex-direction: column; gap: 8px; list-style: none; padding: 0; margin: 16px 0; border: 1px solid var(--bdr); border-radius: 10px; overflow: hidden; }
+  .legal-ul li { font-size: 13px; line-height: 1.7; color: var(--mid); padding: 12px 16px; border-bottom: 1px solid var(--bdr); background: var(--bg); }
+  .legal-ul li:last-child { border-bottom: none; }
+  .legal-ul strong { color: var(--ink); font-weight: 600; }
+
+  .legal-party-list { display: flex; flex-direction: column; gap: 0; margin: 16px 0; }
+  .legal-party { padding: 18px 0; border-top: 1px solid var(--bdr); display: flex; flex-direction: column; gap: 6px; }
+  .legal-party:last-child { border-bottom: 1px solid var(--bdr); }
+  .legal-party strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .lp-role { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--dim); }
+  .legal-party p { font-size: 13px; line-height: 1.75; color: var(--mid); margin: 0; }
+  .legal-party p a { color: var(--acc); }
+
+  .legal-contact { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 8px; margin: 12px 0; font-size: 14px; font-weight: 500; color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .legal-wrap { grid-template-columns: 1fr; gap: 32px; }
+    .legal-sidebar { position: relative; top: auto; flex-direction: row; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid var(--bdr); padding-bottom: 16px; }
+    .ls-head { display: none; }
   }
-  .prose p, .prose li {
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.8;
-    margin-bottom: 14px;
-  }
-  .prose ul {
-    padding-left: 24px;
-    margin-bottom: 14px;
-  }
-  .prose li { margin-bottom: 8px; }
-  .prose strong { color: var(--text-primary); font-weight: 600; }
-  .prose a { color: var(--teal); }
-  .prose a:hover { opacity: 0.8; }
 </style>
