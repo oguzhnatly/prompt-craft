@@ -2,297 +2,259 @@
 export interface Props {
   title?: string;
   description?: string;
-  image?: string;
 }
 const {
-  title = 'PromptCraft — Precision Prompt Engineering for macOS',
-  description = 'The macOS menu bar app that transforms raw prompts through 7 engineered stages before they reach any AI. Every response, elevated.',
-  image = '/og.png',
+  title = 'PromptCraft — Precision Prompt Engineering',
+  description = 'The macOS menu bar app that transforms raw prompts through 7 engineered stages before they reach any AI.',
 } = Astro.props;
 ---
-
 <!doctype html>
-<html lang="en" class="overscroll-none">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#030308" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
-  <meta property="og:image" content={image} />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#09090F" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200;12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
 <body>
-  <!-- Custom cursor -->
-  <div id="cursor" aria-hidden="true">
-    <div id="cursor-dot"></div>
-    <div id="cursor-ring"></div>
-    <div id="cursor-text"></div>
-  </div>
+  <!-- Precision crosshair cursor -->
+  <svg id="pc-cursor" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false">
+    <circle cx="16" cy="16" r="2.5" fill="var(--g)" class="cc-center"/>
+    <line x1="16" y1="2"  x2="16" y2="10" stroke="var(--g)" stroke-width="1.5" stroke-linecap="round" class="cc-arm"/>
+    <line x1="16" y1="22" x2="16" y2="30" stroke="var(--g)" stroke-width="1.5" stroke-linecap="round" class="cc-arm"/>
+    <line x1="2"  y1="16" x2="10" y2="16" stroke="var(--g)" stroke-width="1.5" stroke-linecap="round" class="cc-arm"/>
+    <line x1="22" y1="16" x2="30" y2="16" stroke="var(--g)" stroke-width="1.5" stroke-linecap="round" class="cc-arm"/>
+    <circle cx="16" cy="16" r="7" stroke="var(--g)" stroke-width="1" stroke-dasharray="2 3" class="cc-ring" opacity="0.4"/>
+  </svg>
+  <!-- Cursor trail container -->
+  <div id="cursor-trail" aria-hidden="true"></div>
 
   <slot />
 
   <style is:global>
     :root {
-      /* Core palette */
-      --void:      #030308;
-      --deep:      #07071F;
-      --surface:   #0D0D24;
-      --elevated:  #13132E;
-      --border:    rgba(255,255,255,0.06);
-      --border-hi: rgba(255,255,255,0.12);
-      --teal:      #00FFB2;
-      --teal-dim:  #00CC8F;
-      --indigo:    #7B61FF;
-      --pink:      #FF4D9B;
-      --amber:     #FFB830;
-      --text-1:    #FAFAFE;
-      --text-2:    #B8B6D8;
-      --text-3:    #7A788F;
+      --void:   #09090F;
+      --ink-1:  #111118;
+      --ink-2:  #18181F;
+      --ink-3:  #222230;
+      --dim:    #2E2E40;
+      --mute:   #6B6B85;
+      --pale:   #A3A3B5;
+      --snow:   #F0EFFA;
+      --g:      #00E676;      /* green accent — brand */
+      --g-dim:  #00A854;
+      --r:      #FF3B30;      /* coral/red */
+      --b:      #4A90FF;      /* blue */
+      --y:      #FFD60A;      /* gold */
+      --p:      #BF5AF2;      /* purple */
+      --border: rgba(255,255,255,0.07);
+      --border-hi: rgba(255,255,255,0.13);
 
-      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-in-out: cubic-bezier(0.83, 0, 0.17, 1);
+      --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+      --font-mono:    'Fira Code', 'JetBrains Mono', monospace;
+
+      --r-xs: 6px;
+      --r-sm: 10px;
+      --r-md: 16px;
+      --r-lg: 22px;
+      --r-xl: 32px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html {
       background: var(--void);
-      color: var(--text-1);
-      font-family: 'Space Grotesk', system-ui, sans-serif;
+      color: var(--snow);
+      font-family: var(--font-display);
       -webkit-font-smoothing: antialiased;
       cursor: none;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background: var(--void);
       overflow-x: hidden;
-      position: relative;
     }
 
-    ::selection { background: rgba(0,255,178,0.15); color: var(--teal); }
+    body { background: var(--void); overflow-x: hidden; }
+    a    { color: inherit; text-decoration: none; }
+    ::selection { background: rgba(0,230,118,0.18); color: var(--g); }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 4px; }
 
-    /* ── Cursor ─────────────────────────── */
-    #cursor {
+    /* ── Custom Cursor ─────────────────────────── */
+    #pc-cursor {
       position: fixed;
-      top: 0; left: 0;
+      width: 32px; height: 32px;
       pointer-events: none;
       z-index: 99999;
-      mix-blend-mode: normal;
+      transform: translate(-50%,-50%);
+      transition: width .12s, height .12s;
+      filter: drop-shadow(0 0 4px rgba(0,230,118,0.5));
     }
+    body.ch #pc-cursor {
+      width: 44px; height: 44px;
+      filter: drop-shadow(0 0 8px rgba(0,230,118,0.7));
+    }
+    body.ch .cc-center { fill: var(--snow); }
+    body.ch .cc-ring   { opacity: 0.7; stroke: var(--snow); stroke-dasharray: none; }
 
-    #cursor-dot {
+    #cursor-trail { position: fixed; inset: 0; pointer-events: none; z-index: 99998; }
+    .ct-dot {
       position: absolute;
-      width: 6px; height: 6px;
-      background: var(--teal);
+      width: 4px; height: 4px;
       border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width 0.15s var(--ease-spring), height 0.15s var(--ease-spring), background 0.2s;
-      box-shadow: 0 0 12px var(--teal), 0 0 30px rgba(0,255,178,0.3);
+      background: var(--g);
+      transform: translate(-50%,-50%);
+      animation: ct-fade .6s ease-out forwards;
     }
+    @keyframes ct-fade { from { opacity: 0.5; transform: translate(-50%,-50%) scale(1); } to { opacity: 0; transform: translate(-50%,-50%) scale(0); } }
 
-    #cursor-ring {
-      position: absolute;
-      width: 32px; height: 32px;
-      border: 1.5px solid rgba(0,255,178,0.4);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width 0.4s var(--ease-spring), height 0.4s var(--ease-spring), border-color 0.3s, transform 0.4s var(--ease-spring);
-    }
+    /* ── Typography ────────────────────────────── */
+    .mono { font-family: var(--font-mono); }
 
-    #cursor-text {
-      position: absolute;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--teal);
-      letter-spacing: 0.08em;
-      white-space: nowrap;
-      transform: translate(-50%, 22px);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    body.cursor-hover #cursor-dot { width: 10px; height: 10px; background: var(--void); }
-    body.cursor-hover #cursor-ring { width: 50px; height: 50px; border-color: var(--teal); }
-    body.cursor-text #cursor-text { opacity: 1; }
-
-    /* ── Typography ─────────────────────── */
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
-
-    /* ── Utilities ──────────────────────── */
-    .teal   { color: var(--teal); }
-    .indigo { color: var(--indigo); }
-
-    /* ── Noise overlay (global depth) ───── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-      opacity: 0.028;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* ── Tag/badge ──────────────────────── */
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border: 1px solid var(--border-hi);
+    /* ── Label/badge ───────────────────────────── */
+    .label {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 11px;
       border-radius: 999px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-3);
+      border: 1px solid var(--border-hi);
+      font-family: var(--font-mono);
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mute);
     }
-    .tag.teal { border-color: rgba(0,255,178,0.2); color: var(--teal); }
-    .tag-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--teal);
-      box-shadow: 0 0 8px var(--teal);
-      animation: blink 2s ease-in-out infinite;
-    }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .label.g { border-color: rgba(0,230,118,0.25); color: var(--g); background: rgba(0,230,118,0.06); }
+    .ldot { width: 5px; height: 5px; border-radius: 50%; background: var(--g); animation: ldot-pulse 2.2s ease-in-out infinite; }
+    @keyframes ldot-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    /* ── Magnetic button ────────────────── */
+    /* ── Buttons ───────────────────────────────── */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 28px;
-      border-radius: 12px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--r-sm);
+      font-family: var(--font-display);
+      font-size: 14px; font-weight: 600;
       letter-spacing: -0.01em;
+      border: none; cursor: none;
       text-decoration: none;
-      transition: transform 0.2s var(--ease-spring), box-shadow 0.3s, background 0.2s;
-      cursor: none;
-      position: relative;
-      overflow: hidden;
+      transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, background .15s;
+      position: relative; overflow: hidden;
     }
-    .btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.08), transparent 60%);
-      opacity: 0;
-      transition: opacity 0.3s;
+    .btn::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at var(--px,50%) var(--py,50%), rgba(255,255,255,0.1), transparent 60%);
+      opacity: 0; transition: opacity .2s;
     }
-    .btn:hover::before { opacity: 1; }
+    .btn:hover::after { opacity: 1; }
 
-    .btn-primary {
-      background: var(--teal);
-      color: var(--void);
-      box-shadow: 0 0 0 0 rgba(0,255,178,0);
+    .btn-g {
+      background: var(--g); color: var(--void);
+      box-shadow: 0 1px 0 var(--g-dim);
     }
-    .btn-primary:hover {
-      background: #26FFB9;
-      box-shadow: 0 0 40px rgba(0,255,178,0.35), 0 8px 32px rgba(0,255,178,0.15);
+    .btn-g:hover {
+      background: #26FF87;
+      box-shadow: 0 4px 0 var(--g-dim), 0 8px 32px rgba(0,230,118,0.3);
       transform: translateY(-2px);
     }
 
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-2);
+    .btn-outline {
+      background: transparent; color: var(--pale);
       border: 1px solid var(--border-hi);
     }
-    .btn-ghost:hover {
-      background: rgba(255,255,255,0.04);
-      color: var(--text-1);
-      border-color: rgba(255,255,255,0.2);
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.25);
+      color: var(--snow);
       transform: translateY(-2px);
     }
 
-    /* ── Scrollbar ──────────────────────── */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
+    .btn-dim {
+      background: var(--ink-3); color: var(--pale);
+    }
+    .btn-dim:hover {
+      background: var(--dim);
+      color: var(--snow);
+      transform: translateY(-2px);
+    }
 
-    /* ── Section spacing ────────────────── */
-    .section { position: relative; z-index: 2; }
+    /* ── Container ─────────────────────────────── */
+    .wrap {
+      width: 100%; max-width: 1180px;
+      margin: 0 auto; padding: 0 40px;
+    }
+    @media (max-width: 768px) { .wrap { padding: 0 20px; } }
+
+    /* ── Divider ────────────────────────────────── */
+    hr.rule { border: none; border-top: 1px solid var(--border); }
+
+    /* ── Reveal ─────────────────────────────────── */
+    [data-r] {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity .75s cubic-bezier(.16,1,.3,1), transform .75s cubic-bezier(.16,1,.3,1);
+    }
+    [data-r].on { opacity: 1; transform: none; }
+    [data-r-d="1"] { transition-delay: .08s; }
+    [data-r-d="2"] { transition-delay: .16s; }
+    [data-r-d="3"] { transition-delay: .24s; }
+    [data-r-d="4"] { transition-delay: .32s; }
+    [data-r-d="5"] { transition-delay: .40s; }
   </style>
 
   <script>
-    // ── Custom cursor ─────────────────────────────────────────────────────────
-    const cursor   = document.getElementById('cursor')!;
-    const dot      = document.getElementById('cursor-dot')!;
-    const ring     = document.getElementById('cursor-ring')!;
-    const cText    = document.getElementById('cursor-text')!;
+    /* ── Cursor ────────────────────────────────────── */
+    const cur  = document.getElementById('pc-cursor') as SVGElement;
+    const trail = document.getElementById('cursor-trail')!;
+    let cx = 0, cy = 0, dots: HTMLElement[] = [];
+    const MAX_TRAIL = 8;
 
-    let mx = window.innerWidth  / 2;
-    let my = window.innerHeight / 2;
-    let ringX = mx, ringY = my;
-    let raf: number;
+    document.addEventListener('mousemove', e => {
+      cx = e.clientX; cy = e.clientY;
+      cur.style.left = cx + 'px';
+      cur.style.top  = cy + 'px';
 
-    document.addEventListener('mousemove', (e) => {
-      mx = e.clientX; my = e.clientY;
-      dot.style.left  = mx + 'px';
-      dot.style.top   = my + 'px';
+      // Trail dot
+      const d = document.createElement('div');
+      d.className = 'ct-dot';
+      d.style.left = cx + 'px';
+      d.style.top  = cy + 'px';
+      trail.appendChild(d);
+      dots.push(d);
+      if (dots.length > MAX_TRAIL) {
+        const old = dots.shift()!;
+        old.remove();
+      }
+      setTimeout(() => { d.remove(); dots = dots.filter(x => x !== d); }, 600);
+    }, { passive: true });
+
+    // Hover state
+    document.querySelectorAll('a,button,[data-h]').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('ch'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('ch'));
     });
 
-    function tick() {
-      ringX += (mx - ringX) * 0.12;
-      ringY += (my - ringY) * 0.12;
-      ring.style.left = ringX + 'px';
-      ring.style.top  = ringY + 'px';
-      cText.style.left = ringX + 'px';
-      cText.style.top  = ringY + 'px';
-      raf = requestAnimationFrame(tick);
-    }
-    tick();
-
-    // Hover detection
-    const hovers = document.querySelectorAll('a, button, [data-cursor]');
-    hovers.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        document.body.classList.add('cursor-hover');
-        const label = (el as HTMLElement).dataset.cursor;
-        if (label) {
-          cText.textContent = label;
-          document.body.classList.add('cursor-text');
-        }
-      });
-      el.addEventListener('mouseleave', () => {
-        document.body.classList.remove('cursor-hover', 'cursor-text');
-        cText.textContent = '';
-      });
-    });
-
-    // ── Magnetic buttons ──────────────────────────────────────────────────────
-    document.querySelectorAll('.btn').forEach(btn => {
-      btn.addEventListener('mousemove', (e: Event) => {
+    // Magnetic buttons
+    document.querySelectorAll('.btn').forEach(b => {
+      b.addEventListener('mousemove', (e: Event) => {
         const ev = e as MouseEvent;
-        const rect = (btn as HTMLElement).getBoundingClientRect();
-        const cx = rect.left + rect.width  / 2;
-        const cy = rect.top  + rect.height / 2;
-        const dx = (ev.clientX - cx) * 0.25;
-        const dy = (ev.clientY - cy) * 0.25;
-        (btn as HTMLElement).style.transform = `translate(${dx}px, ${dy}px)`;
-        const px = ((ev.clientX - rect.left) / rect.width  * 100).toFixed(1);
-        const py = ((ev.clientY - rect.top)  / rect.height * 100).toFixed(1);
-        (btn as HTMLElement).style.setProperty('--mx', px + '%');
-        (btn as HTMLElement).style.setProperty('--my', py + '%');
+        const r  = (b as HTMLElement).getBoundingClientRect();
+        const x  = (ev.clientX - r.left - r.width/2) * 0.20;
+        const y  = (ev.clientY - r.top  - r.height/2) * 0.20;
+        const px = ((ev.clientX - r.left) / r.width  * 100).toFixed(0);
+        const py = ((ev.clientY - r.top)  / r.height * 100).toFixed(0);
+        (b as HTMLElement).style.transform = `translate(${x}px,${y}px) translateY(-2px)`;
+        (b as HTMLElement).style.setProperty('--px', px + '%');
+        (b as HTMLElement).style.setProperty('--py', py + '%');
       });
-      btn.addEventListener('mouseleave', () => {
-        (btn as HTMLElement).style.transform = '';
-      });
+      b.addEventListener('mouseleave', () => { (b as HTMLElement).style.transform = ''; });
     });
+
+    /* ── Reveal ──────────────────────────────────── */
+    const ro = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('on'); ro.unobserve(e.target); }
+    }), { threshold: 0.1 });
+    document.querySelectorAll('[data-r]').forEach(el => ro.observe(el));
   </script>
 </body>
 </html>

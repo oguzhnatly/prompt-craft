@@ -1,530 +1,412 @@
 ---
-// Features — alternating split layout with animated demos
 ---
-
-<section id="features" class="section features-section">
-  <div class="features-inner">
-
-    <div class="features-head">
-      <div class="tag teal">
-        <span class="tag-dot"></span>
-        FEATURES
-      </div>
-      <h2 class="features-title">
-        Built for engineers<br>who refuse to<br><span class="teal">guess twice.</span>
+<section id="features" class="section feat-section">
+  <div class="container">
+    <div class="feat-head">
+      <div class="badge" data-reveal>FEATURES</div>
+      <h2 class="feat-title syne" data-reveal data-reveal-d="1">
+        Built for power users.<br>
+        <span style="color:var(--teal-d)">Invisible to everyone else.</span>
       </h2>
     </div>
 
-    <!-- Feature 1: Menu bar -->
-    <div class="feat-row">
-      <div class="feat-text">
-        <div class="feat-num font-mono">01</div>
-        <h3 class="feat-name">Lives in your menu bar.</h3>
-        <p class="feat-desc">
-          No new window. No app switching. One keyboard shortcut and PromptCraft is open. 
-          Refine your prompt, send to any model, close. The workflow stays in your head, not the UI.
-        </p>
-        <ul class="feat-bullets">
-          <li>Global hotkey launch</li>
-          <li>Popover interface — no dock clutter</li>
-          <li>Native macOS design system</li>
-          <li>Remembers your last 50 prompts</li>
-        </ul>
-      </div>
-      <div class="feat-visual" data-visual="menubar">
-        <!-- macOS window mockup -->
-        <div class="mockup-window">
-          <div class="mock-chrome">
-            <span class="mc-close"></span><span class="mc-min"></span><span class="mc-max"></span>
-            <span class="mock-title font-mono">PromptCraft</span>
-          </div>
-          <div class="mock-body">
-            <div class="mock-input-row">
-              <textarea class="mock-input font-mono" readonly>What's the difference between TCP and UDP?</textarea>
-            </div>
-            <div class="mock-providers">
-              <button class="mock-provider active">Claude</button>
-              <button class="mock-provider">GPT-4o</button>
-              <button class="mock-provider">DeepSeek</button>
-            </div>
-            <div class="mock-pipeline-mini" id="feat-pipeline">
-              <div class="mpm-stage" data-s="1">R</div>
-              <div class="mpm-arrow">→</div>
-              <div class="mpm-stage" data-s="2">M</div>
-              <div class="mpm-arrow">→</div>
-              <div class="mpm-stage" data-s="3">P</div>
-              <div class="mpm-arrow">→</div>
-              <div class="mpm-stage" data-s="4">M</div>
-              <div class="mpm-arrow">→</div>
-              <div class="mpm-stage" data-s="5">P</div>
-              <div class="mpm-arrow">→</div>
-              <div class="mpm-stage" data-s="6">A</div>
-              <div class="mpm-arrow">→</div>
-              <div class="mpm-stage" data-s="7">A</div>
-            </div>
-            <button class="mock-cta font-mono">⌘↵  Send to Claude</button>
-          </div>
-        </div>
-        <!-- Floating hotkey hint -->
-        <div class="floating-hint font-mono">⌘ ⇧ P</div>
-      </div>
-    </div>
+    <!-- Feature rows -->
+    <div class="feat-rows">
 
-    <!-- Feature 2: Providers -->
-    <div class="feat-row feat-row-rev">
-      <div class="feat-text">
-        <div class="feat-num font-mono">02</div>
-        <h3 class="feat-name">Every major model.<br>One interface.</h3>
-        <p class="feat-desc">
-          Claude, GPT-4o, DeepSeek. Switch in one click. 
-          The RMPA pipeline adapts its formatting to each model's strengths. 
-          You don't need to know the differences — PromptCraft does.
-        </p>
-        <ul class="feat-bullets">
-          <li>Claude 3.5 Sonnet / Opus</li>
-          <li>GPT-4o / GPT-4 Turbo</li>
-          <li>DeepSeek V3 / R1</li>
-          <li>Per-model prompt tuning built in</li>
-        </ul>
-      </div>
-      <div class="feat-visual" data-visual="providers">
-        <div class="provider-orbit" id="orbit">
-          <div class="orbit-center">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="2" fill="var(--teal)"/>
-              <line x1="12" y1="3" x2="12" y2="9"  stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
-              <line x1="12" y1="15" x2="12" y2="21" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
-              <line x1="3" y1="12" x2="9" y2="12"  stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
-              <line x1="15" y1="12" x2="21" y2="12" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+      <!-- Row 1: Menu bar -->
+      <div class="feat-row" data-reveal>
+        <div class="feat-text">
+          <div class="ft-num mono">01</div>
+          <h3 class="ft-name syne">Lives in your menu bar.</h3>
+          <p class="ft-desc">
+            No extra windows. No context-switching. PromptCraft is always one click away,
+            anchored in the macOS status bar. The global keyboard shortcut <kbd>⌘⇧Space</kbd>
+            fires it from any application.
+          </p>
+          <ul class="ft-bullets">
+            <li>Native macOS popover — zero UI clutter</li>
+            <li>Global keyboard shortcut from any app</li>
+            <li>Auto-hides when not in use</li>
+            <li>Window mode for extended sessions</li>
+          </ul>
+        </div>
+        <div class="feat-visual fv-menubar">
+          <div class="fv-menubar-sim" aria-hidden="true">
+            <div class="fvm-bar">
+              <span class="fvm-apple">&#63743;</span>
+              <span class="fvm-item">Finder</span>
+              <span class="fvm-item">File</span>
+              <div class="fvm-right">
+                <span class="fvm-sys mono">14:07</span>
+                <div class="fvm-pc-wrap">
+                  <div class="fvm-pc-icon">
+                    <svg width="16" height="16" viewBox="0 0 22 22" fill="none">
+                      <circle cx="11" cy="11" r="2" fill="#00C896"/>
+                      <line x1="11" y1="2"  x2="11" y2="7"  stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
+                      <line x1="11" y1="15" x2="11" y2="20" stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
+                      <line x1="2"  y1="11" x2="7"  y2="11" stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
+                      <line x1="15" y1="11" x2="20" y2="11" stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="fvm-dropdown">
+                    <div class="fvd-arrow" aria-hidden="true"></div>
+                    <div class="fvd-content">
+                      <div class="fvd-row">
+                        <div class="fvd-input mono">Write tests for my auth module...</div>
+                      </div>
+                      <div class="fvd-styles">
+                        <span class="fvd-pill active">Engineering</span>
+                        <span class="fvd-pill">Research</span>
+                        <span class="fvd-pill">Content</span>
+                      </div>
+                      <div class="fvd-btn mono">Optimize ⌘↩</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="orbit-ring ring-1"></div>
-          <div class="orbit-ring ring-2"></div>
-          <div class="orbit-node node-claude" style="--angle:0deg; --r:90px">
-            <span class="orbit-label font-mono">Claude</span>
-          </div>
-          <div class="orbit-node node-gpt" style="--angle:120deg; --r:90px">
-            <span class="orbit-label font-mono">GPT-4o</span>
-          </div>
-          <div class="orbit-node node-ds" style="--angle:240deg; --r:90px">
-            <span class="orbit-label font-mono">DeepSeek</span>
-          </div>
-          <!-- Outer ring nodes (coming soon) -->
-          <div class="orbit-node node-gemini" style="--angle:60deg; --r:155px; opacity:0.35">
-            <span class="orbit-label font-mono" style="font-size:9px">Gemini</span>
-          </div>
-          <div class="orbit-node node-llama" style="--angle:180deg; --r:155px; opacity:0.35">
-            <span class="orbit-label font-mono" style="font-size:9px">Llama 3</span>
-          </div>
-          <div class="orbit-node node-mistral" style="--angle:300deg; --r:155px; opacity:0.35">
-            <span class="orbit-label font-mono" style="font-size:9px">Mistral</span>
+          <div class="fv-shortcut-tag mono" aria-hidden="true">
+            <kbd>⌘</kbd><kbd>⇧</kbd><kbd>Space</kbd>
+            <span>anywhere</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Feature 3: Cloud sync -->
-    <div class="feat-row">
-      <div class="feat-text">
-        <div class="feat-num font-mono">03</div>
-        <h3 class="feat-name">Cloud sync. Memory that persists.</h3>
-        <p class="feat-desc">
-          Cloud subscribers get cross-device prompt history, context memory across sessions, 
-          and a shared pipeline that works even when your local machine is offline.
-        </p>
-        <ul class="feat-bullets">
-          <li>5-device sync included</li>
-          <li>Context window management</li>
-          <li>Shared prompt library</li>
-          <li>Zero-config relay, edge-deployed</li>
-        </ul>
-      </div>
-      <div class="feat-visual" data-visual="cloud">
-        <div class="cloud-diagram">
-          <!-- Device icons -->
-          <div class="cd-device cd-mac">
-            <svg viewBox="0 0 40 40" fill="none">
-              <rect x="4" y="6" width="32" height="22" rx="3" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M14 28h12l2 6H12l2-6z" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-            <span class="font-mono">macOS</span>
-          </div>
-          <!-- Center cloud/server -->
-          <div class="cd-center">
-            <svg viewBox="0 0 48 48" fill="none">
-              <path d="M34 34H14a8 8 0 01-1.5-15.86A12 12 0 0136 18a6 6 0 01-2 11.8" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M24 24v10M20 30l4 4 4-4" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="cd-label font-mono">CF Workers<br>300+ cities</span>
-          </div>
-          <div class="cd-device cd-mac2">
-            <svg viewBox="0 0 40 40" fill="none">
-              <rect x="4" y="6" width="32" height="22" rx="3" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M14 28h12l2 6H12l2-6z" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-            <span class="font-mono">macOS #2</span>
-          </div>
-          <!-- Animated connection lines -->
-          <svg class="cd-connections" viewBox="0 0 300 120" fill="none">
-            <path d="M60 60 Q150 30 240 60" stroke="var(--teal)" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
-              <animate attributeName="stroke-dashoffset" values="0;-28" dur="2s" repeatCount="indefinite"/>
-            </path>
-            <path d="M60 60 Q150 90 240 60" stroke="var(--teal)" stroke-width="1" stroke-dasharray="4 3" opacity="0.4">
-              <animate attributeName="stroke-dashoffset" values="0;-28" dur="2.5s" repeatCount="indefinite"/>
-            </path>
-          </svg>
+      <!-- Row 2: Styles -->
+      <div class="feat-row feat-row-rev" data-reveal>
+        <div class="feat-text">
+          <div class="ft-num mono">02</div>
+          <h3 class="ft-name syne">Optimization styles.</h3>
+          <p class="ft-desc">
+            Different tasks need different prompt architectures. Engineering prompts need precision
+            and type safety. Content prompts need narrative structure. Each style applies a
+            specialized RMPA configuration — or build your own.
+          </p>
+          <ul class="ft-bullets">
+            <li>7 built-in styles: General, Engineering, Research, Content, Analysis, Academic, Creative</li>
+            <li>Custom style editor with full RMPA control</li>
+            <li>Style templates for recurring prompt patterns</li>
+            <li>Context engine learns from your usage</li>
+          </ul>
         </div>
-        <div class="cloud-badge font-mono">
-          <span class="teal">Edge deployed</span> · &lt;200ms globally
+        <div class="feat-visual fv-styles">
+          <div class="fv-styles-grid" aria-hidden="true">
+            <div class="fvs-card fvs-active">
+              <div class="fvs-icon" style="color:#00C896">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M8 2L2 14h12L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="fvs-name mono">General</div>
+              <div class="fvs-desc">Balanced optimization for any prompt</div>
+            </div>
+            <div class="fvs-card">
+              <div class="fvs-icon" style="color:#4F3FF0">
+                <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M5 5h6M5 11h4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+              </div>
+              <div class="fvs-name mono">Engineering</div>
+              <div class="fvs-desc">Precision specs, type constraints</div>
+            </div>
+            <div class="fvs-card">
+              <div class="fvs-icon" style="color:#FF5441">
+                <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M6 8l1.5 1.5L10 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="fvs-name mono">Research</div>
+              <div class="fvs-desc">Academic rigor, source awareness</div>
+            </div>
+            <div class="fvs-card">
+              <div class="fvs-icon" style="color:#F5A623">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 7h7M3 10h8M3 13h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              </div>
+              <div class="fvs-name mono">Content</div>
+              <div class="fvs-desc">Narrative structure, tone control</div>
+            </div>
+            <div class="fvs-card fvs-custom">
+              <div class="fvs-icon" style="color:var(--ink-3)">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <div class="fvs-name mono">Your Style</div>
+              <div class="fvs-desc">Build custom RMPA configuration</div>
+            </div>
+            <div class="fvs-card">
+              <div class="fvs-icon" style="color:#AF52DE">
+                <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M7 6c0-1.1.9-2 2-2h0a2 2 0 010 4H7v1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              </div>
+              <div class="fvs-name mono">Analysis</div>
+              <div class="fvs-desc">Structured reasoning, frameworks</div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
+      <!-- Row 3: Cloud -->
+      <div class="feat-row" data-reveal>
+        <div class="feat-text">
+          <div class="ft-num mono">03</div>
+          <h3 class="ft-name syne">Cloud or local.<br>Your choice.</h3>
+          <p class="ft-desc">
+            Pro mode uses your own API keys — your data flows directly to the provider,
+            zero intermediaries. Cloud mode routes through our edge proxy,
+            adding persistent context memory and cross-device sync.
+          </p>
+          <ul class="ft-bullets">
+            <li>Pro: direct to Claude, GPT-4o, DeepSeek with your keys</li>
+            <li>Cloud: global Cloudflare edge proxy, no cold starts</li>
+            <li>Context engine learns your patterns locally</li>
+            <li>All prompt content processed in-memory, never stored</li>
+          </ul>
+          <div class="ft-privacy-tag">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1L2 4v5c0 3.31 2.45 6.41 6 7.16C11.55 15.41 14 12.31 14 9V4L8 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+            <span class="mono">Your prompts are never stored</span>
+          </div>
+        </div>
+        <div class="feat-visual fv-cloud">
+          <div class="fv-cloud-diagram" aria-hidden="true">
+            <!-- Node: App -->
+            <div class="fvc-node fvc-app">
+              <div class="fvc-node-icon">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <span class="mono">PromptCraft</span>
+            </div>
+            <!-- Arrow -->
+            <div class="fvc-arrow fvc-arrow-1">
+              <svg viewBox="0 0 60 20" fill="none"><path d="M4 10h52M48 4l8 6-8 6" stroke="var(--teal-d)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="mono">RMPA pipeline</span>
+            </div>
+            <!-- Node: Proxy -->
+            <div class="fvc-node fvc-proxy">
+              <div class="fvc-node-icon" style="color:var(--teal-d)">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="currentColor" stroke-width="1.5"/><path d="M2 12h4M18 12h4M12 2v4M12 18v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <span class="mono">CF Edge</span>
+            </div>
+            <!-- Arrow -->
+            <div class="fvc-arrow fvc-arrow-2">
+              <svg viewBox="0 0 60 20" fill="none"><path d="M4 10h52M48 4l8 6-8 6" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="mono">optimized prompt</span>
+            </div>
+            <!-- Node: AI -->
+            <div class="fvc-node fvc-ai">
+              <div class="fvc-node-icon" style="color:#4F3FF0">
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><circle cx="18" cy="7" r="2.5" stroke="currentColor" stroke-width="1.5"/><circle cx="18" cy="17" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M12 12h3M12 10.5l3-2M12 13.5l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <span class="mono">AI Model</span>
+            </div>
+          </div>
+          <div class="fvc-legend mono">
+            <span class="fvc-leg-item"><span class="fvc-leg-dot" style="background:var(--teal)"></span>Cloud mode</span>
+            <span class="fvc-leg-item"><span class="fvc-leg-dot" style="background:var(--ink-3)"></span>Pro mode (direct)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
 <style>
-  .features-section { padding: 120px 0; }
+  .feat-section { padding: 100px 0; background: var(--paper); }
 
-  .features-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 100px;
+  .feat-head { margin-bottom: 72px; }
+  .feat-head .badge { margin-bottom: 24px; }
+  .feat-title {
+    font-size: clamp(32px, 3.8vw, 50px);
+    font-weight: 800; letter-spacing: -0.045em;
+    line-height: 1.1; color: var(--ink);
   }
 
-  .features-head {
-    display: flex;
-    align-items: flex-start;
-    gap: 40px;
-    flex-direction: column;
-  }
+  /* Feature rows */
+  .feat-rows { display: flex; flex-direction: column; gap: 100px; }
 
-  .features-title {
-    font-size: clamp(36px, 4.5vw, 58px);
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-  }
-
-  /* ── Feature rows ──────────────── */
   .feat-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
+    gap: 80px; align-items: center;
   }
   .feat-row-rev { direction: rtl; }
   .feat-row-rev > * { direction: ltr; }
 
-  .feat-num {
-    font-size: 11px;
-    color: var(--text-3);
-    letter-spacing: 0.12em;
-    margin-bottom: 12px;
+  /* Text side */
+  .ft-num { font-size: 11px; color: var(--ink-4); letter-spacing: 0.1em; margin-bottom: 16px; }
+  .ft-name {
+    font-size: clamp(24px, 2.8vw, 34px);
+    font-weight: 800; letter-spacing: -0.04em;
+    line-height: 1.15; color: var(--ink);
+    margin-bottom: 18px;
   }
-
-  .feat-name {
-    font-size: clamp(24px, 2.5vw, 32px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    margin-bottom: 16px;
-    color: var(--text-1);
+  .ft-desc { font-size: 15px; line-height: 1.75; color: var(--ink-2); margin-bottom: 20px; }
+  .ft-bullets {
+    list-style: none; display: flex; flex-direction: column; gap: 8px;
+    margin-bottom: 24px;
   }
-
-  .feat-desc {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--text-2);
-    margin-bottom: 20px;
+  .ft-bullets li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--ink-2); line-height: 1.5;
   }
-
-  .feat-bullets {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .feat-bullets li {
-    font-size: 14px;
-    color: var(--text-2);
-    padding-left: 20px;
-    position: relative;
-  }
-  .feat-bullets li::before {
+  .ft-bullets li::before {
     content: '';
-    position: absolute;
-    left: 0; top: 9px;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--teal);
-    box-shadow: 0 0 6px var(--teal);
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--teal); flex-shrink: 0;
+    margin-top: 7px;
   }
 
-  /* ── Feature visuals ───────────── */
+  .ft-privacy-tag {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 7px 12px;
+    background: rgba(0,200,150,0.06);
+    border: 1px solid rgba(0,200,150,0.2);
+    border-radius: var(--r-sm);
+    font-size: 12px; color: var(--teal-d);
+    font-family: 'DM Mono', monospace;
+  }
+
+  kbd {
+    display: inline-flex; align-items: center;
+    padding: 2px 5px;
+    background: var(--paper-2); border: 1px solid var(--border);
+    border-radius: 4px; font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--ink-2);
+    box-shadow: 0 1px 0 var(--border);
+  }
+
+  /* Visual side */
   .feat-visual {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 340px;
-  }
-
-  /* Mockup window */
-  .mockup-window {
-    width: 100%;
-    max-width: 380px;
-    background: rgba(13,13,28,0.95);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 40px rgba(0,255,178,0.04);
-    position: relative;
-    z-index: 2;
-  }
-
-  .mock-chrome {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    background: rgba(255,255,255,0.02);
-  }
-  .mc-close { width:11px;height:11px;border-radius:50%;background:#FF5F57;display:block; }
-  .mc-min   { width:11px;height:11px;border-radius:50%;background:#FFBD2E;display:block; }
-  .mc-max   { width:11px;height:11px;border-radius:50%;background:#28C840;display:block; }
-  .mock-title { font-size:11px; color:var(--text-3); margin-left:auto; margin-right:auto; }
-
-  .mock-body { padding: 14px; display:flex; flex-direction:column; gap:10px; }
-
-  .mock-input {
-    width: 100%;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 12px;
-    color: var(--text-2);
-    resize: none;
-    height: 60px;
-    line-height: 1.5;
-    outline: none;
-  }
-
-  .mock-providers {
-    display: flex;
-    gap: 6px;
-  }
-  .mock-provider {
-    padding: 5px 12px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 500;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.08);
-    color: var(--text-3);
-    cursor: none;
-    transition: all 0.2s;
-  }
-  .mock-provider.active {
-    background: rgba(0,255,178,0.08);
-    border-color: rgba(0,255,178,0.2);
-    color: var(--teal);
-  }
-
-  .mock-pipeline-mini {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 8px 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .mpm-stage {
-    width: 24px; height: 24px;
-    border-radius: 6px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text-3);
-    flex-shrink: 0;
-    transition: all 0.3s;
-  }
-  .mpm-stage.active {
-    background: rgba(0,255,178,0.1);
-    border-color: rgba(0,255,178,0.3);
-    color: var(--teal);
-    box-shadow: 0 0 10px rgba(0,255,178,0.15);
-  }
-  .mpm-arrow { font-size: 9px; color: var(--text-3); opacity: 0.4; flex-shrink: 0; }
-
-  .mock-cta {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    background: var(--teal);
-    color: var(--void);
-    font-size: 12px;
-    font-weight: 600;
-    border: none;
-    cursor: none;
-    letter-spacing: 0.02em;
-    transition: box-shadow 0.2s;
-  }
-  .mock-cta:hover { box-shadow: 0 0 20px rgba(0,255,178,0.3); }
-
-  .floating-hint {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    font-size: 20px;
-    color: var(--teal);
-    background: rgba(0,255,178,0.06);
-    border: 1px solid rgba(0,255,178,0.15);
-    border-radius: 10px;
-    padding: 10px 16px;
-    animation: float 3s ease-in-out infinite;
-    z-index: 3;
-  }
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-
-  /* Provider orbit */
-  .provider-orbit {
-    width: 340px; height: 340px;
-    position: relative;
-    flex-shrink: 0;
-  }
-
-  .orbit-center {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 60px; height: 60px;
-    border-radius: 50%;
-    background: rgba(0,255,178,0.08);
-    border: 1px solid rgba(0,255,178,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 30px rgba(0,255,178,0.1);
-  }
-
-  .orbit-ring {
-    position: absolute;
-    top: 50%; left: 50%;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.06);
-    transform: translate(-50%, -50%);
-  }
-  .ring-1 { width: 190px; height: 190px; border-style: dashed; }
-  .ring-2 { width: 320px; height: 320px; animation: spin 30s linear infinite; }
-
-  @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
-
-  .orbit-node {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%)
-               rotate(var(--angle))
-               translateX(var(--r))
-               rotate(calc(-1 * var(--angle)));
-    display: flex;
+    background: var(--paper-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    padding: 40px;
+    min-height: 320px;
+    display: flex; align-items: center; justify-content: center;
     flex-direction: column;
-    align-items: center;
-    gap: 6px;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
   }
-
-  .orbit-node::before {
+  .feat-visual::before {
     content: '';
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    background: rgba(13,13,28,0.95);
-    border: 1px solid rgba(255,255,255,0.12);
-    display: block;
-    animation: node-pulse 4s ease-in-out infinite;
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(0,200,150,0.06), transparent 60%);
+    pointer-events: none;
   }
-  @keyframes node-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(0,255,178,0)} 50%{box-shadow:0 0 12px rgba(0,255,178,0.2)} }
 
-  .orbit-label {
-    font-size: 10px;
-    color: var(--text-2);
-    letter-spacing: 0.05em;
-    white-space: nowrap;
+  /* Menu bar vis */
+  .fvm-bar {
+    background: rgba(25,25,28,0.98);
+    border-radius: 10px;
+    height: 26px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 12px;
+    width: 100%;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
   }
+  .fvm-apple, .fvm-item { color: rgba(255,255,255,0.8); font-size: 12px; font-family: -apple-system,sans-serif; }
+  .fvm-right { display: flex; align-items: center; gap: 12px; }
+  .fvm-sys { font-size: 11px; color: rgba(255,255,255,0.5); }
+  .fvm-pc-wrap { position: relative; }
+  .fvm-pc-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 4px;
+    cursor: none;
+    background: rgba(0,200,150,0.12);
+  }
+  .fvm-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: -20px;
+    width: 260px;
+    background: rgba(22,22,24,0.97);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    padding: 12px;
+    z-index: 10;
+  }
+  .fvd-arrow {
+    position: absolute;
+    top: -6px; right: 28px;
+    width: 12px; height: 6px;
+    background: rgba(22,22,24,0.97);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+  .fvd-input {
+    font-size: 11px; color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 7px 9px;
+    margin-bottom: 8px;
+  }
+  .fvd-styles { display: flex; gap: 5px; margin-bottom: 8px; }
+  .fvd-pill {
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.06);
+    border: 0.5px solid rgba(255,255,255,0.1);
+    font-size: 10px; color: rgba(255,255,255,0.5);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .fvd-pill.active { background: #0A84FF; color: #fff; border-color: transparent; }
+  .fvd-btn {
+    width: 100%; height: 32px;
+    background: #0A84FF; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: #fff; font-weight: 600;
+  }
+
+  .fv-shortcut-tag {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 11px; color: var(--ink-3);
+  }
+
+  /* Styles grid */
+  .fv-styles-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;
+  }
+  .fvs-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--r-md); padding: 14px;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: transform .2s var(--ease-spring), box-shadow .2s;
+    cursor: none;
+  }
+  .fvs-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(12,11,24,0.08); }
+  .fvs-active { border-color: rgba(0,200,150,0.3); box-shadow: 0 0 0 3px rgba(0,200,150,0.06); }
+  .fvs-custom { border-style: dashed; background: var(--paper); }
+  .fvs-icon { width: 22px; height: 22px; } .fvs-icon svg { width: 100%; height: 100%; }
+  .fvs-name { font-size: 11px; font-weight: 600; color: var(--ink); }
+  .fvs-desc { font-size: 10px; color: var(--ink-3); line-height: 1.4; }
 
   /* Cloud diagram */
-  .cloud-diagram {
-    position: relative;
-    width: 100%;
-    max-width: 380px;
-    height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .fv-cloud-diagram {
+    display: flex; align-items: center;
+    gap: 0; width: 100%; justify-content: center; flex-wrap: wrap;
   }
-  .cd-device {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    color: var(--text-2);
-    font-family: 'JetBrains Mono', monospace;
-    z-index: 2;
+  .fvc-node {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 6px;
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--r-md); padding: 14px 16px;
   }
-  .cd-device svg { width: 48px; height: 48px; color: var(--text-2); }
-  .cd-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    z-index: 2;
+  .fvc-node-icon { width: 32px; height: 32px; color: var(--ink-2); }
+  .fvc-node-icon svg { width: 100%; height: 100%; }
+  .fvc-node span { font-size: 10px; color: var(--ink-3); letter-spacing: 0.04em; }
+  .fvc-arrow {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+    padding: 0 4px; flex-shrink: 0;
   }
-  .cd-center svg { width: 48px; height: 48px; }
-  .cd-label {
-    font-size: 9px;
-    color: var(--teal);
-    text-align: center;
-    line-height: 1.5;
-    letter-spacing: 0.04em;
+  .fvc-arrow svg { width: 50px; }
+  .fvc-arrow span { font-size: 9px; color: var(--ink-4); letter-spacing: 0.04em; }
+  .fvc-legend {
+    display: flex; gap: 16px; font-size: 10px; color: var(--ink-3);
   }
-  .cd-connections {
-    position: absolute;
-    inset: 0;
-    width: 100%; height: 100%;
-    z-index: 1;
-  }
-  .cloud-badge {
-    font-size: 11px;
-    color: var(--text-3);
-    text-align: center;
-    margin-top: 16px;
-    letter-spacing: 0.04em;
-  }
+  .fvc-leg-item { display: flex; align-items: center; gap: 5px; }
+  .fvc-leg-dot { width: 7px; height: 7px; border-radius: 50%; }
 
   @media (max-width: 768px) {
-    .feat-row { grid-template-columns: 1fr; gap: 40px; }
+    .feat-row { grid-template-columns: 1fr; gap: 32px; }
     .feat-row-rev { direction: ltr; }
-    .features-inner { padding: 0 20px; gap: 80px; }
+    .feat-rows { gap: 60px; }
+    .feat-visual { min-height: 220px; padding: 24px; }
   }
 </style>
-
-<script>
-  // Animate pipeline stages in the mockup
-  const stages = document.querySelectorAll('.mpm-stage') as NodeListOf<HTMLElement>;
-  let si = 0;
-  setInterval(() => {
-    stages.forEach(s => s.classList.remove('active'));
-    stages[si].classList.add('active');
-    si = (si + 1) % stages.length;
-  }, 600);
-</script>

@@ -1,14 +1,269 @@
 ---
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
-import Pricing from '../components/Pricing.astro';
 import Footer from '../components/Footer.astro';
+
+const PRO_URL   = 'https://buy.stripe.com/test_00w00l55neEv6itf354ow00';
+const CLOUD_URL = 'https://buy.stripe.com/test_14AdRbdBT8g7eOZ7AD4ow01';
 ---
 
-<Base title="Pricing — PromptCraft" description="Own it with a one-time Pro license or run in the cloud. Simple pricing for engineers.">
+<Base title="Pricing — PromptCraft" description="One-time Pro license or monthly Cloud subscription. Both tiers include the full 7-stage RMPA pipeline.">
   <Nav />
-  <main class="pt-24">
-    <Pricing />
+
+  <main class="pricing-page">
+    <!-- Hero -->
+    <section class="pp-hero">
+      <div class="container">
+        <div class="badge teal" style="margin-bottom:20px" data-reveal>
+          <span class="badge-dot"></span>
+          PRICING
+        </div>
+        <h1 class="syne pp-h1" data-reveal data-reveal-d="1">
+          Simple, transparent pricing.<br>
+          <span style="color:var(--teal-d)">No surprises.</span>
+        </h1>
+        <p class="pp-sub" data-reveal data-reveal-d="2">
+          No usage-based billing. No per-seat charges. No hidden fees.
+          Choose how you want to own PromptCraft.
+        </p>
+      </div>
+    </section>
+
+    <!-- Cards -->
+    <section class="pp-cards">
+      <div class="container">
+        <div class="pp-grid" data-reveal>
+          <!-- Free trial -->
+          <div class="pp-card pp-free">
+            <div class="ppc-label mono">FREE TRIAL</div>
+            <div class="ppc-price">
+              <span class="ppc-amt syne">$0</span>
+              <div class="ppc-freq">
+                <span class="mono">14 days</span>
+                <span class="ppc-note mono">no credit card</span>
+              </div>
+            </div>
+            <p class="ppc-tag">Full access to every feature. No card required. Decide later.</p>
+            <div class="ppc-feats">
+              <div class="pf-row"><span class="pf-dot"></span>Full RMPA pipeline</div>
+              <div class="pf-row"><span class="pf-dot"></span>All optimization styles</div>
+              <div class="pf-row"><span class="pf-dot"></span>Local context engine</div>
+              <div class="pf-row"><span class="pf-dot"></span>1 Mac</div>
+              <div class="pf-row pf-dim"><span class="pf-x">×</span>Cloud relay</div>
+              <div class="pf-row pf-dim"><span class="pf-x">×</span>Cross-device sync</div>
+            </div>
+            <a href="/download" class="btn btn-outline ppc-btn">
+              Start Free Trial
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 6h6M6 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+
+          <!-- Pro -->
+          <div class="pp-card pp-pro">
+            <div class="ppc-label mono">PRO</div>
+            <div class="ppc-price">
+              <span class="ppc-amt syne">$99</span>
+              <div class="ppc-freq">
+                <span class="mono">one-time</span>
+                <span class="ppc-note mono">2yr updates</span>
+              </div>
+            </div>
+            <p class="ppc-tag">Pay once. Use forever. Your API keys, your data, direct to any AI.</p>
+            <div class="ppc-feats">
+              <div class="pf-row"><span class="pf-dot"></span>Full RMPA pipeline — all 7 stages</div>
+              <div class="pf-row"><span class="pf-dot"></span>Your own API keys</div>
+              <div class="pf-row"><span class="pf-dot"></span>Claude, GPT-4o, DeepSeek, Llama</div>
+              <div class="pf-row"><span class="pf-dot"></span>Custom styles + templates</div>
+              <div class="pf-row"><span class="pf-dot"></span>Local context engine</div>
+              <div class="pf-row"><span class="pf-dot"></span>Up to 3 Macs</div>
+              <div class="pf-row"><span class="pf-dot"></span>Lifetime license</div>
+              <div class="pf-row"><span class="pf-dot"></span>30-day money-back guarantee</div>
+              <div class="pf-row pf-dim"><span class="pf-x">×</span>Cloud relay (use your own keys)</div>
+              <div class="pf-row pf-dim"><span class="pf-x">×</span>Cross-device sync</div>
+            </div>
+            <a href={PRO_URL} class="btn btn-teal ppc-btn" target="_blank" rel="noopener">
+              Buy Pro License
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 6h6M6 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+
+          <!-- Cloud -->
+          <div class="pp-card pp-cloud">
+            <div class="ppc-popular mono">MOST POPULAR</div>
+            <div class="ppc-label mono">CLOUD</div>
+            <div class="ppc-price">
+              <span class="ppc-amt syne" style="color:var(--teal-d)">$12</span>
+              <div class="ppc-freq">
+                <span class="mono">/month</span>
+                <span class="ppc-note mono">cancel anytime</span>
+              </div>
+            </div>
+            <p class="ppc-tag">Everything in Pro plus cloud relay, persistent memory, and cross-device sync.</p>
+            <div class="ppc-feats">
+              <div class="pf-row"><span class="pf-dot"></span>Everything in Pro</div>
+              <div class="pf-row pf-hi"><span class="pf-dot" style="background:var(--teal)"></span>Zero-config cloud relay</div>
+              <div class="pf-row pf-hi"><span class="pf-dot" style="background:var(--teal)"></span>Persistent context memory</div>
+              <div class="pf-row pf-hi"><span class="pf-dot" style="background:var(--teal)"></span>Cross-device sync (up to 5 Macs)</div>
+              <div class="pf-row pf-hi"><span class="pf-dot" style="background:var(--teal)"></span>Priority model access</div>
+              <div class="pf-row pf-hi"><span class="pf-dot" style="background:var(--teal)"></span>No API keys needed</div>
+              <div class="pf-row"><span class="pf-dot"></span>14-day free trial</div>
+              <div class="pf-row"><span class="pf-dot"></span>Cancel anytime</div>
+            </div>
+            <a href={CLOUD_URL} class="btn btn-accent ppc-btn" target="_blank" rel="noopener">
+              Start Free Trial
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 6h6M6 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <p class="ppc-trial-note mono">14 days free · no credit card required</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="pp-faq">
+      <div class="container">
+        <h2 class="syne pp-faq-title" data-reveal>Common questions</h2>
+        <div class="faq-grid" data-reveal data-reveal-d="1">
+          <div class="faq-item">
+            <h3 class="fi-q">Can I switch from Pro to Cloud?</h3>
+            <p class="fi-a">Yes. If you buy Pro and later want Cloud, contact us — we will apply a prorated credit toward Cloud.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="fi-q">What happens when my Cloud subscription ends?</h3>
+            <p class="fi-a">Your account reverts to trial mode. Your local data (context engine, history, styles) is preserved. You can reactivate anytime.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="fi-q">Do I need an API key for Cloud?</h3>
+            <p class="fi-a">No. Cloud routes through our Cloudflare edge proxy which handles provider access. No keys needed on your side.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="fi-q">Are my prompts stored?</h3>
+            <p class="fi-a">Never. Prompt content is processed in-memory only. We log hash, provider, status, and latency — zero content. Pro mode sends directly to the provider; no intermediary.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="fi-q">What is the refund policy?</h3>
+            <p class="fi-a">Pro license: 30-day full refund, no questions. Cloud subscription: cancel anytime, no partial refunds for remaining days unless there is a service issue.</p>
+          </div>
+          <div class="faq-item">
+            <h3 class="fi-q">Which AI providers does PromptCraft support?</h3>
+            <p class="fi-a">Claude (all versions), GPT-4o, GPT-4.5, DeepSeek V3, any local Ollama model. Cloud additionally provides access to Gemini and Mistral. More added regularly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
+
   <Footer />
 </Base>
+
+<style>
+  .pricing-page { padding-top: 64px; background: var(--paper); }
+
+  .pp-hero {
+    padding: 80px 0 60px;
+    text-align: center;
+  }
+  .pp-h1 {
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 800; letter-spacing: -0.045em;
+    line-height: 1.1; color: var(--ink);
+    margin-bottom: 20px;
+  }
+  .pp-sub {
+    font-size: 17px; line-height: 1.7;
+    color: var(--ink-2); max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .pp-cards { padding: 0 0 80px; }
+
+  .pp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    max-width: 1060px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  .pp-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    padding: 32px 28px;
+    display: flex; flex-direction: column; gap: 24px;
+    position: relative;
+    transition: box-shadow .3s, transform .25s var(--ease-spring);
+    cursor: none;
+  }
+  .pp-card:hover {
+    box-shadow: 0 8px 40px rgba(12,11,24,0.08);
+    transform: translateY(-3px);
+  }
+
+  .pp-cloud {
+    border-color: rgba(0,200,150,0.3);
+    background: linear-gradient(150deg, rgba(0,200,150,0.04) 0%, white 35%);
+    box-shadow: 0 0 0 1px rgba(0,200,150,0.08) inset;
+  }
+
+  .ppc-popular {
+    position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+    padding: 3px 14px;
+    background: var(--teal); color: white;
+    border-radius: 999px; font-size: 10px; font-weight: 600;
+    letter-spacing: 0.08em; white-space: nowrap;
+  }
+
+  .ppc-label { font-size: 10px; color: var(--ink-3); letter-spacing: 0.12em; }
+  .ppc-price { display: flex; align-items: flex-end; gap: 10px; }
+  .ppc-amt { font-size: 52px; font-weight: 800; letter-spacing: -0.05em; line-height: 1; color: var(--ink); }
+  .ppc-freq { display: flex; flex-direction: column; gap: 2px; padding-bottom: 4px; }
+  .ppc-freq span { font-size: 13px; color: var(--ink-3); }
+  .ppc-note { font-size: 10px !important; color: var(--ink-4) !important; }
+  .ppc-tag { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+
+  .ppc-feats { display: flex; flex-direction: column; gap: 9px; flex: 1; }
+  .pf-row {
+    display: flex; align-items: flex-start; gap: 9px;
+    font-size: 13px; color: var(--ink-2); line-height: 1.4;
+  }
+  .pf-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal-d); flex-shrink: 0; margin-top: 5px; }
+  .pf-x { font-size: 11px; color: var(--ink-4); flex-shrink: 0; margin-top: 2px; line-height: 1; }
+  .pf-dim { opacity: 0.5; }
+  .pf-hi { color: var(--ink); }
+
+  .ppc-btn { width: 100%; justify-content: center; border-radius: var(--r-md); }
+  .ppc-trial-note { font-size: 11px; color: var(--ink-4); text-align: center; margin-top: -16px; font-family: 'DM Mono', monospace; }
+
+  /* FAQ */
+  .pp-faq {
+    padding: 80px 0 100px;
+    background: var(--paper-2);
+    border-top: 1px solid var(--border);
+  }
+  .pp-faq-title {
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 800; letter-spacing: -0.04em;
+    color: var(--ink); margin-bottom: 48px;
+  }
+  .faq-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 28px 48px;
+  }
+  .faq-item {
+    padding: 24px;
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--r-md);
+  }
+  .fi-q {
+    font-size: 15px; font-weight: 600; letter-spacing: -0.02em;
+    color: var(--ink); margin-bottom: 10px;
+    font-family: 'Syne', sans-serif;
+  }
+  .fi-a { font-size: 14px; line-height: 1.7; color: var(--ink-2); }
+
+  @media (max-width: 860px) {
+    .pp-grid { grid-template-columns: 1fr; max-width: 460px; }
+    .faq-grid { grid-template-columns: 1fr; }
+  }
+</style>

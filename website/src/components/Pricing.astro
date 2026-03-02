@@ -1,326 +1,239 @@
 ---
-// Pricing — clean, Apple-quality. Two tiers. Real Stripe links.
-const PRO_LINK   = 'https://buy.stripe.com/test_00w00l55neEv6itf354ow00';
-const CLOUD_LINK = 'https://buy.stripe.com/test_14AdRbdBT8g7eOZ7AD4ow01';
+const PRO_URL   = 'https://buy.stripe.com/test_00w00l55neEv6itf354ow00';
+const CLOUD_URL = 'https://buy.stripe.com/test_14AdRbdBT8g7eOZ7AD4ow01';
 ---
 
 <section id="pricing" class="section pricing-section">
-  <div class="pricing-inner">
-
-    <div class="pricing-head">
-      <div class="tag teal" style="margin-bottom:24px">
-        <span class="tag-dot"></span>
+  <div class="container">
+    <div class="pricing-head" data-reveal>
+      <div class="badge teal" style="margin-bottom:20px">
+        <span class="badge-dot"></span>
         PRICING
       </div>
-      <h2 class="pricing-title">
-        Own it.<br>Or run it everywhere.
+      <h2 class="pricing-title syne">
+        Own it or<br>run it in the cloud.
       </h2>
       <p class="pricing-sub">
-        No per-request charges. No usage caps. No hidden costs.
+        No usage-based billing. No seat fees. No surprises.
+        Buy once or subscribe — both tiers get the full pipeline.
       </p>
     </div>
 
-    <div class="pricing-grid">
+    <div class="pricing-grid" data-reveal data-reveal-d="2">
 
       <!-- Pro -->
-      <div class="price-card" id="card-pro">
-        <div class="card-top">
-          <div class="card-plan font-mono">PRO</div>
-          <div class="card-badge font-mono">LIFETIME</div>
+      <div class="price-card">
+        <div class="pc-top">
+          <div class="badge" style="margin-bottom:16px">PRO</div>
+          <div class="pc-price">
+            <span class="pc-amount syne">$99</span>
+            <div class="pc-freq">
+              <span class="mono">one-time</span>
+              <span class="pc-detail mono">2 years of updates included</span>
+            </div>
+          </div>
+          <p class="pc-tagline">Full pipeline. All 7 stages. No subscription. Pay once, own it forever.</p>
         </div>
 
-        <div class="card-price">
-          <span class="price-amt">$99</span>
-          <span class="price-freq font-mono">once</span>
+        <div class="pc-feats">
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Full RMPA pipeline — all 7 stages
+          </div>
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Use your own API keys (Claude, GPT-4o, DeepSeek)
+          </div>
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Up to 3 Macs
+          </div>
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Local context engine
+          </div>
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Custom styles + templates
+          </div>
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Lifetime license · 30-day refund
+          </div>
         </div>
 
-        <p class="card-desc">
-          Full 7-stage RMPA pipeline. All three providers. Pay once, own it forever. 
-          Includes 2 years of feature updates.
-        </p>
-
-        <ul class="card-features">
-          <li>7-stage RMPA pipeline</li>
-          <li>Claude + GPT-4o + DeepSeek</li>
-          <li>Activate on up to 3 Macs</li>
-          <li>Local processing only</li>
-          <li>2 years of updates included</li>
-        </ul>
-
-        <a href={PRO_LINK} target="_blank" rel="noopener noreferrer" class="btn btn-ghost card-cta" data-cursor="BUY">
+        <a href={PRO_URL} class="btn btn-outline pc-cta" target="_blank" rel="noopener">
           Buy Pro License
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-
-        <div class="card-note font-mono">30-day money-back guarantee</div>
       </div>
 
       <!-- Cloud -->
-      <div class="price-card price-card-featured" id="card-cloud">
-        <!-- Glow border -->
-        <div class="featured-glow" aria-hidden="true"></div>
-
-        <div class="card-top">
-          <div class="card-plan font-mono">CLOUD</div>
-          <div class="card-badge card-badge-teal font-mono">MOST POPULAR</div>
+      <div class="price-card price-card-feat">
+        <div class="pc-popular mono">MOST POPULAR</div>
+        <div class="pc-top">
+          <div class="badge teal" style="margin-bottom:16px"><span class="badge-dot"></span> CLOUD</div>
+          <div class="pc-price">
+            <span class="pc-amount syne" style="color:var(--teal-d)">$12</span>
+            <div class="pc-freq">
+              <span class="mono">/month</span>
+              <span class="pc-detail mono">cancel anytime</span>
+            </div>
+          </div>
+          <p class="pc-tagline">Everything in Pro, plus context memory, cross-device sync, and zero-config cloud relay.</p>
         </div>
 
-        <div class="card-price">
-          <span class="price-amt">$12</span>
-          <span class="price-freq font-mono">/month</span>
+        <div class="pc-feats">
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Everything in Pro
+          </div>
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Cloudflare edge proxy — no API keys needed
+          </div>
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Persistent cross-device context memory
+          </div>
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Up to 5 Macs
+          </div>
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Priority access to new models
+          </div>
+          <div class="pc-feat">
+            <svg class="pf-check" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="var(--teal-d)" stroke-width="1.2"/><polyline points="4,7 6.2,9.2 10,5" stroke="var(--teal-d)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            14-day free trial · cancel anytime
+          </div>
         </div>
 
-        <p class="card-desc">
-          Everything in Pro, plus cloud relay, cross-device sync, and persistent context memory. 
-          Works on up to 5 machines simultaneously.
-        </p>
-
-        <ul class="card-features">
-          <li>Everything in Pro</li>
-          <li>Cloud relay (edge-deployed, &lt;200ms)</li>
-          <li>Cross-device sync · 5 Macs</li>
-          <li>Persistent context memory</li>
-          <li>Priority model access</li>
-        </ul>
-
-        <a href={CLOUD_LINK} target="_blank" rel="noopener noreferrer" class="btn btn-primary card-cta" data-cursor="SUBSCRIBE">
-          Start Cloud
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <a href={CLOUD_URL} class="btn btn-accent pc-cta" target="_blank" rel="noopener">
+          Start Free Trial
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
 
-        <div class="card-note font-mono">Cancel anytime. No lock-in.</div>
+        <p class="pc-trial-note mono">14 days free · no credit card required</p>
       </div>
 
     </div>
 
-    <!-- Comparison footer -->
-    <div class="pricing-compare">
-      <div class="compare-row compare-header font-mono">
-        <span></span>
-        <span>Pro</span>
-        <span>Cloud</span>
-      </div>
-      <div class="compare-row">
-        <span>7-stage RMPA</span>
-        <span class="check teal">✓</span>
-        <span class="check teal">✓</span>
-      </div>
-      <div class="compare-row">
-        <span>All 3 providers</span>
-        <span class="check teal">✓</span>
-        <span class="check teal">✓</span>
-      </div>
-      <div class="compare-row">
-        <span>Machines</span>
-        <span class="font-mono">3</span>
-        <span class="font-mono">5</span>
-      </div>
-      <div class="compare-row">
-        <span>Cloud relay</span>
-        <span class="check muted">—</span>
-        <span class="check teal">✓</span>
-      </div>
-      <div class="compare-row">
-        <span>Context memory</span>
-        <span class="check muted">—</span>
-        <span class="check teal">✓</span>
-      </div>
-      <div class="compare-row">
-        <span>Cross-device sync</span>
-        <span class="check muted">—</span>
-        <span class="check teal">✓</span>
-      </div>
+    <!-- Compare note -->
+    <div class="pricing-compare" data-reveal data-reveal-d="3">
+      <p class="mono">
+        Not sure?
+        <a href="/download">Try the 14-day trial</a> — full access, no card, no commitment.
+      </p>
     </div>
-
   </div>
 </section>
 
 <style>
-  .pricing-section { padding: 120px 0; }
-
-  .pricing-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 60px;
+  .pricing-section {
+    padding: 100px 0;
+    background: var(--paper);
   }
 
-  .pricing-head { text-align: center; }
+  .pricing-head { text-align: center; margin-bottom: 56px; }
   .pricing-title {
-    font-size: clamp(36px, 5vw, 56px);
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800; letter-spacing: -0.045em;
+    line-height: 1.1; color: var(--ink);
     margin-bottom: 16px;
   }
   .pricing-sub {
-    font-size: 16px;
-    color: var(--text-2);
-    line-height: 1.6;
+    font-size: 16px; line-height: 1.65;
+    color: var(--ink-2); max-width: 480px;
+    margin: 0 auto;
   }
 
-  /* ── Grid ──────────────────────── */
   .pricing-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
-    width: 100%;
-    align-items: start;
+    max-width: 860px;
+    margin: 0 auto 32px;
   }
 
-  /* ── Cards ─────────────────────── */
   .price-card {
-    background: var(--surface);
+    background: white;
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    transition: transform 0.3s var(--ease-spring), border-color 0.3s;
+    border-radius: var(--r-xl);
+    padding: 36px 32px;
+    display: flex; flex-direction: column;
+    gap: 28px;
     position: relative;
-    overflow: hidden;
+    transition: box-shadow .3s, transform .3s var(--ease-spring);
+    cursor: none;
   }
-  .price-card:hover { transform: translateY(-4px); }
-
-  .price-card-featured {
-    border-color: rgba(0,255,178,0.2);
-    background: rgba(0,255,178,0.02);
+  .price-card:hover {
+    box-shadow: 0 8px 40px rgba(12,11,24,0.08);
+    transform: translateY(-3px);
   }
 
-  .featured-glow {
+  .price-card-feat {
+    border-color: rgba(0,200,150,0.3);
+    background: linear-gradient(160deg, rgba(0,200,150,0.03) 0%, white 40%);
+    box-shadow: 0 0 0 1px rgba(0,200,150,0.1) inset;
+  }
+  .price-card-feat:hover { box-shadow: 0 12px 50px rgba(0,200,150,0.12), 0 0 0 1px rgba(0,200,150,0.1) inset; }
+
+  .pc-popular {
     position: absolute;
-    top: -80px; left: 50%;
-    transform: translateX(-50%);
-    width: 200px; height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,255,178,0.12), transparent 70%);
-    pointer-events: none;
-  }
-
-  .card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .card-plan {
-    font-size: 12px;
-    color: var(--text-3);
-    letter-spacing: 0.15em;
-  }
-
-  .card-badge {
-    font-size: 9px;
-    color: var(--text-3);
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border);
+    top: -11px; left: 50%; transform: translateX(-50%);
+    padding: 3px 14px;
+    background: var(--teal);
+    color: white;
     border-radius: 999px;
-    padding: 3px 10px;
-    letter-spacing: 0.1em;
-  }
-  .card-badge-teal {
-    color: var(--teal);
-    background: rgba(0,255,178,0.06);
-    border-color: rgba(0,255,178,0.15);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
   }
 
-  .card-price {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-  }
-  .price-amt {
-    font-size: 56px;
-    font-weight: 700;
-    letter-spacing: -0.05em;
-    color: var(--text-1);
-    line-height: 1;
-    font-family: 'Space Grotesk', sans-serif;
-  }
-  .price-freq {
-    font-size: 14px;
-    color: var(--text-3);
-    letter-spacing: 0.04em;
-  }
+  .pc-top { display: flex; flex-direction: column; }
 
-  .card-desc {
-    font-size: 14px;
-    line-height: 1.65;
-    color: var(--text-2);
+  .pc-price {
+    display: flex; align-items: flex-end;
+    gap: 10px; margin-bottom: 12px;
   }
+  .pc-amount {
+    font-size: 56px; font-weight: 800;
+    letter-spacing: -0.05em; line-height: 1;
+    color: var(--ink);
+  }
+  .pc-freq {
+    display: flex; flex-direction: column; gap: 2px;
+    padding-bottom: 4px;
+  }
+  .pc-freq span { font-size: 13px; color: var(--ink-3); }
+  .pc-detail { font-size: 10px !important; color: var(--ink-4) !important; }
 
-  .card-features {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
+  .pc-tagline { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+
+  .pc-feats { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .pc-feat {
+    display: flex; align-items: flex-start;
     gap: 10px;
+    font-size: 13px; color: var(--ink-2); line-height: 1.4;
   }
-  .card-features li {
-    font-size: 14px;
-    color: var(--text-2);
-    padding-left: 20px;
-    position: relative;
-  }
-  .card-features li::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 7px;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: rgba(0,255,178,0.5);
-  }
+  .pf-check { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
 
-  .card-cta {
-    width: 100%;
-    justify-content: center;
-  }
+  .pc-cta { width: 100%; justify-content: center; border-radius: var(--r-md); }
+  .pc-trial-note { font-size: 11px; color: var(--ink-4); text-align: center; margin-top: -16px; }
 
-  .card-note {
-    font-size: 11px;
-    color: var(--text-3);
-    text-align: center;
-    letter-spacing: 0.04em;
-  }
-
-  /* ── Comparison ─────────────────── */
   .pricing-compare {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
+    text-align: center;
+    font-size: 14px; color: var(--ink-3);
+    padding-top: 12px;
   }
+  .pricing-compare a { color: var(--teal-d); font-weight: 500; }
+  .pricing-compare a:hover { text-decoration: underline; }
 
-  .compare-row {
-    display: grid;
-    grid-template-columns: 1fr 100px 100px;
-    padding: 13px 24px;
-    font-size: 13px;
-    color: var(--text-2);
-    border-bottom: 1px solid var(--border);
-    align-items: center;
-  }
-  .compare-row:last-child { border-bottom: none; }
-  .compare-row:hover { background: rgba(255,255,255,0.02); }
-
-  .compare-header {
-    font-size: 10px;
-    color: var(--text-3);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: rgba(255,255,255,0.02);
-  }
-  .compare-header span:nth-child(2), .compare-header span:nth-child(3),
-  .compare-row .check, .compare-row .font-mono { text-align: center; }
-
-  .check.teal  { color: var(--teal);   }
-  .check.muted { color: var(--text-3); }
-
-  @media (max-width: 640px) {
-    .pricing-grid { grid-template-columns: 1fr; }
-    .pricing-inner { padding: 0 20px; }
+  @media (max-width: 680px) {
+    .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+    .price-card { padding: 28px 24px; }
+    .pc-amount { font-size: 44px; }
   }
 </style>

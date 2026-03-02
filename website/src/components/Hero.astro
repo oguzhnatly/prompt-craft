@@ -1,721 +1,437 @@
 ---
-// Hero — macOS menubar demo + 3D perspective window + cursor-reactive gradient
+import AppWindow from './AppWindow.astro';
 ---
 
-<section id="hero">
-  <!-- Gradient canvas background -->
-  <canvas id="hero-canvas" aria-hidden="true"></canvas>
-
-  <!-- Ambient orbs -->
-  <div class="orb orb-1" aria-hidden="true"></div>
-  <div class="orb orb-2" aria-hidden="true"></div>
-  <div class="orb orb-3" aria-hidden="true"></div>
-
-  <!-- Floating coordinate labels -->
-  <span class="coord coord-tl font-mono" aria-hidden="true">x:0000 y:0000</span>
-  <span class="coord coord-tr font-mono" aria-hidden="true">∆T 0.00ms</span>
-  <span class="coord coord-bl font-mono" aria-hidden="true">v1.1.0 · macOS 14+</span>
-  <span class="coord coord-br font-mono" aria-hidden="true">7-STAGE RMPA</span>
-
-  <!-- macOS Status Bar sim -->
-  <div id="macos-bar" aria-label="macOS menu bar simulation" role="img">
-    <div class="bar-left">
-      <span class="apple-logo">&#63743;</span>
-      <span class="bar-item">Finder</span>
-      <span class="bar-item">File</span>
-      <span class="bar-item">Edit</span>
-      <span class="bar-item">View</span>
-    </div>
-    <div class="bar-right">
-      <span class="bar-item system" id="bar-time">14:07</span>
-      <svg class="bar-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="5" width="12" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M13.5 7.5h1.5v3H13.5" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="2.5" y="6.5" width="6" height="4" rx="0.5" fill="var(--teal)"/></svg>
-      <svg class="bar-icon" viewBox="0 0 16 16" fill="none"><path d="M8 3C5.24 3 2.88 4.56 1.5 6.88L3 8C4.02 6.22 5.88 5 8 5s3.98 1.22 5 3l1.5-1.12C13.12 4.56 10.76 3 8 3z" fill="currentColor" opacity="0.4"/><path d="M8 7C6.54 7 5.26 7.72 4.5 8.82L6 10c.48-.73 1.2-1.17 2-1.17s1.52.44 2 1.17l1.5-1.18C10.74 7.72 9.46 7 8 7z" fill="currentColor" opacity="0.7"/><circle cx="8" cy="13" r="1.5" fill="currentColor"/></svg>
-      <!-- PromptCraft icon in menubar -->
-      <button id="pc-menubar-btn" aria-label="Open PromptCraft" class="pc-icon-btn" aria-expanded="false">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="2" fill="var(--teal)"/>
-          <line x1="12" y1="3" x2="12" y2="9"  stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
-          <line x1="12" y1="15" x2="12" y2="21" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
-          <line x1="3" y1="12" x2="9" y2="12"  stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
-          <line x1="15" y1="12" x2="21" y2="12" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
-    </div>
+<section id="hero" class="hero-section">
+  <!-- Gradient bg -->
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hb-blob hb-1"></div>
+    <div class="hb-blob hb-2"></div>
+    <div class="hb-blob hb-3"></div>
+    <div class="hb-grid"></div>
   </div>
 
-  <!-- App popover window -->
-  <div id="app-popover" aria-label="PromptCraft app window" role="region">
-    <!-- Window chrome -->
-    <div class="win-chrome">
-      <div class="traffic">
-        <span class="tl-close"></span>
-        <span class="tl-min"></span>
-        <span class="tl-max"></span>
-      </div>
-      <span class="win-title font-mono">PromptCraft — Pipeline Active</span>
-      <div class="win-meta font-mono" id="win-stage-label">Stage 1/7</div>
-    </div>
-
-    <!-- Input pane -->
-    <div class="win-body">
-      <div class="input-pane">
-        <div class="input-label font-mono">RAW PROMPT</div>
-        <div class="input-area" id="demo-input" aria-live="polite"></div>
-        <div class="input-cursor" id="demo-cursor" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <!-- Left: copy -->
+    <div class="hero-left">
+      <div class="badge teal" style="margin-bottom:32px" data-reveal>
+        <span class="badge-dot"></span>
+        RMPA v1.1 · macOS 14+ · Available Now
       </div>
 
-      <!-- Pipeline stages -->
-      <div class="pipeline-pane">
-        <div class="stage-track">
-          <div class="stage-item" data-stage="1">
-            <div class="stage-dot"></div>
-            <span class="stage-name font-mono">Role Assignment</span>
-            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div class="stage-item" data-stage="2">
-            <div class="stage-dot"></div>
-            <span class="stage-name font-mono">Context Injection</span>
-            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div class="stage-item" data-stage="3">
-            <div class="stage-dot"></div>
-            <span class="stage-name font-mono">Constraint Binding</span>
-            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div class="stage-item" data-stage="4">
-            <div class="stage-dot"></div>
-            <span class="stage-name font-mono">Format Sculpting</span>
-            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div class="stage-item" data-stage="5">
-            <div class="stage-dot"></div>
-            <span class="stage-name font-mono">Chain Reasoning</span>
-            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div class="stage-item" data-stage="6">
-            <div class="stage-dot"></div>
-            <span class="stage-name font-mono">Tone Calibration</span>
-            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div class="stage-item" data-stage="7">
-            <div class="stage-dot"></div>
-            <span class="stage-name font-mono">Output Validation</span>
-            <svg class="stage-check" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
+      <h1 class="hero-h1" data-reveal data-reveal-d="1">
+        <span class="h1-line">The AI doesn't</span>
+        <span class="h1-line">hear what you</span>
+        <span class="h1-line h1-accent">actually mean.</span>
+      </h1>
+
+      <p class="hero-body" data-reveal data-reveal-d="2">
+        PromptCraft runs silently in your macOS menu bar.
+        Every prompt you write passes through 7 precision stages
+        before reaching any AI. The difference is measurable.
+      </p>
+
+      <div class="hero-ctas" data-reveal data-reveal-d="3">
+        <a href="/download" class="btn btn-teal">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M3 8l5 5 5-5M1 14h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Free Download
+        </a>
+        <a href="/pricing" class="btn btn-outline">
+          See Pricing
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <div class="hero-proof" data-reveal data-reveal-d="4">
+        <div class="proof-item">
+          <span class="proof-num syne">340%</span>
+          <span class="proof-label">avg clarity gain</span>
         </div>
-        <div class="stage-progress-bar"><div class="stage-progress-fill" id="stage-fill"></div></div>
-      </div>
-
-      <!-- Output pane -->
-      <div class="output-pane" id="output-pane">
-        <div class="output-label font-mono">ENGINEERED OUTPUT</div>
-        <div class="output-text" id="demo-output" aria-live="polite"></div>
-        <div class="output-footer">
-          <span class="font-mono" id="output-provider">→ claude-3-5-sonnet</span>
-          <span class="output-badge font-mono">+340% clarity</span>
+        <div class="proof-sep"></div>
+        <div class="proof-item">
+          <span class="proof-num syne">7</span>
+          <span class="proof-label">pipeline stages</span>
+        </div>
+        <div class="proof-sep"></div>
+        <div class="proof-item">
+          <span class="proof-num syne">&lt;200ms</span>
+          <span class="proof-label">overhead</span>
         </div>
       </div>
     </div>
 
-    <!-- Window footer -->
-    <div class="win-footer">
-      <span class="footer-stat font-mono"><span class="teal">7</span> stages active</span>
-      <span class="footer-stat font-mono">model: <span class="teal">claude-3-5-sonnet</span></span>
-      <span class="footer-stat font-mono">latency: <span id="win-latency" class="teal">0ms</span></span>
-      <div class="footer-dot-cluster" aria-hidden="true">
-        <span class="fdot active"></span><span class="fdot"></span><span class="fdot"></span>
+    <!-- Right: macOS window -->
+    <div class="hero-right" data-reveal data-reveal-d="2">
+      <div class="window-float" id="window-float">
+        <!-- Glow behind window -->
+        <div class="win-glow" aria-hidden="true"></div>
+        <!-- Menu bar pointer -->
+        <div class="win-pointer" aria-hidden="true">
+          <svg viewBox="0 0 40 16" fill="none">
+            <path d="M0 16 L20 0 L40 16" fill="var(--win-bg-2)"/>
+          </svg>
+        </div>
+        <!-- The real app window -->
+        <AppWindow />
+        <!-- macOS menu bar above the window -->
+        <div class="sim-menubar" aria-label="Simulated macOS menu bar" aria-hidden="true">
+          <div class="smb-left">
+            <span class="smb-apple">&#63743;</span>
+            <span class="smb-item">Finder</span>
+            <span class="smb-item">File</span>
+            <span class="smb-item">Edit</span>
+          </div>
+          <div class="smb-right">
+            <span class="smb-sys mono">14:07</span>
+            <!-- Wifi -->
+            <svg class="smb-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 11a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm0-3.5c1.38 0 2.62.56 3.53 1.47L13 7.5C11.73 6.18 9.96 5.36 8 5.36S4.27 6.18 3 7.5l1.47 1.47A5.02 5.02 0 018 7.5zm0-3.86c2.32 0 4.42.94 5.95 2.47l1.41-1.41A10.45 10.45 0 008 1.14C5.42 1.14 3.08 2.15 1.36 3.78l1.41 1.41A8.41 8.41 0 018 3.64z" opacity=".8"/></svg>
+            <!-- Battery -->
+            <svg class="smb-icon" viewBox="0 0 20 12" fill="none"><rect x="1" y="1" width="15" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/><rect x="2.5" y="2.5" width="8" height="7" rx="1" fill="currentColor"/><path d="M17 4v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <!-- PromptCraft icon — glowing -->
+            <div class="smb-pc-icon" id="smb-pc">
+              <svg width="17" height="17" viewBox="0 0 22 22" fill="none">
+                <circle cx="11" cy="11" r="2" fill="#00C896"/>
+                <line x1="11" y1="2"  x2="11" y2="7"  stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="11" y1="15" x2="11" y2="20" stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="2"  y1="11" x2="7"  y2="11" stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="15" y1="11" x2="20" y2="11" stroke="#00C896" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating labels -->
+      <div class="float-label fl-1 mono" aria-hidden="true">
+        <span class="fl-dot"></span>
+        7 stages active
+      </div>
+      <div class="float-label fl-2 mono" aria-hidden="true">
+        <span class="fl-dot" style="background:#7B61FF"></span>
+        claude-3-5-sonnet
+      </div>
+      <div class="float-label fl-3 mono" aria-hidden="true">
+        <span class="fl-dot" style="background:#FF5441"></span>
+        +340% clarity
       </div>
     </div>
   </div>
 
-  <!-- Hero copy — positioned bottom-left -->
-  <div class="hero-copy">
-    <div class="tag teal" style="margin-bottom:24px">
-      <span class="tag-dot"></span>
-      MENU BAR · MACOS · LIVE
+  <!-- Bottom logos -->
+  <div class="hero-compat" data-reveal>
+    <span class="mono" style="font-size:11px;color:var(--ink-4)">Works with</span>
+    <div class="compat-logos">
+      <span class="compat-item mono">Claude</span>
+      <span class="compat-dot">·</span>
+      <span class="compat-item mono">GPT-4o</span>
+      <span class="compat-dot">·</span>
+      <span class="compat-item mono">DeepSeek</span>
+      <span class="compat-dot">·</span>
+      <span class="compat-item mono">Gemini</span>
+      <span class="compat-dot">·</span>
+      <span class="compat-item mono">Llama</span>
+      <span class="compat-dot">·</span>
+      <span class="compat-item mono">Mistral</span>
+      <span class="compat-dot">·</span>
+      <span class="compat-item mono">Perplexity</span>
     </div>
-    <h1 id="hero-h1">
-      <span class="line" data-scramble>Precision prompt</span>
-      <span class="line accent" data-scramble>engineering.</span>
-    </h1>
-    <p class="hero-sub">
-      Every request refined through 7 engineered stages<br>
-      before reaching any AI. Measurably better output, every time.
-    </p>
-    <div class="hero-ctas">
-      <a href="/download" class="btn btn-primary" data-cursor="DOWNLOAD">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M3 8l5 5 5-5M1 14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Download for Mac
-      </a>
-      <a href="/pricing" class="btn btn-ghost" data-cursor="PRICING">
-        See pricing
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-    </div>
-    <div class="hero-proof font-mono">
-      <span>macOS 14+</span>
-      <span class="dot">·</span>
-      <span>Developer ID Signed</span>
-      <span class="dot">·</span>
-      <span>Local + Cloud</span>
-    </div>
-  </div>
-
-  <!-- Scroll cue -->
-  <div class="scroll-cue" aria-hidden="true">
-    <div class="scroll-line"></div>
-    <span class="font-mono">scroll</span>
   </div>
 </section>
 
 <style>
-  #hero {
+  .hero-section {
     position: relative;
-    width: 100%;
-    height: 100vh;
-    min-height: 700px;
-    overflow: hidden;
+    padding-top: 64px; /* nav height */
+    min-height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
   }
 
-  /* ── Background canvas ──────── */
-  #hero-canvas {
+  /* ── Background ──────────────────── */
+  .hero-bg {
     position: absolute;
     inset: 0;
-    width: 100%; height: 100%;
+    overflow: hidden;
+    pointer-events: none;
     z-index: 0;
   }
-
-  /* ── Orbs ───────────────────── */
-  .orb {
+  .hb-blob {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-    z-index: 1;
-    animation: drift 12s ease-in-out infinite alternate;
+    filter: blur(100px);
+    opacity: 0.55;
   }
-  .orb-1 { width: 500px; height: 500px; background: rgba(0,255,178,0.06); top: -100px; left: -100px; animation-delay: 0s; }
-  .orb-2 { width: 400px; height: 400px; background: rgba(123,97,255,0.08); bottom: -80px; right: -80px; animation-delay: 4s; }
-  .orb-3 { width: 300px; height: 300px; background: rgba(0,255,178,0.04); top: 40%; left: 55%; animation-delay: 8s; }
-  @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(40px,30px) scale(1.1); } }
-
-  /* ── Coordinates ────────────── */
-  .coord {
-    position: absolute;
-    font-size: 10px;
-    color: var(--text-3);
-    letter-spacing: 0.08em;
-    opacity: 0.5;
-    z-index: 3;
-    pointer-events: none;
+  .hb-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,200,150,0.18) 0%, transparent 70%);
+    top: -100px; left: -150px;
+    animation: blob-drift 14s ease-in-out infinite alternate;
   }
-  .coord-tl { top: 80px; left: 32px; }
-  .coord-tr { top: 80px; right: 32px; }
-  .coord-bl { bottom: 60px; left: 32px; }
-  .coord-br { bottom: 60px; right: 32px; }
+  .hb-2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(79,63,240,0.1) 0%, transparent 70%);
+    top: 20%; right: -100px;
+    animation: blob-drift 18s ease-in-out infinite alternate-reverse;
+  }
+  .hb-3 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(245,166,35,0.07) 0%, transparent 70%);
+    bottom: 10%; left: 30%;
+    animation: blob-drift 22s ease-in-out infinite alternate;
+  }
+  @keyframes blob-drift {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(30px,20px) scale(1.08); }
+  }
 
-  /* ── macOS status bar ───────── */
-  #macos-bar {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 28px;
-    background: rgba(10,10,20,0.9);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    display: flex;
+  .hb-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--border-2) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border-2) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+  }
+
+  /* ── Layout ──────────────────────── */
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-    z-index: 100;
-    transform: translateY(-28px);
-    animation: bar-slide-in 0.6s var(--ease-spring) 0.3s forwards;
-  }
-  @keyframes bar-slide-in { to { transform: translateY(0); } }
-
-  .bar-left, .bar-right { display: flex; align-items: center; gap: 16px; }
-  .apple-logo { font-size: 13px; color: var(--text-1); line-height: 1; }
-  .bar-item { font-size: 12px; font-weight: 500; color: var(--text-1); font-family: -apple-system, sans-serif; }
-  .bar-item.system { color: var(--text-2); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
-  .bar-icon { width: 16px; height: 16px; color: var(--text-2); flex-shrink: 0; }
-
-  .pc-icon-btn {
-    background: transparent;
-    border: none;
-    padding: 2px 4px;
-    display: flex;
-    align-items: center;
-    border-radius: 4px;
-    transition: background 0.15s;
-    cursor: none;
-    animation: pc-pulse 2s ease-in-out 1.2s 2;
-  }
-  .pc-icon-btn:hover { background: rgba(0,255,178,0.1); }
-  @keyframes pc-pulse { 0%,100%{filter:drop-shadow(0 0 0 transparent)} 50%{filter:drop-shadow(0 0 8px rgba(0,255,178,0.6))} }
-
-  /* ── App popover ─────────────── */
-  #app-popover {
-    position: absolute;
-    top: 36px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px) scale(0.95) perspective(1200px);
-    width: min(680px, 92vw);
-    background: rgba(13,13,28,0.96);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 14px;
-    box-shadow:
-      0 40px 100px rgba(0,0,0,0.7),
-      0 0 0 0.5px rgba(255,255,255,0.05) inset,
-      0 2px 80px rgba(0,255,178,0.04) inset;
-    opacity: 0;
-    animation: popover-in 0.7s var(--ease-spring) 0.9s forwards;
-    z-index: 50;
-    overflow: hidden;
-    will-change: transform;
-    transition: transform 0.15s ease-out;
-  }
-  @keyframes popover-in {
-    to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1) perspective(1200px); }
+    gap: 60px;
+    flex: 1;
+    padding-top: 80px;
+    padding-bottom: 60px;
+    position: relative; z-index: 1;
   }
 
-  /* Triangle pointer from menubar */
-  #app-popover::before {
+  /* ── Left copy ───────────────────── */
+  .hero-left { display: flex; flex-direction: column; }
+
+  .hero-h1 {
+    display: flex; flex-direction: column;
+    font-size: clamp(38px, 4.5vw, 58px);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1.05;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+  .h1-accent {
+    color: var(--teal-d);
+    position: relative;
+  }
+  .h1-accent::after {
     content: '';
     position: absolute;
-    top: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 12px; height: 6px;
-    background: rgba(255,255,255,0.1);
-    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    left: 0; bottom: -2px;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--teal) 0%, var(--teal-d) 100%);
+    border-radius: 2px;
+    opacity: 0.4;
   }
 
-  /* Window chrome */
-  .win-chrome {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    background: rgba(255,255,255,0.02);
-  }
-  .traffic { display: flex; gap: 6px; }
-  .traffic span {
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    display: block;
-    cursor: none;
-  }
-  .tl-close { background: #FF5F57; }
-  .tl-min   { background: #FFBD2E; }
-  .tl-max   { background: #28C840; }
-
-  .win-title { font-size: 11px; color: var(--text-3); flex: 1; text-align: center; letter-spacing: 0.05em; }
-  .win-meta  { font-size: 10px; color: var(--teal); letter-spacing: 0.1em; }
-
-  /* Window body */
-  .win-body {
-    display: grid;
-    grid-template-columns: 1fr 140px 1fr;
-    gap: 0;
-    min-height: 220px;
-  }
-
-  /* Input pane */
-  .input-pane {
-    padding: 16px;
-    border-right: 1px solid rgba(255,255,255,0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .input-label {
-    font-size: 9px;
-    color: var(--text-3);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-  .input-area {
-    font-size: 12px;
-    line-height: 1.6;
-    color: var(--text-2);
-    font-family: 'JetBrains Mono', monospace;
-    flex: 1;
-    min-height: 80px;
-  }
-  .input-cursor {
-    width: 8px; height: 14px;
-    background: var(--teal);
-    display: inline-block;
-    animation: blink-c 0.8s step-end infinite;
-    vertical-align: text-bottom;
-  }
-  @keyframes blink-c { 0%,100%{opacity:1} 50%{opacity:0} }
-
-  /* Pipeline pane */
-  .pipeline-pane {
-    padding: 12px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    border-right: 1px solid rgba(255,255,255,0.05);
-  }
-  .stage-track {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-  }
-  .stage-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 6px;
-    border-radius: 6px;
-    transition: background 0.2s;
-  }
-  .stage-item.active   { background: rgba(0,255,178,0.06); }
-  .stage-item.complete { opacity: 0.7; }
-
-  .stage-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--border-hi);
-    flex-shrink: 0;
-    transition: background 0.2s, box-shadow 0.2s;
-  }
-  .stage-item.active   .stage-dot { background: var(--teal); box-shadow: 0 0 8px var(--teal); }
-  .stage-item.complete .stage-dot { background: var(--teal); }
-
-  .stage-name {
-    font-size: 9px;
-    color: var(--text-3);
-    flex: 1;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: color 0.2s;
-  }
-  .stage-item.active   .stage-name { color: var(--teal); }
-  .stage-item.complete .stage-name { color: var(--text-2); }
-
-  .stage-check { width: 10px; height: 10px; opacity: 0; transition: opacity 0.2s; flex-shrink: 0; }
-  .stage-item.complete .stage-check { opacity: 1; }
-
-  .stage-progress-bar {
-    height: 2px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 1px;
-    overflow: hidden;
-    margin-top: 4px;
-  }
-  .stage-progress-fill {
-    height: 100%;
-    background: var(--teal);
-    border-radius: 1px;
-    width: 0%;
-    transition: width 0.5s var(--ease-out);
-    box-shadow: 0 0 8px var(--teal);
-  }
-
-  /* Output pane */
-  .output-pane {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    opacity: 0;
-    transition: opacity 0.5s;
-  }
-  .output-pane.visible { opacity: 1; }
-  .output-label {
-    font-size: 9px;
-    color: var(--teal);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-  .output-text {
-    font-size: 11px;
-    line-height: 1.6;
-    color: var(--text-1);
-    font-family: 'JetBrains Mono', monospace;
-    flex: 1;
-  }
-  .output-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: auto;
-  }
-  #output-provider { font-size: 9px; color: var(--text-3); }
-  .output-badge { font-size: 9px; color: var(--teal); background: rgba(0,255,178,0.08); padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(0,255,178,0.15); }
-
-  /* Win footer */
-  .win-footer {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 8px 16px;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    background: rgba(0,0,0,0.2);
-  }
-  .footer-stat { font-size: 9px; color: var(--text-3); letter-spacing: 0.06em; }
-  .footer-dot-cluster { display: flex; gap: 4px; margin-left: auto; }
-  .fdot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-hi); }
-  .fdot.active { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
-
-  /* ── Hero copy ───────────────── */
-  .hero-copy {
-    position: absolute;
-    bottom: 100px;
-    left: max(32px, calc(50% - 580px));
-    z-index: 10;
-    max-width: 480px;
-  }
-
-  .hero-copy h1 {
-    display: flex;
-    flex-direction: column;
-    font-size: clamp(36px, 4.5vw, 56px);
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-    margin-bottom: 20px;
-  }
-  .hero-copy h1 .accent { color: var(--teal); }
-
-  .hero-sub {
-    font-size: 15px;
-    line-height: 1.65;
-    color: var(--text-2);
-    margin-bottom: 28px;
+  .hero-body {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--ink-2);
+    margin-bottom: 36px;
+    max-width: 460px;
     font-weight: 400;
   }
 
-  .hero-ctas { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .hero-ctas {
+    display: flex; gap: 12px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
 
   .hero-proof {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: flex; align-items: center; gap: 0;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+  }
+  .proof-item {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 0 24px;
+    flex: 1; align-items: center;
+  }
+  .proof-item:first-child { padding-left: 0; }
+  .proof-item:last-child  { padding-right: 0; }
+  .proof-num {
+    font-size: 26px; font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .proof-label {
     font-size: 11px;
-    color: var(--text-3);
+    color: var(--ink-3);
+    font-family: 'DM Mono', monospace;
     letter-spacing: 0.04em;
   }
-  .hero-proof .dot { opacity: 0.4; }
+  .proof-sep { width: 1px; height: 32px; background: var(--border); }
 
-  /* ── Scroll cue ─────────────── */
-  .scroll-cue {
+  /* ── Right window ────────────────── */
+  .hero-right {
+    display: flex; justify-content: center;
+    position: relative;
+  }
+
+  .window-float {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform .12s ease-out;
+  }
+
+  .win-glow {
     position: absolute;
-    bottom: 32px;
-    right: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    z-index: 10;
-  }
-  .scroll-line {
-    width: 1px;
-    height: 48px;
-    background: linear-gradient(to bottom, transparent, var(--teal));
-    animation: scroll-line 2s ease-in-out infinite;
-  }
-  @keyframes scroll-line {
-    0%   { transform: scaleY(0); transform-origin: top; }
-    50%  { transform: scaleY(1); transform-origin: top; }
-    51%  { transform: scaleY(1); transform-origin: bottom; }
-    100% { transform: scaleY(0); transform-origin: bottom; }
-  }
-  .scroll-cue span {
-    font-size: 9px;
-    color: var(--text-3);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    writing-mode: vertical-lr;
+    inset: -60px;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,200,150,0.12), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
   }
 
-  @media (max-width: 768px) {
-    .win-body { grid-template-columns: 1fr; }
-    .pipeline-pane, .input-pane { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .hero-copy { left: 20px; right: 20px; bottom: 80px; max-width: none; }
-    .coord { display: none; }
+  .win-pointer {
+    position: absolute;
+    top: -14px;
+    right: 72px;
+    width: 40px;
+    z-index: 2;
+    filter: drop-shadow(0 -2px 4px rgba(0,0,0,0.15));
+  }
+
+  /* Reorder: menubar above window */
+  .window-float { display: flex; flex-direction: column; gap: 0; }
+
+  .sim-menubar {
+    order: -1;
+    background: rgba(28,28,30,0.97);
+    border-radius: 10px 10px 0 0;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-bottom: none;
+    height: 26px;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    position: relative; z-index: 1;
+  }
+
+  .mac-window { border-radius: 0 0 13px 13px !important; }
+
+  .smb-left, .smb-right {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .smb-apple { font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1; }
+  .smb-item {
+    font-family: -apple-system, sans-serif;
+    font-size: 12px; font-weight: 500;
+    color: rgba(255,255,255,0.85);
+  }
+  .smb-sys {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.02em;
+  }
+  .smb-icon {
+    width: 15px; height: 15px;
+    color: rgba(255,255,255,0.7);
+    flex-shrink: 0;
+  }
+  .smb-pc-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 5px;
+    cursor: none;
+    animation: pc-pop 3s ease-in-out 1.5s 2;
+  }
+  @keyframes pc-pop {
+    0%,100% { filter: drop-shadow(0 0 0 transparent); }
+    50%      { filter: drop-shadow(0 0 8px rgba(0,200,150,0.8)); }
+  }
+
+  /* Floating labels */
+  .float-label {
+    position: absolute;
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 10px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 11px;
+    color: var(--ink-2);
+    box-shadow: 0 2px 16px rgba(12,11,24,0.08);
+    white-space: nowrap;
+    z-index: 10;
+    animation: fl-float 4s ease-in-out infinite alternate;
+  }
+  .fl-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--teal);
+    flex-shrink: 0;
+  }
+  .fl-1 { left: -100px; top: 80px; animation-delay: 0s; }
+  .fl-2 { right: -90px; top: 160px; animation-delay: 1.5s; }
+  .fl-3 { left: -80px; bottom: 80px; animation-delay: 3s; }
+  @keyframes fl-float {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-6px); }
+  }
+
+  /* ── Compat logos ────────────────── */
+  .hero-compat {
+    display: flex; align-items: center;
+    gap: 20px;
+    padding: 20px 0 32px;
+    border-top: 1px solid var(--border);
+    margin: 0 40px;
+    position: relative; z-index: 1;
+  }
+  .compat-logos {
+    display: flex; align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .compat-item {
+    font-size: 12px;
+    color: var(--ink-3);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .compat-dot { color: var(--border); font-size: 14px; }
+
+  @media (max-width: 960px) {
+    .hero-inner { grid-template-columns: 1fr; padding-top: 40px; gap: 40px; }
+    .hero-right { order: -1; }
+    .float-label { display: none; }
+    .hero-compat { margin: 0 20px; }
+  }
+
+  @media (max-width: 480px) {
+    .mac-window { width: 340px !important; }
+    .win-title { display: none; }
   }
 </style>
 
 <script>
-  // ── Live clock ────────────────────────────────────────────────────────────
-  const clockEl = document.getElementById('bar-time');
-  function updateClock() {
-    if (!clockEl) return;
-    const now = new Date();
-    clockEl.textContent = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
+  // Mouse-reactive 3D tilt on the window
+  const wf  = document.getElementById('window-float') as HTMLElement | null;
+  const hero = document.getElementById('hero') as HTMLElement | null;
 
-  // ── Coordinate tracker ────────────────────────────────────────────────────
-  const coordTL = document.querySelector('.coord-tl') as HTMLElement;
-  const coordTR = document.querySelector('.coord-tr') as HTMLElement;
-  let lastTime = performance.now();
-  document.addEventListener('mousemove', (e) => {
-    if (coordTL) coordTL.textContent = `x:${String(e.clientX).padStart(4,'0')} y:${String(e.clientY).padStart(4,'0')}`;
-    const now = performance.now();
-    const dt = (now - lastTime).toFixed(2);
-    if (coordTR) coordTR.textContent = `∆T ${dt}ms`;
-    lastTime = now;
-  }, { passive: true });
-
-  // ── 3D popover tilt ────────────────────────────────────────────────────────
-  const popover = document.getElementById('app-popover') as HTMLElement;
-  const hero    = document.getElementById('hero') as HTMLElement;
-  if (popover && hero) {
+  if (wf && hero) {
     hero.addEventListener('mousemove', (e) => {
-      const rect  = hero.getBoundingClientRect();
-      const cx    = rect.left + rect.width  / 2;
-      const cy    = rect.top  + rect.height / 2;
-      const rx    = ((e.clientY - cy) / rect.height) * 6;   // tilt X
-      const ry    = -((e.clientX - cx) / rect.width)  * 8;  // tilt Y
-      popover.style.transform =
-        `translateX(-50%) translateY(0) perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      const r  = hero.getBoundingClientRect();
+      const cx = r.left + r.width  / 2;
+      const cy = r.top  + r.height / 2;
+      const rx = ((e.clientY - cy) / r.height) * 10;
+      const ry = -((e.clientX - cx) / r.width)  * 12;
+      wf.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`;
     }, { passive: true });
+
     hero.addEventListener('mouseleave', () => {
-      popover.style.transform = 'translateX(-50%) translateY(0) perspective(1200px) rotateX(0deg) rotateY(0deg)';
+      wf.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
     });
   }
-
-  // ── Background canvas gradient ─────────────────────────────────────────────
-  const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement;
-  const ctx    = canvas.getContext('2d')!;
-  let cw = 0, ch = 0;
-  let mx = 0.5, my = 0.5;
-  let animT = 0;
-
-  function resizeCanvas() {
-    cw = canvas.width  = canvas.offsetWidth;
-    ch = canvas.height = canvas.offsetHeight;
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas, { passive: true });
-
-  document.getElementById('hero')!.addEventListener('mousemove', (e: Event) => {
-    const ev  = e as MouseEvent;
-    const rect = hero.getBoundingClientRect();
-    mx = ev.clientX / rect.width;
-    my = ev.clientY / rect.height;
-  }, { passive: true });
-
-  function drawBg() {
-    animT += 0.003;
-    ctx.clearRect(0, 0, cw, ch);
-
-    // Deep base fill
-    ctx.fillStyle = '#030308';
-    ctx.fillRect(0, 0, cw, ch);
-
-    // Radial orbs that shift with mouse + time
-    const orbs = [
-      { x: mx * cw * 0.8 + cw * 0.1, y: my * ch * 0.6 + ch * 0.1,  r: cw * 0.5, c: 'rgba(0,255,178,0.045)' },
-      { x: Math.sin(animT) * cw * 0.2 + cw * 0.7, y: Math.cos(animT * 0.7) * ch * 0.2 + ch * 0.6, r: cw * 0.35, c: 'rgba(123,97,255,0.06)' },
-      { x: Math.cos(animT * 0.5) * cw * 0.15 + cw * 0.2, y: ch * 0.2, r: cw * 0.3, c: 'rgba(0,255,178,0.02)' },
-    ];
-    for (const orb of orbs) {
-      const g = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.r);
-      g.addColorStop(0,   orb.c);
-      g.addColorStop(1,   'transparent');
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, cw, ch);
-    }
-
-    // Subtle grid lines
-    ctx.strokeStyle = 'rgba(255,255,255,0.025)';
-    ctx.lineWidth   = 0.5;
-    const gridSize  = 60;
-    for (let x = 0; x < cw; x += gridSize) {
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, ch); ctx.stroke();
-    }
-    for (let y = 0; y < ch; y += gridSize) {
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cw, y); ctx.stroke();
-    }
-
-    requestAnimationFrame(drawBg);
-  }
-  drawBg();
-
-  // ── Demo sequence ─────────────────────────────────────────────────────────
-  const demos = [
-    {
-      input:  'Tell me about climate change and what I should do',
-      output: 'You are a climate policy analyst with expertise in individual action frameworks.\n\nTask: Provide a structured analysis of climate change focusing on high-leverage personal interventions.\n\nFormat: Start with 3 key facts, then 5 ranked actions by impact, conclude with a 30-day actionable plan.',
-    },
-    {
-      input:  'Write code to sort a list',
-      output: 'You are a senior software engineer specializing in algorithm design.\n\nTask: Implement an optimized sorting function with clear documentation, time/space complexity analysis, and edge case handling.\n\nConstraints: TypeScript, O(n log n), handle empty arrays and duplicate values.',
-    },
-  ];
-
-  let demoIdx = 0;
-  const inputEl    = document.getElementById('demo-input')!;
-  const outputEl   = document.getElementById('demo-output')!;
-  const outputPane = document.getElementById('output-pane')!;
-  const stageLabel = document.getElementById('win-stage-label')!;
-  const stageFill  = document.getElementById('stage-fill')!;
-  const latency    = document.getElementById('win-latency')!;
-
-  async function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)); }
-
-  async function typeText(el: HTMLElement, text: string, speed = 30) {
-    el.textContent = '';
-    for (const ch of text) {
-      el.textContent += ch;
-      await sleep(speed);
-    }
-  }
-
-  async function runDemo() {
-    const demo = demos[demoIdx++ % demos.length];
-    const stages = document.querySelectorAll('.stage-item') as NodeListOf<HTMLElement>;
-
-    // Reset
-    outputPane.classList.remove('visible');
-    outputEl.textContent = '';
-    stages.forEach(s => { s.classList.remove('active','complete'); });
-    stageFill.style.width = '0%';
-
-    // Type input
-    const cursor = document.getElementById('demo-cursor')!;
-    cursor.style.display = 'inline-block';
-    await typeText(inputEl, demo.input, 40);
-    await sleep(400);
-    cursor.style.display = 'none';
-
-    // Run stages
-    const startTime = performance.now();
-    for (let i = 0; i < 7; i++) {
-      stages[i].classList.add('active');
-      stageLabel.textContent = `Stage ${i+1}/7`;
-      stageFill.style.width = `${((i+1)/7)*100}%`;
-      await sleep(350);
-      stages[i].classList.remove('active');
-      stages[i].classList.add('complete');
-    }
-    const elapsed = Math.round(performance.now() - startTime);
-    latency.textContent = elapsed + 'ms';
-
-    // Show output
-    outputPane.classList.add('visible');
-    await typeText(outputEl, demo.output, 12);
-    await sleep(3000);
-
-    // Clear and repeat
-    await sleep(1500);
-    runDemo();
-  }
-
-  // Start demo after popover animation
-  setTimeout(runDemo, 1500);
 </script>

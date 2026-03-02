@@ -1,146 +1,98 @@
 ---
-// FinalCTA — the close
 ---
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-inner" data-reveal>
+      <div class="cta-bg-blob" aria-hidden="true"></div>
 
-<section id="cta" class="section cta-section">
-  <div class="cta-inner">
-    <!-- Corner marks -->
-    <span class="corner-mark cm-tl" aria-hidden="true"></span>
-    <span class="corner-mark cm-tr" aria-hidden="true"></span>
-    <span class="corner-mark cm-bl" aria-hidden="true"></span>
-    <span class="corner-mark cm-br" aria-hidden="true"></span>
+      <div class="badge teal" style="margin-bottom:28px">
+        <span class="badge-dot"></span>
+        AVAILABLE NOW
+      </div>
 
-    <!-- Glow -->
-    <div class="cta-glow" aria-hidden="true"></div>
+      <h2 class="cta-h syne">
+        Stop sending the AI<br>the wrong question.
+      </h2>
 
-    <div class="tag teal" style="margin-bottom:32px">
-      <span class="tag-dot"></span>
-      FREE DOWNLOAD · macOS 14+
-    </div>
+      <p class="cta-sub">
+        PromptCraft runs silently, costs nothing upfront, and
+        makes every AI interaction measurably better.
+        The 14-day trial requires no card.
+      </p>
 
-    <h2 class="cta-headline">
-      Stop guessing.<br>
-      <span class="cta-teal">Start engineering.</span>
-    </h2>
+      <div class="cta-btns">
+        <a href="/download" class="btn btn-teal">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M3 8l5 5 5-5M1 14h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download Free
+        </a>
+        <a href="/pricing" class="btn btn-outline">
+          Compare Plans
+        </a>
+      </div>
 
-    <p class="cta-sub">
-      Every AI response your team produces could be better.<br>
-      PromptCraft makes sure it is.
-    </p>
-
-    <div class="cta-actions">
-      <a href="/download" class="btn btn-primary cta-btn" data-cursor="DOWNLOAD">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <path d="M9 2v11M4 9l5 5 5-5M1 16h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Download for macOS
-      </a>
-      <a href="/pricing" class="btn btn-ghost cta-btn" data-cursor="PRICING">
-        View pricing
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-    </div>
-
-    <div class="cta-specs font-mono">
-      <span>Developer ID Signed</span>
-      <span class="cta-dot">·</span>
-      <span>Notarized by Apple</span>
-      <span class="cta-dot">·</span>
-      <span>No App Store required</span>
-      <span class="cta-dot">·</span>
-      <span>macOS 14 Sonoma+</span>
+      <div class="cta-specs mono">
+        <span>macOS 14+</span>
+        <span class="cta-dot">·</span>
+        <span>Developer ID Signed</span>
+        <span class="cta-dot">·</span>
+        <span>14-day trial</span>
+        <span class="cta-dot">·</span>
+        <span>No card required</span>
+      </div>
     </div>
   </div>
 </section>
 
 <style>
   .cta-section {
-    padding: 120px 40px;
+    padding: 100px 0;
+    background: var(--paper-2);
+    border-top: 1px solid var(--border);
   }
 
   .cta-inner {
-    max-width: 800px;
+    max-width: 640px;
     margin: 0 auto;
     text-align: center;
     position: relative;
-    padding: 80px 60px;
-    background: var(--surface);
-    border: 1px solid rgba(0,255,178,0.1);
-    border-radius: 24px;
-    overflow: hidden;
   }
 
-  /* Corner marks */
-  .corner-mark {
+  .cta-bg-blob {
     position: absolute;
-    width: 20px; height: 20px;
-    border-color: var(--teal);
-    border-style: solid;
-    opacity: 0.4;
-  }
-  .cm-tl { top: 16px; left: 16px;  border-width: 1px 0 0 1px; }
-  .cm-tr { top: 16px; right: 16px; border-width: 1px 1px 0 0; }
-  .cm-bl { bottom: 16px; left: 16px;  border-width: 0 0 1px 1px; }
-  .cm-br { bottom: 16px; right: 16px; border-width: 0 1px 1px 0; }
-
-  .cta-glow {
-    position: absolute;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 400px; height: 300px;
-    background: radial-gradient(ellipse at 50% 0%, rgba(0,255,178,0.08), transparent 70%);
-    pointer-events: none;
+    width: 500px; height: 300px;
+    background: radial-gradient(ellipse, rgba(0,200,150,0.12), transparent 70%);
+    top: -80px; left: 50%; transform: translateX(-50%);
+    filter: blur(60px);
+    pointer-events: none; z-index: 0;
   }
 
-  .cta-headline {
-    font-size: clamp(36px, 5vw, 58px);
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 1.1;
+  .cta-h {
+    font-size: clamp(32px, 4.5vw, 52px);
+    font-weight: 800; letter-spacing: -0.045em;
+    line-height: 1.1; color: var(--ink);
     margin-bottom: 20px;
-    position: relative;
-    z-index: 1;
+    position: relative; z-index: 1;
   }
-  .cta-teal { color: var(--teal); }
 
   .cta-sub {
-    font-size: 16px;
-    line-height: 1.7;
-    color: var(--text-2);
-    margin-bottom: 40px;
-    position: relative;
-    z-index: 1;
+    font-size: 16px; line-height: 1.7;
+    color: var(--ink-2); margin-bottom: 36px;
+    position: relative; z-index: 1;
   }
 
-  .cta-actions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 28px;
-    position: relative;
-    z-index: 1;
-    flex-wrap: wrap;
+  .cta-btns {
+    display: flex; gap: 12px;
+    justify-content: center; flex-wrap: wrap;
+    margin-bottom: 24px;
+    position: relative; z-index: 1;
   }
-
-  .cta-btn { min-width: 200px; justify-content: center; }
 
   .cta-specs {
-    font-size: 11px;
-    color: var(--text-3);
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    font-size: 11px; color: var(--ink-4);
+    display: flex; align-items: center;
+    justify-content: center; gap: 10px;
     flex-wrap: wrap;
-    position: relative;
-    z-index: 1;
+    position: relative; z-index: 1;
   }
-  .cta-dot { opacity: 0.3; }
-
-  @media (max-width: 640px) {
-    .cta-inner { padding: 48px 24px; }
-    .cta-section { padding: 80px 20px; }
-  }
+  .cta-dot { opacity: 0.4; }
 </style>

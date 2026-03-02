@@ -2,107 +2,508 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-
-const sections = [
-  {
-    id: 'quick-start',
-    title: 'Quick Start',
-    content: `After installing PromptCraft and granting accessibility permissions, set your global keyboard shortcut in Preferences → Shortcuts. The default is ⌘⇧P.
-
-Select any text in any application and press the shortcut. PromptCraft processes the selection through the 7-stage RMPA pipeline and copies the result to your clipboard.
-
-For Cloud subscribers, the optimized result reflects your accumulated context memory from previous sessions.`,
-  },
-  {
-    id: 'architecture',
-    title: 'RMPA Architecture',
-    content: `Recursive Meta Prompt Architecture separates understanding from generation. A 7-stage deterministic pipeline builds an intermediate representation of user intent before any prompt assembly occurs.
-
-The pipeline runs in under 200ms for local models. Cloud inference adds routing and context injection overhead but stays under 800ms for most requests.
-
-Full technical specification: docs/RMPA_WHITEPAPER.md on GitHub.`,
-  },
-  {
-    id: 'providers',
-    title: 'Provider Configuration',
-    content: `PromptCraft supports: Claude (Anthropic), GPT-4o (OpenAI), DeepSeek V3, and any local Ollama model.
-
-Cloud subscribers do not need to configure API keys. The cloud relay handles provider routing.
-
-Pro users configure their own API keys in Preferences → Providers. Keys are stored in the system Keychain.`,
-  },
-  {
-    id: 'extensions',
-    title: 'Alfred + Raycast',
-    content: `Alfred Workflow: Import the workflow from alfred-workflow/ in the GitHub repository. Trigger optimization with the keyword 'pc' or your custom keyword.
-
-Raycast Extension: Available in the Raycast Store (search "PromptCraft") or install manually from raycast-extension/ in the repository. Command: "Optimize Prompt".
-
-Both extensions are open source. Contributions welcome.`,
-  },
-];
 ---
 
-<Base title="Documentation — PromptCraft" description="Technical documentation for PromptCraft. Architecture, quick start, provider setup, and extensions.">
+<Base title="Documentation — PromptCraft" description="Complete technical documentation for PromptCraft. Quick start, RMPA architecture, provider configuration, keyboard shortcuts, and API reference.">
   <Nav />
-  <main class="min-h-screen pt-32 pb-24 bg-void">
-    <div class="max-w-5xl mx-auto px-6">
 
-      <div class="mb-16" data-reveal>
-        <div class="inline-flex items-center gap-3 mb-6">
-          <div class="w-10 h-px bg-teal/30"></div>
-          <span class="font-mono text-[11px] text-teal/60 tracking-widest uppercase">Documentation</span>
+  <div class="docs-layout">
+    <!-- Sidebar -->
+    <aside class="docs-sidebar" id="docs-sidebar">
+      <div class="sidebar-inner">
+        <div class="sidebar-logo">
+          <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="11" r="2" fill="var(--teal-d)"/>
+            <line x1="11" y1="2"  x2="11" y2="7"  stroke="var(--teal-d)" stroke-width="1.75" stroke-linecap="round"/>
+            <line x1="11" y1="15" x2="11" y2="20" stroke="var(--teal-d)" stroke-width="1.75" stroke-linecap="round"/>
+            <line x1="2"  y1="11" x2="7"  y2="11" stroke="var(--teal-d)" stroke-width="1.75" stroke-linecap="round"/>
+            <line x1="15" y1="11" x2="20" y2="11" stroke="var(--teal-d)" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+          <span class="syne sb-title">Docs</span>
         </div>
-        <h1 class="text-[52px] font-black tracking-tight text-ink leading-none">
-          Technical Reference
-        </h1>
-      </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-        <!-- Sidebar nav -->
-        <nav class="lg:col-span-1">
-          <div class="sticky top-28 space-y-1">
-            {sections.map(s => (
-              <a
-                href={`#${s.id}`}
-                class="block font-mono text-[12px] text-ink-secondary hover:text-ink py-2 px-3 rounded-lg hover:bg-panel transition-all"
-              >
-                {s.title}
-              </a>
-            ))}
-            <a
-              href="https://github.com/oguzhnatly/prompt-craft"
-              target="_blank"
-              rel="noopener"
-              class="flex items-center gap-2 font-mono text-[12px] text-teal/70 hover:text-teal py-2 px-3 mt-4 transition-colors"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
+        <nav class="sb-nav">
+          <div class="sb-group">
+            <span class="sb-group-label mono">Getting Started</span>
+            <a href="#quickstart" class="sb-link sb-active">Quick Start</a>
+            <a href="#install"    class="sb-link">Installation</a>
+            <a href="#permissions" class="sb-link">Permissions</a>
+          </div>
+          <div class="sb-group">
+            <span class="sb-group-label mono">Core Concepts</span>
+            <a href="#rmpa"        class="sb-link">RMPA Architecture</a>
+            <a href="#stages"      class="sb-link">The 7 Stages</a>
+            <a href="#styles"      class="sb-link">Optimization Styles</a>
+            <a href="#context"     class="sb-link">Context Engine</a>
+          </div>
+          <div class="sb-group">
+            <span class="sb-group-label mono">Configuration</span>
+            <a href="#providers"   class="sb-link">AI Providers</a>
+            <a href="#shortcuts"   class="sb-link">Keyboard Shortcuts</a>
+            <a href="#verbosity"   class="sb-link">Output Verbosity</a>
+          </div>
+          <div class="sb-group">
+            <span class="sb-group-label mono">Integrations</span>
+            <a href="#alfred"      class="sb-link">Alfred Workflow</a>
+            <a href="#raycast"     class="sb-link">Raycast Extension</a>
+          </div>
+          <div class="sb-group">
+            <span class="sb-group-label mono">References</span>
+            <a href="https://github.com/oguzhnatly/prompt-craft/blob/main/docs/RMPA_WHITEPAPER.md" target="_blank" class="sb-link sb-ext">
+              RMPA Whitepaper
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M7 2h3v3M10 2L5 7M4 3H2v7h7V8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="https://github.com/oguzhnatly/prompt-craft" target="_blank" class="sb-link sb-ext">
               GitHub
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M7 2h3v3M10 2L5 7M4 3H2v7h7V8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </nav>
+      </div>
+    </aside>
 
-        <!-- Content -->
-        <div class="lg:col-span-3 space-y-16">
-          {sections.map((section, i) => (
-            <div id={section.id} data-reveal>
-              <h2 class="font-mono text-[20px] font-semibold text-ink mb-6 pb-4 border-b border-border">
-                <span class="text-teal/40 text-[14px] mr-3">{String(i + 1).padStart(2, '0')}</span>
-                {section.title}
-              </h2>
-              <div class="prose prose-invert max-w-none">
-                {section.content.split('\n\n').map(para => (
-                  <p class="text-[14px] text-ink-secondary leading-relaxed mb-4">{para}</p>
-                ))}
+    <!-- Content -->
+    <main class="docs-main">
+      <div class="docs-content">
+
+        <!-- Quick Start -->
+        <section id="quickstart" class="doc-section">
+          <div class="ds-eyebrow mono">01</div>
+          <h1 class="ds-h1 syne">Quick Start</h1>
+          <p class="ds-lead">PromptCraft is a macOS menu bar app that intercepts your prompts and runs them through a 7-stage engineering pipeline before sending to any AI. You can start using it within two minutes of download.</p>
+
+          <div class="step-flow">
+            <div class="sf-step">
+              <div class="sf-num mono">1</div>
+              <div class="sf-content">
+                <h3>Download and install</h3>
+                <p>Download the <code>.dmg</code> from the <a href="/download">Download page</a>. Open it, drag PromptCraft to Applications, and launch it. The app appears in your macOS menu bar.</p>
               </div>
             </div>
-          ))}
-        </div>
+            <div class="sf-step">
+              <div class="sf-num mono">2</div>
+              <div class="sf-content">
+                <h3>Grant Accessibility access</h3>
+                <p>Go to <strong>System Settings → Privacy &amp; Security → Accessibility</strong> and enable PromptCraft. This is required to detect selected text and inject the optimized result.</p>
+                <div class="ds-callout">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1L1 4.5v5C1 13.06 4.13 16.43 8 17c3.87-.57 7-3.94 7-7.5v-5L8 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+                  Your data never leaves your machine via this permission. PromptCraft reads selected text only — no keylogging, no screenshots.
+                </div>
+              </div>
+            </div>
+            <div class="sf-step">
+              <div class="sf-num mono">3</div>
+              <div class="sf-content">
+                <h3>Set up your AI provider</h3>
+                <p>Click the PromptCraft icon in the menu bar, then open <strong>Preferences → Providers</strong>. Add your API key for Claude, GPT-4o, DeepSeek, or any supported model. Cloud subscribers skip this step — no keys needed.</p>
+              </div>
+            </div>
+            <div class="sf-step">
+              <div class="sf-num mono">4</div>
+              <div class="sf-content">
+                <h3>Use it</h3>
+                <p>Type your raw prompt in any app. Press <kbd>⌘⇧Space</kbd> (or your custom shortcut). PromptCraft processes it through the RMPA pipeline and copies the result to your clipboard — ready to paste anywhere.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="ds-divider"></div>
+
+        <!-- RMPA -->
+        <section id="rmpa" class="doc-section">
+          <div class="ds-eyebrow mono">02</div>
+          <h2 class="ds-h2 syne">RMPA Architecture</h2>
+          <p class="ds-body">Recursive Meta Prompt Architecture separates intent understanding from generation. Instead of sending your raw input to an AI, PromptCraft builds a structured intermediate representation of your intent — then assembles a precision-engineered prompt from that representation.</p>
+          <p class="ds-body">The pipeline runs in under 200ms for local inference. Cloud mode adds routing and context injection overhead but stays under 800ms for most requests.</p>
+
+          <div class="ds-spec-table">
+            <div class="dst-row">
+              <span class="dst-key mono">Pipeline</span>
+              <span class="dst-val">7-stage deterministic, always in order</span>
+            </div>
+            <div class="dst-row">
+              <span class="dst-key mono">Latency</span>
+              <span class="dst-val">&lt;200ms local · &lt;800ms Cloud</span>
+            </div>
+            <div class="dst-row">
+              <span class="dst-key mono">Context</span>
+              <span class="dst-val">Injected from local engine in stages 2 and 5</span>
+            </div>
+            <div class="dst-row">
+              <span class="dst-key mono">Whitepaper</span>
+              <span class="dst-val"><a href="https://github.com/oguzhnatly/prompt-craft/blob/main/docs/RMPA_WHITEPAPER.md" target="_blank">docs/RMPA_WHITEPAPER.md on GitHub</a></span>
+            </div>
+          </div>
+        </section>
+
+        <div class="ds-divider"></div>
+
+        <!-- Stages -->
+        <section id="stages" class="doc-section">
+          <div class="ds-eyebrow mono">03</div>
+          <h2 class="ds-h2 syne">The 7 Stages</h2>
+          <p class="ds-body">Each stage resolves one dimension of prompt ambiguity. Stages run in sequence. Later stages can reference the output of earlier ones.</p>
+
+          <div class="stages-table">
+            {[
+              { n:'01', name:'Role Assignment',    tag:'R', desc:'Defines the expert identity, authority level, and domain specialization the AI must adopt.' },
+              { n:'02', name:'Context Injection',  tag:'M', desc:'Injects structured background including session history, project context, and prior learnings.' },
+              { n:'03', name:'Constraint Binding', tag:'P', desc:'Hard-binds scope limits, word counts, format restrictions, and evidence requirements.' },
+              { n:'04', name:'Format Sculpting',   tag:'M', desc:'Pre-specifies the exact structural shape of the response before generation begins.' },
+              { n:'05', name:'Chain Reasoning',    tag:'P', desc:'Embeds step-by-step reasoning protocols to force analytical depth before conclusion.' },
+              { n:'06', name:'Tone Calibration',   tag:'A', desc:'Locks register: expert, approachable, technical, executive — matched to the audience.' },
+              { n:'07', name:'Output Validation',  tag:'A', desc:'Final gate: checks consistency, confirms all sub-questions addressed, verifies no contradictions.' },
+            ].map(s => (
+              <div class="st-row">
+                <span class="st-n mono">{s.n}</span>
+                <span class="st-name syne">{s.name}</span>
+                <span class="st-tag mono">{s.tag}</span>
+                <span class="st-desc">{s.desc}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <div class="ds-divider"></div>
+
+        <!-- Providers -->
+        <section id="providers" class="doc-section">
+          <div class="ds-eyebrow mono">04</div>
+          <h2 class="ds-h2 syne">AI Provider Configuration</h2>
+          <p class="ds-body">PromptCraft supports multiple AI providers. Pro users configure API keys in Preferences → Providers. Keys are stored in the macOS Keychain — never in plain text.</p>
+
+          <div class="provider-table">
+            {[
+              { name:'Claude (Anthropic)',  models:'claude-3-5-sonnet, claude-3-5-haiku, claude-3-opus', key:'ANTHROPIC_API_KEY', cloud: true },
+              { name:'GPT-4o (OpenAI)',     models:'gpt-4o, gpt-4o-mini, gpt-4.5',                     key:'OPENAI_API_KEY',    cloud: true },
+              { name:'DeepSeek',            models:'deepseek-v3, deepseek-reasoner',                     key:'DEEPSEEK_API_KEY',  cloud: true },
+              { name:'Ollama (local)',       models:'Any model served locally on port 11434',             key:'None required',    cloud: false },
+            ].map(p => (
+              <div class="pv-row">
+                <div class="pv-name">{p.name}</div>
+                <div class="pv-models mono">{p.models}</div>
+                <div class="pv-key mono">{p.key}</div>
+                <div class={'pv-cloud ' + (p.cloud ? 'pv-yes' : 'pv-no')} aria-label={p.cloud ? 'Available on Cloud' : 'Not on Cloud'}>{p.cloud ? '✓ Cloud' : '— Local only'}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <div class="ds-divider"></div>
+
+        <!-- Shortcuts -->
+        <section id="shortcuts" class="doc-section">
+          <div class="ds-eyebrow mono">05</div>
+          <h2 class="ds-h2 syne">Keyboard Shortcuts</h2>
+          <div class="shortcuts-table">
+            {[
+              ['⌘⇧Space',  'Toggle PromptCraft popover (configurable)'],
+              ['⌘↩',       'Optimize the current prompt'],
+              ['⌘1–7',     'Select optimization style by position'],
+              ['⌘⇧C',      'Copy optimized output to clipboard'],
+              ['⌘⇧V',      'Open clipboard history'],
+              ['⌘K',       'Open command palette'],
+              ['⌘N',       'Clear input and output'],
+              ['⌘H',       'Open optimization history'],
+              ['⌘,',       'Open Preferences'],
+              ['⌘⇧/',      'Show all keyboard shortcuts'],
+              ['Esc',       'Cancel processing or go back'],
+            ].map(s => (
+              <div class="kbs-row">
+                <div class="kbs-keys mono">{s[0]}</div>
+                <div class="kbs-desc">{s[1]}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <div class="ds-divider"></div>
+
+        <!-- Alfred -->
+        <section id="alfred" class="doc-section">
+          <div class="ds-eyebrow mono">06</div>
+          <h2 class="ds-h2 syne">Alfred Workflow</h2>
+          <p class="ds-body">The Alfred workflow is open source and available in the repository. It lets you trigger PromptCraft optimization directly from Alfred without opening the menu bar popover.</p>
+
+          <div class="ds-code-block mono">
+            <div class="dcb-bar">alfred-workflow/</div>
+            <pre>1. Import PromptCraft.alfredworkflow from the repository
+2. Set your API endpoint in the workflow variables
+3. Trigger with keyword <strong>pc</strong> followed by your prompt
+4. The optimized result is copied to your clipboard</pre>
+          </div>
+
+          <p class="ds-body">
+            <a href="https://github.com/oguzhnatly/prompt-craft" target="_blank" rel="noopener">View source on GitHub →</a>
+          </p>
+        </section>
+
+        <div class="ds-divider"></div>
+
+        <!-- Raycast -->
+        <section id="raycast" class="doc-section">
+          <div class="ds-eyebrow mono">07</div>
+          <h2 class="ds-h2 syne">Raycast Extension</h2>
+          <p class="ds-body">The Raycast extension provides PromptCraft integration inside Raycast. Search for "PromptCraft" in the Raycast Store or install from the repository.</p>
+
+          <div class="ds-code-block mono">
+            <div class="dcb-bar">raycast-extension/</div>
+            <pre>1. Install from the Raycast Store (search "PromptCraft")
+   or clone from raycast-extension/ in the repository
+2. Configure your PromptCraft API endpoint in preferences
+3. Use the "Optimize Prompt" command from anywhere in Raycast</pre>
+          </div>
+        </section>
+
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
+
   <Footer />
 </Base>
+
+<style>
+  .docs-layout {
+    display: flex;
+    min-height: 100vh;
+    padding-top: 64px;
+    background: var(--paper);
+  }
+
+  /* Sidebar */
+  .docs-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+    scrollbar-width: thin;
+    scrollbar-color: var(--paper-3) transparent;
+  }
+
+  .sidebar-inner { padding: 32px 0 40px; }
+
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 24px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .sb-title { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+
+  .sb-nav { display: flex; flex-direction: column; gap: 0; padding: 0 12px; }
+  .sb-group { margin-bottom: 20px; }
+  .sb-group-label {
+    display: block;
+    font-size: 10px; color: var(--ink-4);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0 12px; margin-bottom: 4px;
+  }
+
+  .sb-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 13px; font-weight: 500;
+    color: var(--ink-2);
+    transition: background .12s, color .12s;
+    cursor: none;
+  }
+  .sb-link:hover { background: var(--paper-2); color: var(--ink); }
+  .sb-active { background: var(--paper-2); color: var(--ink); font-weight: 600; }
+  .sb-ext { gap: 6px; color: var(--ink-3); }
+  .sb-ext svg { opacity: 0.5; flex-shrink: 0; }
+
+  /* Main */
+  .docs-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .docs-content {
+    max-width: 720px;
+    padding: 48px 48px 100px;
+  }
+
+  /* Sections */
+  .doc-section { margin-bottom: 0; }
+  .ds-divider { height: 1px; background: var(--border); margin: 56px 0; }
+
+  .ds-eyebrow { font-size: 11px; color: var(--teal-d); letter-spacing: 0.12em; margin-bottom: 10px; }
+
+  .ds-h1 {
+    font-size: clamp(32px, 3.5vw, 44px);
+    font-weight: 800; letter-spacing: -0.04em;
+    color: var(--ink); margin-bottom: 20px;
+    line-height: 1.1;
+  }
+  .ds-h2 {
+    font-size: clamp(24px, 2.5vw, 32px);
+    font-weight: 800; letter-spacing: -0.04em;
+    color: var(--ink); margin-bottom: 18px;
+    line-height: 1.1;
+  }
+  .ds-lead {
+    font-size: 17px; line-height: 1.75;
+    color: var(--ink-2); margin-bottom: 36px;
+  }
+  .ds-body {
+    font-size: 15px; line-height: 1.75;
+    color: var(--ink-2); margin-bottom: 20px;
+  }
+  .ds-body a { color: var(--teal-d); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Callout */
+  .ds-callout {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 14px 16px;
+    background: rgba(0,200,150,0.05);
+    border: 1px solid rgba(0,200,150,0.2);
+    border-radius: 10px;
+    font-size: 13px; line-height: 1.6; color: var(--teal-d);
+    margin-top: 16px;
+  }
+  .ds-callout svg { flex-shrink: 0; margin-top: 2px; }
+
+  /* Step flow */
+  .step-flow { display: flex; flex-direction: column; gap: 0; margin-top: 32px; }
+  .sf-step {
+    display: flex; gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .sf-step:last-child { border-bottom: none; }
+  .sf-num {
+    font-size: 22px; font-weight: 700; color: var(--teal-d);
+    letter-spacing: -0.03em; flex-shrink: 0; width: 28px;
+    line-height: 1.3;
+  }
+  .sf-content { flex: 1; }
+  .sf-content h3 { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 8px; font-family: 'Syne', sans-serif; }
+  .sf-content p  { font-size: 14px; line-height: 1.7; color: var(--ink-2); }
+  .sf-content a  { color: var(--teal-d); text-decoration: underline; text-underline-offset: 3px; }
+
+  kbd {
+    display: inline-flex; align-items: center;
+    padding: 2px 5px;
+    background: var(--paper-2); border: 1px solid var(--border);
+    border-radius: 4px; font-family: 'DM Mono', monospace;
+    font-size: 12px; color: var(--ink-2);
+    box-shadow: 0 1px 0 var(--border);
+  }
+
+  /* Spec table */
+  .ds-spec-table {
+    background: var(--paper-2); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    margin: 20px 0;
+  }
+  .dst-row {
+    display: flex; align-items: flex-start; gap: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+  }
+  .dst-row:last-child { border-bottom: none; }
+  .dst-key { width: 110px; font-size: 12px; color: var(--ink-3); flex-shrink: 0; }
+  .dst-val { font-size: 13px; color: var(--ink-2); line-height: 1.5; flex: 1; }
+  .dst-val a { color: var(--teal-d); }
+
+  /* Stages table */
+  .stages-table { display: flex; flex-direction: column; gap: 0; margin: 24px 0; }
+  .st-row {
+    display: grid; grid-template-columns: 36px 160px 28px 1fr;
+    align-items: start; gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .st-row:last-child { border-bottom: none; }
+  .st-n { font-size: 11px; color: var(--ink-4); letter-spacing: 0.1em; }
+  .st-name { font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+  .st-tag {
+    font-size: 10px; font-weight: 600;
+    color: var(--teal-d);
+    background: rgba(0,200,150,0.08);
+    border: 1px solid rgba(0,200,150,0.2);
+    border-radius: 4px; padding: 2px 4px;
+    height: fit-content;
+  }
+  .st-desc { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+
+  /* Provider table */
+  .provider-table {
+    background: var(--paper-2); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; margin: 20px 0;
+  }
+  .pv-row {
+    display: grid; grid-template-columns: 160px 1fr 140px 100px;
+    align-items: center;
+    padding: 14px 20px; gap: 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .pv-row:last-child { border-bottom: none; }
+  .pv-name { font-weight: 600; color: var(--ink); }
+  .pv-models { font-size: 11px; color: var(--ink-3); }
+  .pv-key { font-size: 11px; color: var(--ink-3); }
+  .pv-yes { color: var(--teal-d); font-size: 11px; font-family: 'DM Mono', monospace; }
+  .pv-no  { color: var(--ink-4); font-size: 11px; font-family: 'DM Mono', monospace; }
+
+  /* Shortcuts */
+  .shortcuts-table { display: flex; flex-direction: column; margin: 24px 0; }
+  .kbs-row {
+    display: flex; align-items: center; gap: 24px;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .kbs-row:last-child { border-bottom: none; }
+  .kbs-keys {
+    width: 100px; flex-shrink: 0;
+    font-size: 14px; font-weight: 600; color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+  .kbs-desc { font-size: 13px; color: var(--ink-2); }
+
+  /* Code block */
+  .ds-code-block {
+    background: var(--ink); color: rgba(255,255,255,0.8);
+    border-radius: 12px; overflow: hidden; margin: 20px 0;
+    font-size: 12px;
+  }
+  .dcb-bar {
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 11px; color: rgba(255,255,255,0.4);
+    letter-spacing: 0.04em;
+  }
+  .ds-code-block pre { padding: 16px; line-height: 1.8; white-space: pre-wrap; }
+  .ds-code-block strong { color: var(--teal); }
+
+  @media (max-width: 768px) {
+    .docs-sidebar { display: none; }
+    .docs-content { padding: 32px 20px 60px; }
+    .st-row { grid-template-columns: 1fr; gap: 4px; }
+    .pv-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+
+<script>
+  // Active sidebar link tracking
+  const sections = document.querySelectorAll('.doc-section');
+  const links    = document.querySelectorAll('.sb-link');
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('sb-active'));
+        const id = e.target.id;
+        const active = document.querySelector(`.sb-link[href="#${id}"]`);
+        if (active) active.classList.add('sb-active');
+      }
+    });
+  }, { threshold: 0.3, rootMargin: '-64px 0px -40% 0px' });
+
+  sections.forEach(s => io.observe(s));
+</script>
