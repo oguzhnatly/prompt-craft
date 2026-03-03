@@ -135,7 +135,7 @@
       <div class="ftr-detail">
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
-          Zero telemetry — not even anonymous usage data
+          Zero telemetry, not even anonymous usage data
         </div>
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
@@ -144,6 +144,173 @@
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
           Works fully offline with any Ollama model
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 4: Second Brain / Memory → visual right -->
+  <div class="ft-row ft-row-b" data-reveal>
+    <div class="ftr-text">
+      <span class="ftr-n mono">04</span>
+      <h3 class="ftr-h3">A second brain that learns your work.</h3>
+      <p class="ftr-body">
+        Every optimization is embedded locally using Apple's NaturalLanguage framework and stored in a private SQLite database on your Mac. Over time, PromptCraft builds a semantic map of your projects, technical vocabulary, and working patterns. Future prompts automatically retrieve the most relevant past context and inject it into the assembly stage without you writing a single word of background.
+      </p>
+      <div class="ftr-detail">
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          On-device embeddings, no API call, no cloud sync
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Project clusters named by entity frequency, not random IDs
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Stores persons, projects, environments, technical terms
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Up to 1,000 context entries, relevance threshold filtering
+        </div>
+      </div>
+    </div>
+    <div class="ftr-visual">
+      <div class="ft-terminal">
+        <div class="ftt-bar">
+          <span class="fttb-dot" style="background:#FF5F57"></span>
+          <span class="fttb-dot" style="background:#FFBD2E"></span>
+          <span class="fttb-dot" style="background:#28C840"></span>
+          <span class="fttb-title mono">memory.clusters</span>
+        </div>
+        <div class="ftt-body mono">
+          <div class="fttl"><span class="fttl-key">cluster</span><span class="fttl-sep"> · </span><span class="fttl-val">friend-surf</span><span class="fttl-dim" style="margin-left:8px">142 entries</span></div>
+          <div class="fttl"><span class="fttl-key">cluster</span><span class="fttl-sep"> · </span><span class="fttl-val">promptcraft</span><span class="fttl-dim" style="margin-left:8px">89 entries</span></div>
+          <div class="fttl"><span class="fttl-key">cluster</span><span class="fttl-sep"> · </span><span class="fttl-val">swiftui-mobile</span><span class="fttl-dim" style="margin-left:8px">56 entries</span></div>
+          <div class="fttl fttl-dim"><span class="fttl-key">embedding</span><span class="fttl-sep"> = </span><span class="fttl-val">NL on-device · 512-dim</span></div>
+          <div class="fttl fttl-dim"><span class="fttl-key">retrieval</span><span class="fttl-sep"> = </span><span class="fttl-val">cosine ≥ 0.65</span></div>
+          <div class="fttl fttl-hi">
+            <span class="fttl-tag">
+              <iconify-icon icon="lucide:check-circle-2" style="font-size:11px;vertical-align:middle;margin-right:3px;" aria-hidden="true"></iconify-icon>
+              3 relevant entries injected
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 5: Works everywhere → visual left -->
+  <div class="ft-row ft-row-a" data-reveal>
+    <div class="ftr-visual">
+      <div class="ft-anywhere-grid">
+        <div class="ftag-card">
+          <iconify-icon icon="lucide:type" style="font-size:18px;color:var(--acc);" aria-hidden="true"></iconify-icon>
+          <strong>Inline overlay</strong>
+          <span>Select text in any app. PromptCraft replaces it with the optimized version instantly. Xcode, VS Code, Notes, anywhere.</span>
+        </div>
+        <div class="ftag-card">
+          <iconify-icon icon="lucide:folder-sync" style="font-size:18px;color:var(--acc);" aria-hidden="true"></iconify-icon>
+          <strong>Watch folder</strong>
+          <span>Drop a .txt file into a watched folder. PromptCraft detects it, optimizes it, and copies the result to your clipboard automatically.</span>
+        </div>
+        <div class="ftag-card">
+          <iconify-icon icon="lucide:terminal" style="font-size:18px;color:var(--acc);" aria-hidden="true"></iconify-icon>
+          <strong>Local API</strong>
+          <span>REST endpoint on port 9847 with bearer token auth. Any tool, script, or workflow can trigger optimization via a single POST call.</span>
+        </div>
+        <div class="ftag-card">
+          <iconify-icon icon="lucide:zap" style="font-size:18px;color:var(--acc);" aria-hidden="true"></iconify-icon>
+          <strong>Alfred workflow</strong>
+          <span>Type <code>pc your prompt</code> in Alfred. The optimized result copies to clipboard. Full workflow file included in the download.</span>
+        </div>
+      </div>
+    </div>
+    <div class="ftr-text">
+      <span class="ftr-n mono">05</span>
+      <h3 class="ftr-h3">Works in every app, not just PromptCraft.</h3>
+      <p class="ftr-body">
+        The menu bar popover is the main interface. But PromptCraft also runs an inline overlay that intercepts selected text in any application, a watch folder that processes files on drop, a local REST API for scripting and workflows, and an Alfred workflow for keyboard-first users. Wherever you write, PromptCraft can reach it.
+      </p>
+      <div class="ftr-detail">
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Desktop window mode for distraction-free editing
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Configurable delay and excluded app list for inline overlay
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Rate limited local API, 10 requests per minute
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 6: Export to any tool → visual right -->
+  <div class="ft-row ft-row-b" data-reveal>
+    <div class="ftr-text">
+      <span class="ftr-n mono">06</span>
+      <h3 class="ftr-h3">Export to every tool you already use.</h3>
+      <p class="ftr-body">
+        An optimized prompt is only valuable if it reaches the right destination. PromptCraft copies output as plain text, Markdown, Claude XML, or ChatGPT format. It also exports directly as a <code>.cursorrules</code> file for Cursor, a Claude Project system prompt, a ChatGPT Custom Instructions file, or a GitHub Issue. One optimized result, seven different delivery formats.
+      </p>
+      <div class="ftr-detail">
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Copy for Claude, ChatGPT, GitHub Issue, Markdown, plain text
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Save as .cursorrules, Claude Project Instructions, or ChatGPT Custom Instructions
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Explain mode shows exactly why the output changed from the input
+        </div>
+        <div class="ftrd-item">
+          <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
+          Diff view highlights every word the pipeline added or changed
+        </div>
+      </div>
+    </div>
+    <div class="ftr-visual">
+      <div class="ft-export-list">
+        <div class="ftel-item ftel-active">
+          <iconify-icon icon="lucide:copy" style="font-size:13px;" aria-hidden="true"></iconify-icon>
+          <span>Copy as Plain Text</span>
+        </div>
+        <div class="ftel-item">
+          <iconify-icon icon="lucide:code-2" style="font-size:13px;" aria-hidden="true"></iconify-icon>
+          <span>Copy as Markdown</span>
+        </div>
+        <div class="ftel-item">
+          <iconify-icon icon="lucide:bot" style="font-size:13px;" aria-hidden="true"></iconify-icon>
+          <span>Copy for Claude (XML)</span>
+        </div>
+        <div class="ftel-item">
+          <iconify-icon icon="lucide:message-square" style="font-size:13px;" aria-hidden="true"></iconify-icon>
+          <span>Copy for ChatGPT</span>
+        </div>
+        <div class="ftel-item">
+          <iconify-icon icon="lucide:github" style="font-size:13px;" aria-hidden="true"></iconify-icon>
+          <span>Copy for GitHub Issue</span>
+        </div>
+        <div class="ftel-item ftel-divider"></div>
+        <div class="ftel-item">
+          <iconify-icon icon="lucide:settings-2" style="font-size:13px;color:var(--acc);" aria-hidden="true"></iconify-icon>
+          <span style="color:var(--acc)">Save as .cursorrules</span>
+        </div>
+        <div class="ftel-item">
+          <iconify-icon icon="lucide:file-text" style="font-size:13px;color:var(--acc);" aria-hidden="true"></iconify-icon>
+          <span style="color:var(--acc)">Claude Project Instructions</span>
+        </div>
+        <div class="ftel-item">
+          <iconify-icon icon="lucide:sparkles" style="font-size:13px;color:var(--acc);" aria-hidden="true"></iconify-icon>
+          <span style="color:var(--acc)">ChatGPT Custom Instructions</span>
         </div>
       </div>
     </div>
@@ -254,10 +421,45 @@
   .ftsg-n { font-size: 28px; font-weight: 700; letter-spacing: -0.05em; color: var(--ink); line-height: 1; }
   .ftsg-l { font-size: 11px; color: var(--dim); letter-spacing: 0.03em; }
 
+  /* Anywhere grid (row 5) */
+  .ft-anywhere-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    background: var(--bdr); border-radius: 8px; overflow: hidden;
+    height: 100%; min-height: 280px;
+  }
+  .ftag-card {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 24px 20px;
+    background: var(--bg2);
+    font-size: 13px; color: var(--mid);
+  }
+  .ftag-card strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .ftag-card code { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--acc); }
+
+  /* Export list (row 6) */
+  .ft-export-list {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--bdr); border-radius: 10px;
+    overflow: hidden; background: var(--bg2);
+    width: 100%; max-width: 380px; margin: 0 auto;
+  }
+  .ftel-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 16px;
+    font-size: 13px; color: var(--mid);
+    border-bottom: 1px solid var(--bdr);
+    transition: background .12s;
+  }
+  .ftel-item:last-child { border-bottom: none; }
+  .ftel-item:hover { background: var(--bg3); }
+  .ftel-active { color: var(--ink); font-weight: 500; }
+  .ftel-divider { padding: 0; height: 1px; background: var(--bdr-hi); }
+
   @media (max-width: 900px) {
     .ft-row-a, .ft-row-b { grid-template-columns: 1fr; }
     .ft-row-a .ftr-visual, .ft-row-b .ftr-visual { border-right: none; border-left: none; border-bottom: 1px solid var(--bdr); order: 0; }
     .ft-row-b .ftr-text { order: 0; }
     .ftr-text, .ftr-visual { padding: 36px 20px; }
+    .ft-anywhere-grid { grid-template-columns: 1fr; }
   }
 </style>

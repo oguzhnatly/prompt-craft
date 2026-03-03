@@ -15,6 +15,12 @@ import Footer from '../components/Footer.astro';
         <a class="ds-link" href="#pipeline">7-stage pipeline</a>
         <a class="ds-link" href="#styles">Optimization styles</a>
         <a class="ds-link" href="#verbosity">Verbosity modes</a>
+        <a class="ds-link" href="#context-engine">Context Engine</a>
+        <a class="ds-link" href="#templates">Templates</a>
+        <a class="ds-link" href="#inline">Inline overlay</a>
+        <a class="ds-link" href="#watchfolder">Watch folder</a>
+        <a class="ds-link" href="#localapi">Local API</a>
+        <a class="ds-link" href="#export">Export formats</a>
         <a class="ds-link" href="#license">License activation</a>
         <a class="ds-link" href="#ollama">Ollama setup</a>
         <a class="ds-link" href="#cloud">Cloud routing</a>
@@ -238,6 +244,178 @@ import Footer from '../components/Footer.astro';
               <div class="dbv-example mono">→ "Walk through every step, with examples."</div>
             </div>
           </div>
+        </section>
+
+        <!-- CONTEXT ENGINE -->
+        <section class="db-section" id="context-engine" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:brain-circuit" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Memory</div>
+          <h2 class="db-h2">Context Engine</h2>
+          <p class="db-p">The Context Engine is a fully local semantic memory system. Every optimization is embedded on-device using Apple's NaturalLanguage framework and stored in a private SQLite database. Nothing ever leaves your Mac. Over time, the engine builds a map of your projects, vocabulary, and working patterns, and automatically retrieves relevant context for each new prompt.</p>
+
+          <h3 class="db-h3">How it works</h3>
+          <p class="db-p">When you optimize a prompt, PromptCraft generates a 512-dimensional embedding of your input and output text using a local NLP model — no API call, no internet. That embedding is stored alongside structured metadata: persons, projects, environments, technical terms, and temporal markers extracted by the Entity Extractor stage.</p>
+          <p class="db-p">For each new optimization, the engine computes cosine similarity against all stored entries and retrieves the top matches above the relevance threshold (default 0.65). The matched context is injected into the Prompt Assembler stage without you writing any background.</p>
+
+          <h3 class="db-h3">Project clusters</h3>
+          <p class="db-p">PromptCraft automatically groups your past prompts into named project clusters. Cluster names are derived from the most frequent entity in each group (project name, environment, or technical term) — not random IDs. You can rename any cluster from the context panel inside the app.</p>
+          <p class="db-p">Reclustering happens automatically in the background every time 10 new entries are indexed. Clusters with fewer than 5 entries are hidden from the display until they grow.</p>
+
+          <div class="db-table-wrap">
+            <table class="db-table">
+              <thead><tr><th>Setting</th><th>Default</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>Context Engine enabled</td><td>On</td><td>Toggle memory collection on or off</td></tr>
+                <tr><td>Relevance threshold</td><td>0.65</td><td>Minimum cosine similarity to include an entry</td></tr>
+                <tr><td>Max entries per prompt</td><td>1,000</td><td>Total stored context entries before oldest are pruned</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="db-callout">
+            <iconify-icon icon="lucide:shield-check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;"></iconify-icon>
+            <p>All embeddings and context data are stored in a private SQLite database at <code>~/Library/Application Support/PromptCraft/context.sqlite</code>. The database never syncs to iCloud, never leaves your machine, and is excluded from backups by default.</p>
+          </div>
+        </section>
+
+        <!-- TEMPLATES -->
+        <section class="db-section" id="templates" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:layout-template" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Reusable prompts</div>
+          <h2 class="db-h2">Templates</h2>
+          <p class="db-p">Templates let you define reusable prompt structures with named placeholders. When you apply a template, PromptCraft fills in the placeholders and passes the assembled text through the full 7-stage optimization pipeline before showing the result.</p>
+
+          <h3 class="db-h3">Creating a template</h3>
+          <div class="db-steps">
+            <div class="db-step">
+              <div class="dbs-n mono">01</div>
+              <div class="dbs-body"><strong>Open Templates</strong><p>Click the grid icon in the app header, then click <strong>New Template</strong>.</p></div>
+            </div>
+            <div class="db-step">
+              <div class="dbs-n mono">02</div>
+              <div class="dbs-body"><strong>Write your template</strong><p>Use <code>&#123;&#123;placeholder&#125;&#125;</code> syntax for variable parts. Example: <code>Explain &#123;&#123;concept&#125;&#125; to a &#123;&#123;audience&#125;&#125; in &#123;&#123;tone&#125;&#125; tone.</code></p></div>
+            </div>
+            <div class="db-step">
+              <div class="dbs-n mono">03</div>
+              <div class="dbs-body"><strong>Fill placeholders and optimize</strong><p>Select the template from the popover. PromptCraft shows a form for each placeholder. Fill them in and press Optimize.</p></div>
+            </div>
+          </div>
+
+          <h3 class="db-h3">Exporting and importing templates</h3>
+          <p class="db-p">Templates can be exported as a <code>.promptcraft-templates</code> JSON file and imported on another machine. Use <strong>Settings → Templates → Export All</strong>. The file includes all template text, categories, and metadata, but no personal context data.</p>
+        </section>
+
+        <!-- INLINE OVERLAY -->
+        <section class="db-section" id="inline" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:type" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Any app</div>
+          <h2 class="db-h2">Inline overlay</h2>
+          <p class="db-p">The inline overlay lets you optimize text directly inside any macOS application — Xcode, VS Code, Notion, Notes, Mail, Terminal, or any text field. Select the text you want to optimize, wait for the overlay to appear, and press Enter. The original text is replaced with the optimized version.</p>
+
+          <h3 class="db-h3">Setup</h3>
+          <p class="db-p">The inline overlay requires the Accessibility permission already granted during installation. Enable it in <strong>Settings → Behavior → Inline Overlay</strong>.</p>
+
+          <div class="db-table-wrap">
+            <table class="db-table">
+              <thead><tr><th>Setting</th><th>Default</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>Inline overlay enabled</td><td>On</td><td>Show overlay when text is selected</td></tr>
+                <tr><td>Activation delay</td><td>500ms</td><td>How long to wait after selection before showing overlay</td></tr>
+                <tr><td>Excluded apps</td><td>None</td><td>Comma-separated app bundle IDs to skip</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="db-callout">
+            <iconify-icon icon="lucide:info" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;"></iconify-icon>
+            <p>If you use an app where text selection triggers unexpected behavior, add its bundle ID to the excluded list. To find a bundle ID, run <code>osascript -e 'id of app "AppName"'</code> in Terminal.</p>
+          </div>
+        </section>
+
+        <!-- WATCH FOLDER -->
+        <section class="db-section" id="watchfolder" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:folder-sync" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Automation</div>
+          <h2 class="db-h2">Watch folder</h2>
+          <p class="db-p">The watch folder monitors a directory on your Mac. When a new <code>.txt</code> file appears in that folder (up to 100 KB), PromptCraft optimizes its contents automatically and copies the result to your clipboard. A system notification confirms when optimization completes.</p>
+
+          <h3 class="db-h3">Setup</h3>
+          <div class="db-steps">
+            <div class="db-step">
+              <div class="dbs-n mono">01</div>
+              <div class="dbs-body"><strong>Enable the watch folder</strong><p>Go to <strong>Settings → Automation → Watch Folder</strong> and toggle it on.</p></div>
+            </div>
+            <div class="db-step">
+              <div class="dbs-n mono">02</div>
+              <div class="dbs-body"><strong>Choose a folder</strong><p>Click <strong>Choose Folder</strong> and pick any accessible directory. A common pattern is a desktop folder named <code>to-optimize</code>.</p></div>
+            </div>
+            <div class="db-step">
+              <div class="dbs-n mono">03</div>
+              <div class="dbs-body"><strong>Set a style</strong><p>Optionally assign a specific optimization style to the watch folder. Files dropped here will always use that style, regardless of your current selection in the app.</p></div>
+            </div>
+          </div>
+
+          <p class="db-p">PromptCraft tracks processed filenames to avoid reprocessing the same file twice. To reprocess, delete the file and drop a fresh copy.</p>
+        </section>
+
+        <!-- LOCAL API -->
+        <section class="db-section" id="localapi" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:terminal" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Integrations</div>
+          <h2 class="db-h2">Local API</h2>
+          <p class="db-p">PromptCraft exposes a local REST API on port 9847. Any tool, script, or workflow can send a prompt and receive back the optimized result. The Alfred workflow (included in the download) uses this API. You can build custom integrations with Raycast, shell scripts, or any HTTP client.</p>
+
+          <h3 class="db-h3">Enable the API</h3>
+          <p class="db-p">Go to <strong>Settings → Behavior → Local API Server</strong> and toggle it on. Copy your bearer token from the same panel.</p>
+
+          <h3 class="db-h3">Endpoint</h3>
+          <div class="db-code-block mono">POST http://localhost:9847/optimize<br>Authorization: Bearer YOUR_TOKEN<br>Content-Type: application/json<br><br>&#123;<br>&nbsp;&nbsp;"text": "your raw prompt here",<br>&nbsp;&nbsp;"style": "engineering",<br>&nbsp;&nbsp;"verbosity": "concise"<br>&#125;</div>
+
+          <h3 class="db-h3">Alfred workflow</h3>
+          <p class="db-p">The Alfred workflow is included in the PromptCraft download folder. Import it into Alfred (Powerpack required), set <code>PROMPTCRAFT_TOKEN</code> and optionally <code>PROMPTCRAFT_PORT</code> in the workflow variables, then type <code>pc your prompt text</code> in Alfred to copy an optimized result to clipboard.</p>
+
+          <div class="db-table-wrap">
+            <table class="db-table">
+              <thead><tr><th>Setting</th><th>Default</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>Local API enabled</td><td>Off</td><td>Start the local HTTP server</td></tr>
+                <tr><td>Port</td><td>9847</td><td>Listen port (configurable)</td></tr>
+                <tr><td>Rate limit</td><td>10 req/min</td><td>Per-token request cap</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- EXPORT FORMATS -->
+        <section class="db-section" id="export" data-r>
+          <div class="dbs-label mono"><iconify-icon icon="lucide:share-2" style="font-size:11px;vertical-align:middle;margin-right:4px;"></iconify-icon>Delivery</div>
+          <h2 class="db-h2">Export formats</h2>
+          <p class="db-p">After optimization, the output row shows a copy button and a download menu. PromptCraft supports five clipboard formats and four file export destinations.</p>
+
+          <h3 class="db-h3">Clipboard formats</h3>
+          <div class="db-table-wrap">
+            <table class="db-table">
+              <thead><tr><th>Format</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>Plain Text</td><td>Raw optimized text, no formatting</td></tr>
+                <tr><td>Markdown</td><td>Wrapped in a fenced code block with a <code>prompt</code> language tag</td></tr>
+                <tr><td>Claude (XML)</td><td>Wrapped in <code>&lt;prompt&gt;</code> XML tags, compatible with Claude Projects and API calls</td></tr>
+                <tr><td>ChatGPT</td><td>Formatted as a ChatGPT-compatible user message</td></tr>
+                <tr><td>GitHub Issue</td><td>Formatted with a title line and body, ready to paste into a new issue</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="db-h3">File export destinations</h3>
+          <div class="db-table-wrap">
+            <table class="db-table">
+              <thead><tr><th>Destination</th><th>Output file</th></tr></thead>
+              <tbody>
+                <tr><td>Cursor Rules</td><td><code>.cursorrules</code> — paste into your project root for Cursor IDE</td></tr>
+                <tr><td>Claude Project Instructions</td><td><code>system-prompt-claude.md</code> — upload to a Claude Project</td></tr>
+                <tr><td>ChatGPT Custom Instructions</td><td><code>chatgpt-instructions.txt</code> — paste into GPT settings</td></tr>
+                <tr><td>Raw System Prompt</td><td><code>system-prompt.txt</code> — plain text for any provider</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="db-h3">Explain mode and diff view</h3>
+          <p class="db-p">Enable <strong>Explain mode</strong> in settings to see a brief note after each optimization explaining what the pipeline changed and why. Enable <strong>Diff view</strong> to see a word-level diff highlighting every insertion and deletion between your input and the optimized output.</p>
         </section>
 
         <!-- LICENSE -->
@@ -525,7 +703,19 @@ import Footer from '../components/Footer.astro';
   .dbv-desc { font-size: 13px; line-height: 1.7; color: var(--mid); flex: 1; }
   .dbv-example { font-size: 11px; color: var(--acc); opacity: .7; }
 
-  /* table */
+  /* h3 inside doc sections */
+  .db-h3 { font-size: 16px; font-weight: 650; color: var(--ink); margin: 28px 0 8px; letter-spacing: -0.02em; }
+
+  /* real HTML table (new sections) */
+  .db-table-wrap { overflow-x: auto; margin: 16px 0 24px; }
+  .db-table-wrap table { width: 100%; border-collapse: collapse; border: 1px solid var(--bdr); border-radius: 10px; overflow: hidden; font-size: 13px; }
+  .db-table-wrap thead { background: var(--bg2); }
+  .db-table-wrap th { padding: 10px 14px; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); text-align: left; border-bottom: 1px solid var(--bdr); }
+  .db-table-wrap td { padding: 11px 14px; color: var(--mid); border-bottom: 1px solid var(--bdr); vertical-align: top; line-height: 1.55; }
+  .db-table-wrap tr:last-child td { border-bottom: none; }
+  .db-table-wrap code { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--acc); }
+
+  /* div-based table (existing sections) */
   .db-table { border: 1px solid var(--bdr); border-radius: 10px; overflow: hidden; margin: 20px 0; }
   .db-th { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; padding: 10px 16px; background: var(--bg2); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--bdr); }
   .db-tr { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; padding: 12px 16px; font-size: 13px; color: var(--mid); border-bottom: 1px solid var(--bdr); }
