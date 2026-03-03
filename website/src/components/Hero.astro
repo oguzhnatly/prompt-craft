@@ -38,13 +38,8 @@ import AppWindow from './AppWindow.astro';
           </a>
         </div>
 
-        <a href="/terms#refunds" class="hmc-refund-banner" data-reveal data-d="4">
-          <iconify-icon icon="lucide:shield-check" style="font-size:14px;" aria-hidden="true"></iconify-icon>
-          Try risk free. First Cloud subscription charge is refundable for 14 days with no questions asked.
-        </a>
-
         <!-- Metrics -->
-        <div class="hmc-metrics" data-reveal data-d="5">
+        <div class="hmc-metrics" data-reveal data-d="4">
           <div class="hmc-metric">
             <span class="hmcm-n">340%</span>
             <span class="hmcm-l mono">avg prompt clarity gain</span>
@@ -67,6 +62,9 @@ import AppWindow from './AppWindow.astro';
         <div class="hmw-frame">
           <AppWindow />
         </div>
+        <a href="/terms#refunds" class="hmw-refund-pill mono">
+          14 day first cloud refund
+        </a>
       </div>
 
     </div>
@@ -211,27 +209,6 @@ import AppWindow from './AppWindow.astro';
   .hmc-btn-sub  { padding: 13px 14px; font-size: 15px; color: var(--mid); }
   .hmc-btn-sub:hover { color: var(--ink); }
 
-  .hmc-refund-banner {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 22px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--acc-bdr);
-    background: var(--acc-low);
-    color: var(--acc);
-    font-size: 12px;
-    line-height: 1.5;
-    max-width: 620px;
-    transition: border-color .13s, background .13s, color .13s;
-  }
-  .hmc-refund-banner:hover {
-    border-color: rgba(26,107,64,0.35);
-    background: rgba(26,107,64,0.13);
-    color: #145735;
-  }
-
   /* Metrics */
   .hmc-metrics { display: flex; align-items: center; }
   .hmc-metric  { display: flex; flex-direction: column; gap: 3px; padding: 0 20px; }
@@ -242,7 +219,10 @@ import AppWindow from './AppWindow.astro';
 
   /* App window column */
   .hm-window {
-    display: flex; justify-content: center; align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
   }
   .hmw-frame {
     filter: drop-shadow(0 20px 48px rgba(0,0,0,0.14)) drop-shadow(0 4px 8px rgba(0,0,0,0.06));
@@ -250,6 +230,25 @@ import AppWindow from './AppWindow.astro';
   }
   .hmw-frame:hover {
     filter: drop-shadow(0 28px 64px rgba(0,0,0,0.18)) drop-shadow(0 8px 16px rgba(0,0,0,0.08));
+  }
+  .hmw-refund-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--acc-bdr);
+    background: rgba(26,107,64,0.08);
+    color: var(--acc);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: border-color .12s, background .12s, color .12s;
+  }
+  .hmw-refund-pill:hover {
+    border-color: rgba(26,107,64,0.36);
+    background: rgba(26,107,64,0.14);
+    color: #145735;
   }
 
   /* Provider logos */
@@ -293,7 +292,7 @@ import AppWindow from './AppWindow.astro';
   @media (max-width: 860px) {
     .hero-main { min-height: auto; padding: 48px 0 26px; }
     .hm-grid { grid-template-columns: 1fr; gap: 28px; }
-    .hm-window { justify-content: flex-start; }
+    .hm-window { align-items: flex-start; }
     .hmw-frame { transform: scale(0.88); transform-origin: left top; }
     .hmc-h1 { max-width: 100%; }
   }

@@ -258,9 +258,9 @@ const {
   if (!prefersReducedMotion && isFinePointer) {
     let targetY = window.scrollY;
     let rafId = null;
-    const SPEED = 0.82;
-    const EASE = 0.18;
-    const MAX_STEP = 120;
+    const SPEED = 1.08;
+    const EASE = 0.26;
+    const MAX_STEP = 150;
 
     const canScrollInside = (start, deltaY) => {
       let node = start instanceof Element ? start : null;

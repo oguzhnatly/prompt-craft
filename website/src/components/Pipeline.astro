@@ -148,7 +148,7 @@ const stages = [
 <style>
   /* Pipeline section spacing container */
   #pipeline-track {
-    height: calc((100vh - 64px) + 6 * 78px);
+    height: calc((100vh - 64px) + 6 * 34px);
   }
 
   #pipeline {
@@ -186,8 +186,8 @@ const stages = [
 
 
   .pl-ide {
-    flex: 0 0 auto;
-    min-height: 470px;
+    flex: 1;
+    min-height: 0;
     width: min(calc(100% - 80px), 1080px);
     margin: 0 auto;
     display: grid; grid-template-columns: 338px 1fr; grid-template-rows: 1fr;
@@ -305,7 +305,7 @@ const stages = [
   }
   .pl-footer-row {
     display: flex; align-items: center; gap: 8px;
-    padding: 8px 12px 12px;
+    padding: 10px 14px 18px;
   }
   .plf-acc { color: var(--acc); font-size: 12px; }
   .plf-meta { font-size: 12px; color: var(--dim); }
@@ -335,7 +335,7 @@ const stages = [
   const track   = document.getElementById('pipeline-track');
 
   const TOTAL = tabs.length;
-  const STEP_PX = 78;
+  const STEP_PX = 34;
   let currentStage = 0;
 
   function setStage(idx, force = false) {
