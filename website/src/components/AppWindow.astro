@@ -343,6 +343,7 @@
     padding: 0 16px;
     display: flex;
     align-items: center;
+    border-bottom: 0.5px solid var(--aw-pill-bdr);
   }
   .aw-screen-back {
     display: inline-flex;
@@ -448,6 +449,10 @@
     position: relative;
   }
   .aw-history-item:hover { background: rgba(0,0,0,0.03); }
+  .aw-history-item:focus-visible {
+    outline: 1px solid #0A84FF;
+    outline-offset: -1px;
+  }
   .aw-history-line { font-size: 12px; line-height: 1.35; color: var(--aw-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .aw-history-meta-line { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
   .aw-history-badge {
@@ -1031,8 +1036,10 @@ This drives executive grade outputs instead of generic commentary.`
     }
 
     filtered.forEach((entry) => {
-      const btn = document.createElement('button');
-      btn.className = 'aw-history-item';
+      const row = document.createElement('div');
+      row.className = 'aw-history-item';
+      row.setAttribute('role', 'button');
+      row.tabIndex = 0;
 
       const preview = document.createElement('div');
       preview.className = 'aw-history-line';
@@ -1060,23 +1067,31 @@ This drives executive grade outputs instead of generic commentary.`
       });
 
       meta.append(styleBadge, time);
-      btn.append(preview, meta, star);
+      row.append(preview, meta, star);
 
-      btn.addEventListener('click', () => {
+      const useEntry = () => {
         outputText.textContent = entry.text;
         emptyState.style.display = 'none';
         outputText.style.display = 'block';
         outputRow.style.visibility = 'visible';
         clipTag.style.display = 'none';
         hideScreens();
+      };
+
+      row.addEventListener('click', useEntry);
+      row.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          useEntry();
+        }
       });
-      historyList.appendChild(btn);
+
+      historyList.appendChild(row);
     });
   }
 
   function downloadOutput(ext: 'txt' | 'md' | 'cursorrules' | 'claude.md' | 'chatgpt.txt') {
-    const text = outputText.textContent?.trim() || '';
-    if (!text) return;
+    const text = (outputText.textContent?.trim() || getOutputText() || fixedInput).trim();
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
