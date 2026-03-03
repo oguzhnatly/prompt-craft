@@ -151,28 +151,22 @@ const stages = [
     </div>
   </div>
 
-  <div class="pl-scroll-hint" aria-hidden="true">
-    <div class="pl-scroll-mouse"><span class="pl-scroll-wheel"></span></div>
-    <span class="pl-scroll-text mono">Scroll</span>
-  </div>
-
 </section>
 </div>
 
 <style>
   /* Track creates scroll distance for sticky stage advance */
   #pipeline-track {
-    height: calc(100vh + 6 * 120px); /* 6 transitions × 120px each */
+    height: auto;
   }
 
   #pipeline {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow: hidden;
+    position: static;
+    height: auto;
+    overflow: visible;
     display: flex;
     flex-direction: column;
-    padding-top: 60px;
+    padding-top: 52px;
     box-sizing: border-box;
   }
 
@@ -356,45 +350,6 @@ const stages = [
   .plf-meta { font-size: 12px; color: var(--dim); }
   .plf-meta strong { color: var(--ink2); }
 
-  .pl-scroll-hint {
-    position: absolute;
-    right: 14px;
-    bottom: 10px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--dim);
-    opacity: 0.72;
-    pointer-events: none;
-  }
-  .pl-scroll-mouse {
-    width: 16px;
-    height: 24px;
-    border: 1px solid var(--bdr-hi);
-    border-radius: 999px;
-    display: flex;
-    justify-content: center;
-    padding-top: 4px;
-    box-sizing: border-box;
-    background: rgba(255,255,255,0.45);
-  }
-  .pl-scroll-wheel {
-    width: 2px;
-    height: 6px;
-    border-radius: 2px;
-    background: var(--dim);
-    animation: pl-wheel 1.35s ease-in-out infinite;
-  }
-  .pl-scroll-text {
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  @keyframes pl-wheel {
-    0% { transform: translateY(0); opacity: 0.95; }
-    60% { transform: translateY(6px); opacity: 0.2; }
-    100% { transform: translateY(0); opacity: 0.95; }
-  }
 
   @media (max-width: 900px) {
     #pipeline-track { height: auto; }
@@ -412,11 +367,6 @@ const stages = [
     .pl-panel { padding: 24px 20px; }
     .pl-progress { margin: 12px 0 0; }
     .pl-footer-row { padding: 12px 20px 24px; }
-    .pl-scroll-hint { display: none; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .pl-scroll-wheel { animation: none; }
   }
 </style>
 
@@ -446,19 +396,6 @@ const stages = [
     if (bar)   bar.style.width = `${((currentStage + 1) / TOTAL) * 100}%`;
     if (label) label.textContent = `${String(currentStage + 1).padStart(2, '0')} / 07`;
   }
-
-  // Scroll-based stage advance — position:sticky keeps section locked, no wheel interception needed
-  const STAGE_PX = 120; // px of scroll per stage transition
-  const track = document.getElementById('pipeline-track');
-
-  window.addEventListener('scroll', () => {
-    if (!track || window.innerWidth < 900) return;
-    const trackTop = track.getBoundingClientRect().top;
-    const scrolled = -trackTop; // negative before entering, positive after
-    if (scrolled < 0) return;
-    const newStage = Math.min(TOTAL - 1, Math.max(0, Math.floor(scrolled / STAGE_PX)));
-    if (newStage !== currentStage) setStage(newStage, true);
-  }, { passive: true });
 
   // Tab clicks
   tabs.forEach((tab, i) => {
