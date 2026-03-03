@@ -66,6 +66,7 @@ const stages = [
 ];
 ---
 
+<div id="pipeline-track">
 <section id="pipeline" aria-labelledby="pipeline-heading">
   <div class="pl-header-wrap">
     <div class="pl-header">
@@ -145,9 +146,17 @@ const stages = [
   </div>
 
 </section>
+</div>
 
 <style>
+  /* Track creates scroll distance for sticky stage advance */
+  #pipeline-track {
+    height: calc(100vh + 6 * 120px); /* 6 transitions × 120px each */
+  }
+
   #pipeline {
+    position: sticky;
+    top: 0;
     height: 100vh;
     overflow: hidden;
     display: flex;
@@ -319,7 +328,8 @@ const stages = [
   .plf-meta strong { color: var(--ink2); }
 
   @media (max-width: 900px) {
-    #pipeline { height: auto; overflow: visible; padding-top: 48px; }
+    #pipeline-track { height: auto; }
+    #pipeline { position: static; height: auto; overflow: visible; padding-top: 48px; }
     .pl-header-wrap { padding: 0; }
     .pl-header { padding: 0 20px 16px; }
     .pl-ide { flex: none; }
@@ -337,12 +347,9 @@ const stages = [
   const panels  = Array.from(document.querySelectorAll('.pl-panel'));
   const bar     = document.getElementById('pl-progress-bar');
   const label   = document.getElementById('pl-progress-label');
-  const section = document.getElementById('pipeline');
 
   const TOTAL = 7;
   let currentStage = 0;
-  let cooldown = false;
-  const COOLDOWN_MS = 480;
 
   function setStage(idx, force = false) {
     const next = Math.max(0, Math.min(TOTAL - 1, idx));
@@ -362,69 +369,18 @@ const stages = [
     if (label) label.textContent = `${String(currentStage + 1).padStart(2, '0')} / 07`;
   }
 
-  function inLock() {
-    if (!section || window.innerWidth < 900) return false;
-    const r = section.getBoundingClientRect();
-    // Only lock when section is fully snapped to viewport (top within ±12px)
-    return r.top >= -12 && r.top <= 12 && r.bottom >= window.innerHeight - 12;
-  }
+  // Scroll-based stage advance — position:sticky keeps section locked, no wheel interception needed
+  const STAGE_PX = 120; // px of scroll per stage transition
+  const track = document.getElementById('pipeline-track');
 
-  function tryAdvance(dir) {
-    if (cooldown) return true; // block scroll but don't advance
-    const next = currentStage + dir;
-    if (next < 0 || next >= TOTAL) return false; // boundary: release scroll
-    setStage(next);
-    cooldown = true;
-    setTimeout(() => { cooldown = false; }, COOLDOWN_MS);
-    return true; // consumed
-  }
-
-  let snapCooldown = false;
-
-  // Wheel interception + snap-on-entry
-  window.addEventListener('wheel', e => {
-    if (!section || window.innerWidth < 900) return;
-    const r = section.getBoundingClientRect();
-    const vh = window.innerHeight;
-
-    // Section is entering viewport from below — snap it to top
-    if (e.deltaY > 0 && r.top > 12 && r.top < vh * 0.75) {
-      e.preventDefault();
-      if (!snapCooldown) {
-        snapCooldown = true;
-        window.scrollTo({ top: window.scrollY + r.top, behavior: 'smooth' });
-        setTimeout(() => { snapCooldown = false; }, 700);
-      }
-      return;
-    }
-
-    if (!inLock()) return;
-    const dir = e.deltaY > 0 ? 1 : -1;
-    const consumed = tryAdvance(dir);
-    if (consumed) e.preventDefault();
-  }, { passive: false });
-
-  // Touch interception
-  let touchY = 0;
-  let touchConsumed = false;
-  window.addEventListener('touchstart', e => {
-    if (!inLock()) return;
-    touchY = e.touches[0].clientY;
-    touchConsumed = false;
+  window.addEventListener('scroll', () => {
+    if (!track || window.innerWidth < 900) return;
+    const trackTop = track.getBoundingClientRect().top;
+    const scrolled = -trackTop; // negative before entering, positive after
+    if (scrolled < 0) return;
+    const newStage = Math.min(TOTAL - 1, Math.max(0, Math.floor(scrolled / STAGE_PX)));
+    if (newStage !== currentStage) setStage(newStage, true);
   }, { passive: true });
-
-  window.addEventListener('touchmove', e => {
-    if (!inLock()) return;
-    const delta = touchY - e.touches[0].clientY;
-    if (Math.abs(delta) < 28) return;
-    const dir = delta > 0 ? 1 : -1;
-    const consumed = tryAdvance(dir);
-    if (consumed) {
-      e.preventDefault();
-      touchY = e.touches[0].clientY;
-      touchConsumed = true;
-    }
-  }, { passive: false });
 
   // Tab clicks
   tabs.forEach((tab, i) => {
