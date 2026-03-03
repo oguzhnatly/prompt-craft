@@ -134,17 +134,21 @@ const stages = [
 
       </div>
 
-  <div class="pl-progress" aria-hidden="true">
-        <div class="pl-progress-track">
-          <div class="pl-progress-bar" id="pl-progress-bar"></div>
-        </div>
-        <span class="pl-progress-label mono" id="pl-progress-label">01 / 07</span>
+  <div class="pl-progress-wrap" aria-hidden="true">
+    <div class="pl-progress">
+      <div class="pl-progress-track">
+        <div class="pl-progress-bar" id="pl-progress-bar"></div>
       </div>
+      <span class="pl-progress-label mono" id="pl-progress-label">01 / 07</span>
+    </div>
+  </div>
 
-  <div class="pl-footer-row">
-    <span class="plf-acc mono">pipeline.execute(input)</span>
-    <iconify-icon icon="lucide:arrow-right" style="font-size:11px;vertical-align:middle;color:var(--mid);" aria-hidden="true"></iconify-icon>
-    <span class="plf-meta mono">optimized, model-ready · avg <strong>140ms</strong></span>
+  <div class="pl-footer-wrap">
+    <div class="pl-footer-row">
+      <span class="plf-acc mono">pipeline.execute(input)</span>
+      <iconify-icon icon="lucide:arrow-right" style="font-size:11px;vertical-align:middle;color:var(--mid);" aria-hidden="true"></iconify-icon>
+      <span class="plf-meta mono">optimized, model-ready · avg <strong>140ms</strong></span>
+    </div>
   </div>
 
   <div class="pl-scroll-hint" aria-hidden="true">
@@ -297,8 +301,12 @@ const stages = [
     background: var(--bg2);
   }
 
-  .pl-progress {
+  .pl-progress-wrap {
     flex-shrink: 0;
+    width: min(100%, 1080px);
+    margin: 0 auto;
+  }
+  .pl-progress {
     display: flex; align-items: center; gap: 8px;
     padding: 6px 14px;
   }
@@ -335,8 +343,12 @@ const stages = [
   .plf-acc { color: var(--acc); }
   .pl-footer strong { color: var(--ink2); }
 
-  .pl-footer-row {
+  .pl-footer-wrap {
     flex-shrink: 0;
+    width: min(100%, 1080px);
+    margin: 0 auto;
+  }
+  .pl-footer-row {
     display: flex; align-items: center; gap: 8px;
     padding: 10px 14px 18px;
   }
