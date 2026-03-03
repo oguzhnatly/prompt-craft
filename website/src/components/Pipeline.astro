@@ -149,6 +149,8 @@ const stages = [
   /* Pipeline section spacing container */
   #pipeline-track {
     height: auto;
+    padding-top: 24px;
+    padding-bottom: 48px;
   }
 
   #pipeline {
@@ -186,10 +188,10 @@ const stages = [
 
   .pl-ide {
     flex: 0 0 auto;
-    min-height: 470px;
+    min-height: 0;
     width: min(calc(100% - 80px), 1080px);
     margin: 0 auto;
-    display: grid; grid-template-columns: 338px 1fr; grid-template-rows: 1fr;
+    display: grid; grid-template-columns: 338px 1fr;
     border-top: 1px solid var(--bdr);
     border-bottom: 1px solid var(--bdr);
     background: var(--bg);
@@ -209,8 +211,8 @@ const stages = [
   .pl-stage {
     display: grid; grid-template-columns: 32px 1fr 4px;
     align-items: center; gap: 6px;
-    padding: 0 12px;
-    min-height: 64px;
+    padding: 8px 12px;
+    min-height: 0;
     flex: 0 0 auto;
     border: none; border-bottom: 1px solid var(--bdr);
     background: var(--bg); text-align: left;
@@ -237,31 +239,20 @@ const stages = [
 
   .pl-panel-wrap {
     position: relative;
-    overflow: hidden;
-    height: 100%;
+    overflow: visible;
+    height: auto;
   }
   .pl-panel {
-    position: absolute; inset: 0;
     padding: 10px 14px 10px;
-    display: flex; flex-direction: column;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity .42s var(--out), transform .42s var(--out);
-    pointer-events: none;
-    overflow-y: auto;
-    scrollbar-width: none;
+    display: none;
+    flex-direction: column;
   }
-  /* Single inner wrapper — margin:auto is the only cross-browser reliable
-     vertical-center technique when the flex container also has overflow-y:auto */
   .plp-inner {
     display: flex; flex-direction: column; gap: 10px;
     margin: 0;
   }
-  .pl-panel::-webkit-scrollbar { display: none; }
   .pl-panel.active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+    display: flex;
   }
 
   .plp-top { display: flex; flex-direction: column; gap: 8px; }
@@ -304,7 +295,7 @@ const stages = [
   }
   .pl-footer-row {
     display: flex; align-items: center; gap: 8px;
-    padding: 10px 14px 18px;
+    padding: 0;
   }
   .plf-acc { color: var(--acc); font-size: 12px; }
   .plf-meta { font-size: 12px; color: var(--dim); }
@@ -322,7 +313,7 @@ const stages = [
     .pl-ide { flex: none; }
     .pl-ide { grid-template-columns: 1fr; min-height: 520px; }
     .pl-stages { border-right: none; border-bottom: 1px solid var(--bdr); display: grid; grid-template-columns: 1fr 1fr; }
-    .pl-panel-wrap { min-height: 380px; }
+    .pl-panel-wrap { min-height: 0; }
     .pl-panel { padding: 24px 20px; }
     .pl-footer-row { padding: 12px 20px 24px; }
   }
