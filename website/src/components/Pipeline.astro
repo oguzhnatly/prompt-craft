@@ -148,13 +148,13 @@ const stages = [
 <style>
   /* Track creates scroll distance for sticky stage advance */
   #pipeline-track {
-    height: calc(660px + 6 * 130px);
+    height: calc((100vh - 64px) + 6 * 130px);
   }
 
   #pipeline {
     position: sticky;
-    top: max(24px, calc((100vh - 660px) / 2));
-    height: 660px;
+    top: 64px;
+    height: calc(100vh - 64px);
     overflow: hidden;
     display: flex;
     flex-direction: column;
