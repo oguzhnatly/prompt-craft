@@ -148,7 +148,7 @@ const stages = [
 <style>
   /* Track creates scroll distance for sticky stage advance */
   #pipeline-track {
-    height: calc(100vh + 6 * 170px);
+    height: calc(100vh + 6 * 150px);
   }
 
   #pipeline {
@@ -158,7 +158,7 @@ const stages = [
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding-top: 52px;
+    padding-top: 46px;
     box-sizing: border-box;
   }
 
@@ -167,13 +167,13 @@ const stages = [
     width: min(calc(100% - 80px), 1080px);
     margin: 0 auto;
     padding-top: 0;
-    padding-bottom: 18px;
+    padding-bottom: 10px;
     box-sizing: border-box;
   }
 
   .pl-header {
     max-width: 700px;
-    display: flex; flex-direction: column; gap: 8px;
+    display: flex; flex-direction: column; gap: 6px;
   }
   .pl-h2 {
     font-size: clamp(28px, 4vw, 52px);
@@ -189,7 +189,7 @@ const stages = [
     min-height: 0;
     width: min(calc(100% - 80px), 1080px);
     margin: 0 auto;
-    display: grid; grid-template-columns: 340px 1fr; grid-template-rows: 1fr;
+    display: grid; grid-template-columns: 332px 1fr; grid-template-rows: 1fr;
     border-top: 1px solid var(--bdr);
     border-bottom: 1px solid var(--bdr);
     background: var(--bg);
@@ -207,10 +207,10 @@ const stages = [
   }
   .pl-stages::-webkit-scrollbar { display: none; }
   .pl-stage {
-    display: grid; grid-template-columns: 34px 1fr 4px;
-    align-items: center; gap: 6px;
-    padding: 0 12px;
-    min-height: 70px;
+    display: grid; grid-template-columns: 32px 1fr 4px;
+    align-items: center; gap: 5px;
+    padding: 0 10px;
+    min-height: 64px;
     flex: 0 0 auto;
     border: none; border-bottom: 1px solid var(--bdr);
     background: var(--bg); text-align: left;
@@ -242,7 +242,7 @@ const stages = [
   }
   .pl-panel {
     position: absolute; inset: 0;
-    padding: 10px 14px 8px;
+    padding: 8px 12px 8px;
     display: flex; flex-direction: column;
     opacity: 0;
     transform: translateY(10px);
@@ -254,7 +254,7 @@ const stages = [
   /* Single inner wrapper — margin:auto is the only cross-browser reliable
      vertical-center technique when the flex container also has overflow-y:auto */
   .plp-inner {
-    display: flex; flex-direction: column; gap: 10px;
+    display: flex; flex-direction: column; gap: 8px;
     margin: 0;
   }
   .pl-panel::-webkit-scrollbar { display: none; }
@@ -304,7 +304,7 @@ const stages = [
   }
   .pl-footer-row {
     display: flex; align-items: center; gap: 8px;
-    padding: 10px 14px 18px;
+    padding: 8px 12px 12px;
   }
   .plf-acc { color: var(--acc); font-size: 12px; }
   .plf-meta { font-size: 12px; color: var(--dim); }
