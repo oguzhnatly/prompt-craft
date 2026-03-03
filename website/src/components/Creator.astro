@@ -17,11 +17,18 @@
         </p>
         <footer class="crq-footer">
           <div class="crq-meta">
-            <span class="crq-name">Oguzhan Atalay</span>
+            <div class="crq-person">
+              <img class="crq-avatar" src="/images/oguzhan-portrait.jpeg" alt="Oguzhan Atalay profile photo" loading="lazy" decoding="async" />
+              <div class="crq-identity">
+                <span class="crq-name">Oguzhan Atalay</span>
+                <span class="crq-title mono">Senior Software Engineer</span>
+              </div>
+            </div>
           </div>
           <div id="creator-heading" class="crq-story-wrap">
             <a href="https://blog.oguzhanatalay.com" target="_blank" rel="noopener" class="crq-story mono">
               Read the story behind this
+              <iconify-icon icon="lucide:arrow-up-right" style="font-size:13px;" aria-hidden="true"></iconify-icon>
             </a>
           </div>
         </footer>
@@ -79,28 +86,63 @@
     color: var(--ink2); max-width: 880px;
   }
   .crq-footer {
-    display: flex; align-items: flex-start; gap: 48px;
-    margin-top: 28px; flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 30px;
+    flex-wrap: wrap;
   }
   .crq-meta { display: flex; flex-direction: column; gap: 4px; }
-  .crq-name { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
-  .crq-story-wrap { display: flex; align-items: center; }
+  .crq-person {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .crq-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    object-fit: cover;
+    border: 1px solid var(--bdr-hi);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .crq-identity {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .crq-name { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); line-height: 1.1; }
+  .crq-title {
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+  .crq-story-wrap { display: flex; align-items: center; margin-left: auto; }
   .crq-story {
     display: inline-flex;
     align-items: center;
-    padding: 9px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--bdr-hi);
-    color: var(--mid);
-    font-size: 12px;
-    letter-spacing: 0.04em;
+    gap: 8px;
+    padding: 11px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(12,12,11,0.12);
+    background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.58) 100%);
+    color: var(--ink2);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    transition: border-color .13s, color .13s, background .13s;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04), 0 8px 18px rgba(0,0,0,0.05);
+    transition: transform .16s var(--spring), border-color .16s, box-shadow .16s, background .16s, color .16s;
   }
   .crq-story:hover {
-    color: var(--ink);
-    border-color: var(--acc);
-    background: rgba(26,107,64,0.05);
+    color: #0f432a;
+    border-color: rgba(26,107,64,0.42);
+    background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(236,247,240,0.92) 100%);
+    box-shadow: 0 2px 2px rgba(0,0,0,0.05), 0 12px 24px rgba(26,107,64,0.14);
+    transform: translateY(-1px);
   }
 
   /* Timeline */
@@ -122,5 +164,7 @@
   @media (max-width: 900px) {
     .cr-bottom { grid-template-columns: 1fr; gap: 32px; }
     .cr-links  { flex-direction: row; flex-wrap: wrap; }
+    .crq-footer { align-items: flex-start; }
+    .crq-story-wrap { width: 100%; justify-content: flex-end; }
   }
 </style>

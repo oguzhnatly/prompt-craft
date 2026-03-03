@@ -159,19 +159,28 @@ const {
 
   /* ── Scroll reveal ── */
   [data-reveal] {
-    transform: translateY(24px);
+    transform: translateY(16px);
     opacity: 0;
-    transition: transform 0.55s var(--out), opacity 0.45s var(--ease);
+    will-change: transform, opacity;
+    transition: transform 0.62s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.52s cubic-bezier(0.22, 1, 0.36, 1);
   }
   [data-reveal].on {
     transform: translateY(0);
     opacity: 1;
   }
-  [data-reveal][data-d="1"] { transition-delay: 0.08s; }
-  [data-reveal][data-d="2"] { transition-delay: 0.16s; }
-  [data-reveal][data-d="3"] { transition-delay: 0.24s; }
-  [data-reveal][data-d="4"] { transition-delay: 0.32s; }
-  [data-reveal][data-d="5"] { transition-delay: 0.40s; }
+  [data-reveal][data-d="1"] { transition-delay: 0.04s; }
+  [data-reveal][data-d="2"] { transition-delay: 0.08s; }
+  [data-reveal][data-d="3"] { transition-delay: 0.12s; }
+  [data-reveal][data-d="4"] { transition-delay: 0.16s; }
+  [data-reveal][data-d="5"] { transition-delay: 0.20s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      transform: none;
+      opacity: 1;
+      transition: none;
+    }
+  }
 
   /* ── Utilities ── */
   *:focus-visible {
@@ -192,12 +201,40 @@ const {
 </style>
 
 <script>
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+
   // ── Scroll reveal via IntersectionObserver ──────────────────
-  const io = new IntersectionObserver(
-    entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }),
-    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
-  );
-  document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+  const autoRevealTargets = [
+    ...document.querySelectorAll('main > section, main > div, .legal-body > section')
+  ];
+
+  autoRevealTargets.forEach((el, idx) => {
+    if (el.hasAttribute('data-reveal') || el.hasAttribute('data-no-reveal')) return;
+    el.setAttribute('data-reveal', '');
+    el.setAttribute('data-d', String((idx % 3) + 1));
+  });
+
+  const revealTargets = Array.from(document.querySelectorAll('[data-reveal]'));
+
+  if (prefersReducedMotion) {
+    revealTargets.forEach(el => el.classList.add('on'));
+  } else {
+    const io = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          const visible = entry.isIntersecting && entry.intersectionRatio >= 0.08;
+          entry.target.classList.toggle('on', visible);
+        });
+      },
+      {
+        threshold: [0, 0.08, 0.2, 0.35],
+        rootMargin: '-8% 0px -8% 0px'
+      }
+    );
+
+    revealTargets.forEach(el => io.observe(el));
+  }
 
   // ── Nav scroll shadow ───────────────────────────────────────
   const nav = document.getElementById('site-nav');
@@ -218,9 +255,6 @@ const {
   });
 
   // ── Desktop wheel smoothing (slower + smooth full-page scroll) ──
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isFinePointer = window.matchMedia('(pointer: fine)').matches;
-
   if (!prefersReducedMotion && isFinePointer) {
     let targetY = window.scrollY;
     let rafId = null;
