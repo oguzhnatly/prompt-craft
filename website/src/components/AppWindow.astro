@@ -35,14 +35,41 @@
 
   <div class="aw-sep"></div>
 
-  <div class="aw-pop aw-history-pop" id="aw-history-pop" hidden>
-    <div class="aw-pop-title mono">History</div>
-    <div class="aw-history-list" id="aw-history-list"></div>
+  <div class="aw-screen" id="aw-history-screen" hidden>
+    <div class="aw-screen-header">
+      <button class="aw-screen-back" id="aw-history-back" aria-label="Back to main view">
+        <iconify-icon icon="lucide:chevron-left" style="font-size:12px;"></iconify-icon>
+        <span>History</span>
+      </button>
+    </div>
+    <div class="aw-sep"></div>
+    <div class="aw-screen-body aw-history-body">
+      <div class="aw-history-meta mono" id="aw-history-meta">0 optimizations</div>
+      <div class="aw-history-list-full" id="aw-history-list"></div>
+    </div>
   </div>
 
-  <div class="aw-pop aw-download-pop" id="aw-download-pop" hidden>
-    <button class="aw-pop-btn" id="aw-download-txt">Download .txt</button>
-    <button class="aw-pop-btn" id="aw-download-md">Download .md</button>
+  <div class="aw-screen" id="aw-export-screen" hidden>
+    <div class="aw-screen-header">
+      <button class="aw-screen-back" id="aw-export-back" aria-label="Back to main view">
+        <iconify-icon icon="lucide:chevron-left" style="font-size:12px;"></iconify-icon>
+        <span>Export</span>
+      </button>
+    </div>
+    <div class="aw-sep"></div>
+    <div class="aw-screen-body aw-export-body">
+      <div class="aw-export-group">
+        <div class="aw-export-h mono">Clipboard formats</div>
+        <button class="aw-export-row" id="aw-download-txt">Plain text .txt</button>
+        <button class="aw-export-row" id="aw-download-md">Markdown .md</button>
+      </div>
+      <div class="aw-export-group">
+        <div class="aw-export-h mono">System prompt formats</div>
+        <button class="aw-export-row" id="aw-download-cursor">Cursor Rules .cursorrules</button>
+        <button class="aw-export-row" id="aw-download-claude">Claude Project Instructions</button>
+        <button class="aw-export-row" id="aw-download-chatgpt">ChatGPT Custom Instructions</button>
+      </div>
+    </div>
   </div>
 
   <!-- ── Input area ── -->
@@ -285,67 +312,95 @@
   .aw-icon-btn svg { width: 14px; height: 14px; }
   .aw-icon-btn:hover { background: var(--aw-icon-hbg); color: var(--aw-icon-h); }
 
-  .aw-pop {
+  .aw-screen {
     position: absolute;
-    z-index: 30;
-    min-width: 184px;
+    inset: 0;
+    z-index: 40;
     background: var(--aw-bg);
-    border: 1px solid var(--aw-well-bdr);
-    border-radius: 10px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.18);
-    overflow: hidden;
-  }
-  .aw-history-pop {
-    top: 46px;
-    right: 56px;
-  }
-  .aw-download-pop {
-    right: 16px;
-    bottom: 96px;
-  }
-  .aw-pop-title {
-    font-size: 10px;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--aw-desc);
-    padding: 10px 12px 6px;
-  }
-  .aw-history-list {
     display: flex;
     flex-direction: column;
-    max-height: 170px;
-    overflow: auto;
-    padding: 0 6px 8px;
+  }
+  .aw-screen-header {
+    height: 44px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+  }
+  .aw-screen-back {
+    display: inline-flex;
+    align-items: center;
     gap: 4px;
+    border: none;
+    background: transparent;
+    color: var(--aw-text);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+  }
+  .aw-screen-body {
+    flex: 1;
+    overflow: auto;
+    padding: 10px 14px 14px;
+  }
+
+  .aw-history-meta {
+    font-size: 11px;
+    color: var(--aw-desc);
+    margin-bottom: 8px;
+  }
+  .aw-history-list-full {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
   .aw-history-item {
-    border: none;
+    border: 1px solid var(--aw-pill-bdr);
     text-align: left;
     width: 100%;
-    background: var(--aw-pill-bg);
+    background: var(--aw-well);
     color: var(--aw-text);
-    border-radius: 7px;
-    padding: 7px 8px;
+    border-radius: 8px;
+    padding: 8px 9px;
     font-size: 11px;
     line-height: 1.45;
     cursor: pointer;
   }
-  .aw-history-item:hover {
-    background: var(--aw-pill-h);
+  .aw-history-item:hover { background: var(--aw-pill-h); }
+
+  .aw-export-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
-  .aw-pop-btn {
+  .aw-export-group {
+    border: 1px solid var(--aw-pill-bdr);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--aw-well);
+  }
+  .aw-export-h {
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--aw-desc);
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--aw-pill-bdr);
+    background: var(--aw-pill-bg);
+  }
+  .aw-export-row {
     width: 100%;
     text-align: left;
     border: none;
+    border-bottom: 1px solid var(--aw-pill-bdr);
     background: transparent;
     color: var(--aw-text);
     font-size: 12px;
-    padding: 9px 12px;
+    padding: 10px;
     cursor: pointer;
   }
-  .aw-pop-btn:hover {
-    background: var(--aw-pill-bg);
-  }
+  .aw-export-row:last-child { border-bottom: none; }
+  .aw-export-row:hover { background: var(--aw-pill-h); }
 
   /* ── Input section ───────────────────────────── */
   .aw-input-section {
@@ -421,7 +476,8 @@
   .aw-styles-scroll::-webkit-scrollbar { display: none; }
   .aw-pill {
     display: inline-flex; align-items: center; gap: 4px;
-    padding: 5px 11px;
+    height: 26px;
+    padding: 0 11px;
     border-radius: 999px;
     background: var(--aw-pill-bg);
     border: 0.5px solid var(--aw-pill-bdr);
@@ -779,12 +835,18 @@ This drives executive grade outputs instead of generic commentary.`
   const themeMoon    = themeBtn.querySelector('.aw-theme-moon') as HTMLElement;
   const themeSun     = themeBtn.querySelector('.aw-theme-sun') as HTMLElement;
   const historyBtn   = document.getElementById('aw-history-btn')! as HTMLButtonElement;
-  const historyPop   = document.getElementById('aw-history-pop')! as HTMLElement;
+  const historyScreen = document.getElementById('aw-history-screen')! as HTMLElement;
+  const historyBack  = document.getElementById('aw-history-back')! as HTMLButtonElement;
+  const historyMeta  = document.getElementById('aw-history-meta')! as HTMLElement;
   const historyList  = document.getElementById('aw-history-list')! as HTMLElement;
   const downloadBtn  = document.getElementById('aw-download-btn')! as HTMLButtonElement;
-  const downloadPop  = document.getElementById('aw-download-pop')! as HTMLElement;
+  const exportScreen = document.getElementById('aw-export-screen')! as HTMLElement;
+  const exportBack   = document.getElementById('aw-export-back')! as HTMLButtonElement;
   const dlTxtBtn     = document.getElementById('aw-download-txt')! as HTMLButtonElement;
   const dlMdBtn      = document.getElementById('aw-download-md')! as HTMLButtonElement;
+  const dlCursorBtn  = document.getElementById('aw-download-cursor')! as HTMLButtonElement;
+  const dlClaudeBtn  = document.getElementById('aw-download-claude')! as HTMLButtonElement;
+  const dlChatBtn    = document.getElementById('aw-download-chatgpt')! as HTMLButtonElement;
   const copyBtn      = document.getElementById('aw-copy-btn')! as HTMLButtonElement;
   const clearOutBtn  = document.getElementById('aw-clear-out-btn')! as HTMLButtonElement;
   const clipTag      = document.getElementById('aw-clipboard-tag')! as HTMLElement;
@@ -804,9 +866,9 @@ This drives executive grade outputs instead of generic commentary.`
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  function hidePops() {
-    historyPop.hidden = true;
-    downloadPop.hidden = true;
+  function hideScreens() {
+    historyScreen.hidden = true;
+    exportScreen.hidden = true;
   }
 
   function addHistory(value: string) {
@@ -820,30 +882,31 @@ This drives executive grade outputs instead of generic commentary.`
 
   function renderHistory() {
     historyList.innerHTML = '';
+    historyMeta.textContent = `${outputHistory.length} optimization${outputHistory.length === 1 ? '' : 's'}`;
     if (!outputHistory.length) {
       const empty = document.createElement('div');
-      empty.className = 'aw-pop-title mono';
-      empty.textContent = 'No outputs yet';
+      empty.className = 'aw-history-item';
+      empty.textContent = 'No optimizations yet. Optimize once to populate this screen.';
       historyList.appendChild(empty);
       return;
     }
     outputHistory.forEach((entry, idx) => {
       const btn = document.createElement('button');
       btn.className = 'aw-history-item';
-      btn.textContent = `${idx + 1}. ${entry.slice(0, 96)}${entry.length > 96 ? '…' : ''}`;
+      btn.textContent = `${idx + 1}. ${entry.slice(0, 180)}${entry.length > 180 ? '…' : ''}`;
       btn.addEventListener('click', () => {
         outputText.textContent = entry;
         emptyState.style.display = 'none';
         outputText.style.display = 'block';
         outputRow.style.visibility = 'visible';
         clipTag.style.display = 'none';
-        hidePops();
+        hideScreens();
       });
       historyList.appendChild(btn);
     });
   }
 
-  function downloadOutput(ext: 'txt' | 'md') {
+  function downloadOutput(ext: 'txt' | 'md' | 'cursorrules' | 'claude.md' | 'chatgpt.txt') {
     const text = outputText.textContent?.trim() || '';
     if (!text) return;
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
@@ -851,12 +914,19 @@ This drives executive grade outputs instead of generic commentary.`
     const a = document.createElement('a');
     const stamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
     a.href = url;
-    a.download = `promptcraft-output-${stamp}.${ext}`;
+    const fileName = ext === 'cursorrules'
+      ? '.cursorrules'
+      : ext === 'claude.md'
+        ? `promptcraft-claude-${stamp}.md`
+        : ext === 'chatgpt.txt'
+          ? `promptcraft-chatgpt-${stamp}.txt`
+          : `promptcraft-output-${stamp}.${ext}`;
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-    hidePops();
+    hideScreens();
   }
 
   function setInputText(text: string) {
@@ -975,19 +1045,28 @@ This drives executive grade outputs instead of generic commentary.`
   });
 
   historyBtn.addEventListener('click', () => {
-    const willOpen = historyPop.hidden;
-    hidePops();
-    if (willOpen) historyPop.hidden = false;
+    hideScreens();
+    historyScreen.hidden = false;
+  });
+
+  historyBack.addEventListener('click', () => {
+    historyScreen.hidden = true;
   });
 
   downloadBtn.addEventListener('click', () => {
-    const willOpen = downloadPop.hidden;
-    hidePops();
-    if (willOpen) downloadPop.hidden = false;
+    hideScreens();
+    exportScreen.hidden = false;
+  });
+
+  exportBack.addEventListener('click', () => {
+    exportScreen.hidden = true;
   });
 
   dlTxtBtn.addEventListener('click', () => downloadOutput('txt'));
   dlMdBtn.addEventListener('click', () => downloadOutput('md'));
+  dlCursorBtn.addEventListener('click', () => downloadOutput('cursorrules'));
+  dlClaudeBtn.addEventListener('click', () => downloadOutput('claude.md'));
+  dlChatBtn.addEventListener('click', () => downloadOutput('chatgpt.txt'));
 
   copyBtn.addEventListener('click', async () => {
     const text = outputText.textContent?.trim() || '';
@@ -1007,14 +1086,15 @@ This drives executive grade outputs instead of generic commentary.`
     outputRow.style.visibility = 'hidden';
     emptyState.style.display = 'flex';
     clipTag.style.display = 'none';
-    hidePops();
+    hideScreens();
   });
 
   document.addEventListener('click', (e) => {
     const target = e.target as Node;
     if (!appWin.contains(target)) return;
-    if (historyPop.contains(target) || historyBtn.contains(target) || downloadPop.contains(target) || downloadBtn.contains(target)) return;
-    hidePops();
+    if (historyScreen.hidden && exportScreen.hidden) return;
+    if (historyScreen.contains(target) || historyBtn.contains(target) || exportScreen.contains(target) || downloadBtn.contains(target)) return;
+    hideScreens();
   });
 
   // Init: light mode (no .dark class), moon icon visible
