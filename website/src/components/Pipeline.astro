@@ -148,14 +148,14 @@ const stages = [
 <style>
   /* Pipeline section spacing container */
   #pipeline-track {
-    height: auto;
-    padding-top: 8px;
+    height: calc((100vh - 64px) + 6 * 78px);
   }
 
   #pipeline {
-    position: static;
-    height: auto;
-    overflow: visible;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     padding-top: 0;
@@ -168,7 +168,7 @@ const stages = [
     width: min(calc(100% - 80px), 1080px);
     margin: 0 auto;
     padding-top: 0;
-    padding-bottom: 40px;
+    padding-bottom: 16px;
     box-sizing: border-box;
   }
 
@@ -332,8 +332,10 @@ const stages = [
 <script>
   const tabs    = Array.from(document.querySelectorAll('.pl-stage'));
   const panels  = Array.from(document.querySelectorAll('.pl-panel'));
+  const track   = document.getElementById('pipeline-track');
 
   const TOTAL = tabs.length;
+  const STEP_PX = 78;
   let currentStage = 0;
 
   function setStage(idx, force = false) {
@@ -352,6 +354,15 @@ const stages = [
     });
 
   }
+
+  // Scroll driven stage advance while section is locked
+  window.addEventListener('scroll', () => {
+    if (!track || window.innerWidth <= 900) return;
+    const top = track.getBoundingClientRect().top;
+    const scrolled = Math.max(0, -top);
+    const idx = Math.min(TOTAL - 1, Math.floor(scrolled / STEP_PX));
+    setStage(idx);
+  }, { passive: true });
 
   // Tab clicks
   tabs.forEach((tab, i) => {
