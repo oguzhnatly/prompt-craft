@@ -75,74 +75,42 @@ import AppWindow from './AppWindow.astro';
       <div class="hp-logos hp-logos-icons" role="list" aria-label="Supported AI providers">
 
         <div class="hp-logo" role="listitem" aria-label="Anthropic Claude" title="Anthropic Claude">
-          <svg class="hp-icon" viewBox="0 0 24 24" fill="#D97757">
-            <path d="M17.338 4l-4.73 8.21L7.88 4H4l6.663 11.547L6.72 20h3.696l1.252-2.172.14.242L13.028 20H16.7l-3.937-6.82L19.282 4z"/>
-          </svg>
+          <iconify-icon class="hp-icon" icon="simple-icons:anthropic" style="color:#D97757"></iconify-icon>
           <span>Claude</span>
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="OpenAI GPT-4o" title="OpenAI GPT-4o">
-          <svg class="hp-icon" viewBox="0 0 24 24" fill="var(--ink)">
-            <path d="M22.28 9.81a6 6 0 00-.52-4.92 6.07 6.07 0 00-6.5-2.91 6 6 0 00-4.5-2A6.07 6.07 0 005 3.52a6 6 0 00-4 3.63 6.07 6.07 0 00.75 7.1 6 6 0 00.52 4.92 6.07 6.07 0 006.5 2.91 6 6 0 004.5 2 6.07 6.07 0 005.76-4.21 6 6 0 004-3.63 6.07 6.07 0 00-.75-7.53zM13.5 21.5a4.51 4.51 0 01-2.88-1.04l.14-.08 4.77-2.76a.78.78 0 00.39-.68v-6.73l2.02 1.16a.07.07 0 010 .05v5.58a4.51 4.51 0 01-4.44 4.5zm-9.64-4.14a4.51 4.51 0 01-.54-3.02l.14.08 4.77 2.76a.78.78 0 00.78 0l5.83-3.37v2.32a.07.07 0 010 .06l-4.83 2.79a4.51 4.51 0 01-6.15-1.62zm-1.25-10.5a4.51 4.51 0 012.37-1.97v5.7a.78.78 0 00.39.67l5.83 3.37-2.02 1.17a.07.07 0 01-.07 0L4.42 12.4a4.51 4.51 0 01-1.81-5.54zm16.6 3.86l-5.83-3.37 2.02-1.16a.07.07 0 01.07 0l4.77 2.76a4.5 4.5 0 01-.7 8.12V11.3a.78.78 0 00-.33-.58zm2.01-3.03l-.14-.08-4.77-2.75a.78.78 0 00-.79 0L9.7 8.23V5.91a.07.07 0 010-.06L14.53 3.1a4.5 4.5 0 016.69 4.69zm-12.63 4.14l-2.02-1.17a.07.07 0 010-.05V4.99a4.5 4.5 0 017.37-3.46l-.14.08-4.77 2.76a.78.78 0 00-.39.68l-.05 6.72zm1.09-2.37l2.6-1.5 2.6 1.5v3l-2.6 1.5-2.6-1.5V9.46z"/>
-          </svg>
+          <iconify-icon class="hp-icon" icon="simple-icons:openai" style="color:var(--ink)"></iconify-icon>
           <span>GPT-4o</span>
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="Google Gemini" title="Google Gemini">
-          <svg class="hp-icon" viewBox="0 0 24 24">
-            <defs>
-              <linearGradient id="gem-g3" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#4285F4"/>
-                <stop offset="50%" stop-color="#9B72CB"/>
-                <stop offset="100%" stop-color="#D96570"/>
-              </linearGradient>
-            </defs>
-            <path d="M12 2C6.9 8.5 6.9 15.5 12 22c5.1-6.5 5.1-13.5 0-20zM2 12c6.5 5.1 13.5 5.1 20 0C15.5 6.9 8.5 6.9 2 12z" fill="url(#gem-g3)"/>
-          </svg>
+          <iconify-icon class="hp-icon" icon="simple-icons:googlegemini" style="color:#4285F4"></iconify-icon>
           <span>Gemini</span>
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="DeepSeek" title="DeepSeek">
-          <svg class="hp-icon" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="#4D6AFF" stroke-width="1.5"/>
-            <circle cx="12" cy="12" r="4" fill="#4D6AFF"/>
-          </svg>
+          <iconify-icon class="hp-icon" icon="simple-icons:deepseek" style="color:#4D6AFF"></iconify-icon>
           <span>DeepSeek</span>
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="Meta Llama 3" title="Meta Llama 3">
-          <svg class="hp-icon" viewBox="0 0 24 24" fill="#0081FB">
-            <path d="M13.97 5.96c-1.42-1.45-3.33-2.12-5.2-1.74C5.9 4.8 4 7.1 4 9.84c0 1.44.4 2.87 1.22 4.05L12 22l6.78-8.11A7.48 7.48 0 0020 9.84c0-2.74-1.9-5.04-4.77-5.62a5.4 5.4 0 00-1.26-.26zm1.48 10.46L12 19.4l-3.45-2.98A5.47 5.47 0 016.5 9.84C6.5 7.88 7.82 6.2 9.5 6c1.06-.13 2.14.25 2.94.95.08.07.7.68.56.58.8-.7 1.88-1.08 2.94-.95 1.68.2 3 1.88 3 3.84a5.47 5.47 0 01-1.49 3.2v.8z"/>
-          </svg>
+          <iconify-icon class="hp-icon" icon="simple-icons:meta" style="color:#0081FB"></iconify-icon>
           <span>Llama 3</span>
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="Mistral AI" title="Mistral AI">
-          <svg class="hp-icon" viewBox="0 0 24 24" fill="#FF7000">
-            <rect x="3" y="3" width="4" height="4" rx=".5"/>
-            <rect x="10" y="3" width="4" height="4" rx=".5"/>
-            <rect x="17" y="3" width="4" height="4" rx=".5"/>
-            <rect x="3" y="10" width="4" height="4" rx=".5"/>
-            <rect x="17" y="10" width="4" height="4" rx=".5"/>
-            <rect x="3" y="17" width="4" height="4" rx=".5"/>
-            <rect x="10" y="17" width="4" height="4" rx=".5"/>
-            <rect x="17" y="17" width="4" height="4" rx=".5"/>
-          </svg>
+          <iconify-icon class="hp-icon" icon="simple-icons:mistralai" style="color:#FF7000"></iconify-icon>
           <span>Mistral</span>
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="Ollama local models" title="Ollama">
-          <svg class="hp-icon" viewBox="0 0 24 24" fill="var(--ink2)">
-            <circle cx="12" cy="7" r="4"/>
-            <path d="M8 12c-3 1-5 3-5 5v2h18v-2c0-2-2-4-5-5"/>
-            <circle cx="9"  cy="9.5" r="1.2" fill="var(--bg)"/>
-            <circle cx="15" cy="9.5" r="1.2" fill="var(--bg)"/>
-          </svg>
+          <iconify-icon class="hp-icon" icon="simple-icons:ollama" style="color:var(--ink2)"></iconify-icon>
           <span>Ollama</span>
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="MiniMax" title="MiniMax">
-          <iconify-icon class="hp-icon" icon="lucide:layers-3" style="color:#8b5cf6"></iconify-icon>
+          <iconify-icon class="hp-icon" icon="simple-icons:minimax" style="color:#8b5cf6"></iconify-icon>
           <span>MiniMax</span>
         </div>
 
@@ -152,22 +120,22 @@ import AppWindow from './AppWindow.astro';
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="xAI Grok" title="Grok">
-          <iconify-icon class="hp-icon" icon="lucide:sparkles" style="color:#111827"></iconify-icon>
+          <iconify-icon class="hp-icon" icon="simple-icons:xai" style="color:var(--ink)"></iconify-icon>
           <span>Grok</span>
         </div>
 
-        <div class="hp-logo" role="listitem" aria-label="Z AI GLM" title="GLM">
+        <div class="hp-logo" role="listitem" aria-label="Zhipu GLM" title="GLM">
           <iconify-icon class="hp-icon" icon="lucide:atom" style="color:#16a34a"></iconify-icon>
           <span>GLM</span>
         </div>
 
-        <div class="hp-logo" role="listitem" aria-label="Arcee" title="Arcee">
+        <div class="hp-logo" role="listitem" aria-label="Arcee AI" title="Arcee">
           <iconify-icon class="hp-icon" icon="lucide:hexagon" style="color:#0f766e"></iconify-icon>
           <span>Arcee</span>
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="OpenAI o3" title="o3">
-          <iconify-icon class="hp-icon" icon="lucide:cpu" style="color:#111827"></iconify-icon>
+          <iconify-icon class="hp-icon" icon="simple-icons:openai" style="color:#888"></iconify-icon>
           <span>o3</span>
         </div>
 
@@ -181,26 +149,22 @@ import AppWindow from './AppWindow.astro';
       <div class="hp-logos" role="list" aria-label="Supported extensions">
 
         <div class="hp-logo" role="listitem" aria-label="Raycast">
-          <svg class="hp-icon" viewBox="0 0 24 24" fill="#FF6363">
-            <path d="M12 2L2 12l2.12 2.12 1.41-1.41L12 19.17l6.47-6.46 1.41 1.41L22 12 12 2zm0 3.17L18.83 12 12 18.83 5.17 12 12 5.17z"/>
-          </svg>
+          <iconify-icon class="hp-icon" icon="simple-icons:raycast" style="color:#FF6363"></iconify-icon>
           <span>Raycast</span>
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="Alfred">
-          <svg class="hp-icon" viewBox="0 0 24 24" fill="#5C1F87">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-1-13v6l5 3-1 1.73-6-3.73V7h2z"/>
-          </svg>
+          <iconify-icon class="hp-icon" icon="simple-icons:alfred" style="color:#5C2D91"></iconify-icon>
           <span>Alfred</span>
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="Spotlight">
-          <iconify-icon class="hp-icon" icon="lucide:search" style="color:#888"></iconify-icon>
+          <iconify-icon class="hp-icon" icon="lucide:search" style="color:var(--mid)"></iconify-icon>
           <span>Spotlight</span>
         </div>
 
         <div class="hp-logo" role="listitem" aria-label="macOS Shortcuts">
-          <iconify-icon class="hp-icon" icon="lucide:square-function" style="color:#1475d6"></iconify-icon>
+          <iconify-icon class="hp-icon" icon="simple-icons:shortcuts" style="color:#1475d6"></iconify-icon>
           <span>Shortcuts</span>
         </div>
 
