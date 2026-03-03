@@ -248,13 +248,10 @@ import AppWindow from './AppWindow.astro';
     min-width: 286px;
     padding: 9px 12px;
     border-radius: 12px;
-    border: 1px solid rgba(26,107,64,0.26);
-    background:
-      linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(244,251,247,0.92) 100%);
-    box-shadow:
-      0 1px 1px rgba(12,12,11,0.05),
-      0 10px 22px rgba(26,107,64,0.14);
-    transition: transform .16s var(--spring), box-shadow .16s, border-color .16s, background .16s;
+    border: none;
+    background: rgba(26,107,64,0.10);
+    box-shadow: 0 8px 20px rgba(26,107,64,0.10);
+    transition: transform .16s var(--spring), box-shadow .16s, background .16s;
   }
   .hmw-refund-icon {
     width: 24px;
@@ -264,8 +261,7 @@ import AppWindow from './AppWindow.astro';
     align-items: center;
     justify-content: center;
     color: #0f7a43;
-    background: rgba(0,200,83,0.16);
-    box-shadow: inset 0 0 0 1px rgba(26,107,64,0.14);
+    background: rgba(0,200,83,0.20);
     flex-shrink: 0;
   }
   .hmw-refund-copy {
@@ -292,11 +288,8 @@ import AppWindow from './AppWindow.astro';
   }
   .hmw-refund-pill:hover {
     transform: translateX(-50%) translateY(-1px);
-    border-color: rgba(26,107,64,0.42);
-    background: linear-gradient(180deg, rgba(255,255,255,0.99) 0%, rgba(236,248,241,0.98) 100%);
-    box-shadow:
-      0 2px 2px rgba(12,12,11,0.06),
-      0 14px 28px rgba(26,107,64,0.18);
+    background: rgba(26,107,64,0.16);
+    box-shadow: 0 12px 26px rgba(26,107,64,0.18);
   }
 
   /* Provider logos */
