@@ -9,70 +9,103 @@ import Footer from '../components/Footer.astro';
 >
   <Nav />
   <main class="dl-page">
-    <div class="wrap">
 
-      <header class="dl-head" data-r>
-        <span class="lbl g"><span class="ldot"></span>Download</span>
-        <h1 class="dl-h1">PromptCraft for macOS</h1>
-        <p class="dl-sub">
-          macOS 14 Sonoma or later &nbsp;·&nbsp; Apple Silicon and Intel &nbsp;·&nbsp; 14-day free trial
-        </p>
-      </header>
+    <!-- Hero -->
+    <div class="dl-hero">
+      <div class="wrap dl-hero-inner" data-r>
 
-      <!-- Download card -->
-      <div class="dl-card" data-r>
-        <div class="dlc-left">
-          <div class="dlc-icon">
-            <svg viewBox="0 0 64 64" fill="none">
-              <circle cx="32" cy="32" r="5" fill="var(--g)"/>
-              <path d="M32 8v18M32 38v18M8 32h18M38 32h18" stroke="var(--g)" stroke-width="3.5" stroke-linecap="round"/>
-              <circle cx="32" cy="32" r="14" stroke="var(--g)" stroke-width="1.3" opacity=".25" stroke-dasharray="3 4"/>
+        <!-- App icon -->
+        <div class="dl-icon-wrap">
+          <div class="dl-icon">
+            <svg viewBox="0 0 96 96" fill="none" class="dl-icon-svg">
+              <!-- Background handled by CSS rounded square -->
+              <!-- Outer ring -->
+              <circle cx="48" cy="48" r="30" stroke="rgba(0,200,83,0.18)" stroke-width="1" stroke-dasharray="4 5"/>
+              <!-- Center dot -->
+              <circle cx="48" cy="48" r="6" fill="#00C853"/>
+              <!-- Cross spokes -->
+              <path d="M48 16v16M48 64v16M16 48h16M64 48h16" stroke="#00C853" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- Diagonal hints -->
+              <path d="M27 27l8 8M61 61l8 8M69 27l-8 8M35 61l-8 8" stroke="rgba(0,200,83,0.35)" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
           </div>
-          <div>
-            <p class="dlc-name">PromptCraft</p>
-            <p class="dlc-meta mono">v1.1.0 &nbsp;·&nbsp; macOS 14+ &nbsp;·&nbsp; ~12 MB</p>
-          </div>
+          <div class="dl-icon-reflection"></div>
         </div>
-        <a href="https://github.com/oguzhnatly/prompt-craft/releases" target="_blank" rel="noopener" class="btn btn-g dlc-btn">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M7 1v9M2 7l5 5 5-5M1 13h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Download .dmg
-        </a>
+
+        <!-- Name + meta -->
+        <h1 class="dl-h1">PromptCraft</h1>
+        <p class="dl-tagline">The AI prompt engineering layer for macOS</p>
+
+        <div class="dl-badges">
+          <span class="dl-badge">
+            <iconify-icon icon="lucide:cpu" style="font-size:11px;vertical-align:middle;margin-right:4px;" aria-hidden="true"></iconify-icon>
+            Apple Silicon + Intel
+          </span>
+          <span class="dl-badge">
+            <iconify-icon icon="lucide:apple" style="font-size:11px;vertical-align:middle;margin-right:4px;" aria-hidden="true"></iconify-icon>
+            macOS 14 Sonoma+
+          </span>
+          <span class="dl-badge">
+            <iconify-icon icon="lucide:hard-drive" style="font-size:11px;vertical-align:middle;margin-right:4px;" aria-hidden="true"></iconify-icon>
+            ~12 MB
+          </span>
+          <span class="dl-badge dl-badge-v mono">v1.1.0</span>
+        </div>
+
+        <div class="dl-cta-row">
+          <a href="https://github.com/oguzhnatly/prompt-craft/releases" target="_blank" rel="noopener" class="btn btn-g dl-cta">
+            <iconify-icon icon="lucide:download" style="font-size:15px;" aria-hidden="true"></iconify-icon>
+            Download for Mac
+            <span class="dl-cta-free">FREE</span>
+          </a>
+          <p class="dl-cta-note mono">14-day free trial &nbsp;·&nbsp; No account required &nbsp;·&nbsp; Notarized by Apple</p>
+        </div>
+
       </div>
+    </div>
+
+    <div class="wrap">
 
       <!-- Install steps -->
-      <section class="dl-steps" aria-labelledby="install-heading">
-        <h2 id="install-heading" class="dl-steps-h">Up and running in 60 seconds</h2>
+      <section class="dl-steps" aria-labelledby="install-heading" data-r>
+        <h2 id="install-heading" class="dl-section-h">Up and running in 60 seconds</h2>
         <div class="dl-step-list">
           {[
             {
               n: '01',
+              icon: 'lucide:package-open',
               title: 'Open the .dmg and drag to Applications',
               body: 'Mount the disk image and drag PromptCraft.app to your Applications folder. Eject the disk image when done.',
             },
             {
               n: '02',
-              title: 'Launch — Gatekeeper will clear it',
+              icon: 'lucide:shield-check',
+              title: 'Launch — Gatekeeper clears it automatically',
               body: 'The app is signed with a Developer ID certificate and notarized by Apple. macOS Gatekeeper will clear it on first launch. If prompted, click Open in System Settings.',
             },
             {
               n: '03',
-              title: 'Grant Accessibility permission',
-              body: 'PromptCraft needs one Accessibility permission to read selected text from your active application and enable the global Cmd+Shift+Space shortcut. Grant it once in System Settings to Privacy & Security to Accessibility. It cannot be revoked per-app after granted — you choose to add it yourself.',
+              icon: 'lucide:lock-open',
+              title: 'Grant Accessibility permission (once)',
+              body: 'PromptCraft needs one Accessibility permission to read selected text from your active application and enable the global shortcut. Grant it once in System Settings > Privacy & Security > Accessibility.',
             },
             {
               n: '04',
+              icon: 'lucide:keyboard',
               title: 'Press Cmd+Shift+Space from anywhere',
-              body: 'The app is now running silently in your menu bar. Press Cmd+Shift+Space from any application, on any desktop Space, to open PromptCraft. Type a rough idea, press Optimize, copy the result. Done.',
+              body: 'The app runs silently in your menu bar. Press Cmd+Shift+Space from any application on any desktop Space to open PromptCraft. Type a rough idea, press Optimize, copy the result.',
             },
           ].map(s => (
             <div class="dl-step" data-r>
-              <span class="dls-n mono">{s.n}</span>
-              <div>
+              <div class="dls-num-wrap">
+                <span class="dls-n mono">{s.n}</span>
+                <div class="dls-icon-ring">
+                  <iconify-icon icon={s.icon} style="font-size:14px;color:var(--g);" aria-hidden="true"></iconify-icon>
+                </div>
+              </div>
+              <div class="dls-body">
                 <p class="dls-title">{s.title}</p>
-                <p class="dls-body">{s.body}</p>
+                <p class="dls-desc">{s.body}</p>
               </div>
             </div>
           ))}
@@ -81,15 +114,15 @@ import Footer from '../components/Footer.astro';
 
       <!-- System requirements -->
       <section class="dl-req" data-r aria-labelledby="req-heading">
-        <h2 id="req-heading" class="dl-req-h">System requirements</h2>
+        <h2 id="req-heading" class="dl-section-h">System requirements</h2>
         <div class="dl-req-grid">
           {[
-            ['macOS version', 'macOS 14 Sonoma or later'],
-            ['Architecture', 'Apple Silicon (M1/M2/M3/M4) and Intel'],
-            ['RAM', '4 GB minimum, 8 GB recommended'],
-            ['Disk space', '~12 MB for the app'],
-            ['AI provider', 'Ollama (local), or internet access for cloud models'],
-            ['Permission', 'Accessibility (one-time grant, read-only)'],
+            ['macOS version',  'macOS 14 Sonoma or later'],
+            ['Architecture',   'Apple Silicon (M1 through M4) and Intel'],
+            ['RAM',            '4 GB minimum, 8 GB recommended'],
+            ['Disk space',     '~12 MB for the app'],
+            ['AI provider',    'Ollama (local, offline), or internet access for cloud models'],
+            ['Permission',     'Accessibility (one-time grant, read-only)'],
           ].map(([k, v]) => (
             <div class="dl-req-row">
               <span class="dl-req-k mono">{k}</span>
@@ -99,62 +132,174 @@ import Footer from '../components/Footer.astro';
         </div>
       </section>
 
+      <!-- Bottom CTA -->
+      <div class="dl-bottom-cta" data-r>
+        <p class="dl-bottom-text">Questions before downloading? Read the <a href="/docs">docs</a> or email <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a></p>
+      </div>
+
     </div>
   </main>
   <Footer />
 </Base>
 
 <style>
-  .dl-page { padding-top: 100px; padding-bottom: 80px; min-height: 90vh; }
+  /* ── Dark theme tokens scoped to the download page ── */
+  .dl-page {
+    --snow: rgba(255,255,255,0.92);
+    --pale: rgba(255,255,255,0.72);
+    --mute: rgba(255,255,255,0.38);
+    --g:    #00C853;
+    --s1:   #1a1a18;
+    --bdr:  rgba(255,255,255,0.08);
+  }
 
-  .dl-head { margin-bottom: 48px; display: flex; flex-direction: column; gap: 16px; }
-  .dl-h1   { font-size: clamp(32px, 5vw, 64px); font-weight: 800; letter-spacing: -0.05em; color: var(--snow); line-height: 1.02; }
-  .dl-sub  { font-size: 14px; color: var(--mute); }
+  .dl-page { padding-bottom: 80px; min-height: 90vh; background: var(--dk); }
 
-  .dl-card {
-    background: var(--s1); border: 1px solid var(--bdr);
-    border-radius: 14px; padding: 28px 32px;
-    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  /* ── Hero ─────────────────────────────── */
+  .dl-hero {
+    padding: 80px 0 64px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(0,200,83,0.07) 0%, transparent 70%);
+  }
+  .dl-hero-inner {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: 0;
+  }
+
+  /* App icon */
+  .dl-icon-wrap {
+    position: relative; margin-bottom: 28px;
+    filter: drop-shadow(0 20px 48px rgba(0,200,83,0.22));
+  }
+  .dl-icon {
+    width: 100px; height: 100px;
+    background: linear-gradient(145deg, #1c1c1e 0%, #111 100%);
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .dl-icon::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+    border-radius: inherit;
+  }
+  .dl-icon-svg { width: 64px; height: 64px; position: relative; z-index: 1; }
+  .dl-icon-reflection {
+    width: 60px; height: 12px;
+    background: radial-gradient(ellipse, rgba(0,200,83,0.25) 0%, transparent 70%);
+    margin: 10px auto 0;
+    filter: blur(6px);
+  }
+
+  .dl-h1 {
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 800; letter-spacing: -0.05em;
+    color: var(--snow); line-height: 1.02;
+    margin-bottom: 12px;
+  }
+  .dl-tagline {
+    font-size: 17px; color: var(--mute); font-weight: 400;
+    letter-spacing: -0.01em; margin-bottom: 24px;
+  }
+
+  /* Badges */
+  .dl-badges {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    justify-content: center; margin-bottom: 32px;
+  }
+  .dl-badge {
+    font-size: 11px; color: var(--pale);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px; padding: 5px 12px;
+    letter-spacing: 0.02em; white-space: nowrap;
+  }
+  .dl-badge-v { color: var(--g); border-color: rgba(0,200,83,0.25); background: rgba(0,200,83,0.08); }
+
+  /* CTA */
+  .dl-cta-row { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .dl-cta {
+    padding: 15px 32px; font-size: 16px; font-weight: 700;
+    border-radius: 12px; gap: 10px;
+    box-shadow: 0 0 32px rgba(0,200,83,0.22);
+  }
+  .dl-cta:hover { box-shadow: 0 0 48px rgba(0,200,83,0.35); }
+  .dl-cta-free {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+    background: rgba(0,0,0,0.35); color: #00C853;
+    padding: 3px 7px; border-radius: 4px;
+    vertical-align: middle; margin-left: 2px;
+  }
+  .dl-cta-note { font-size: 12px; color: var(--mute); letter-spacing: 0.02em; }
+
+  /* ── Body sections ────────────────────── */
+  .dl-section-h {
+    font-size: 20px; font-weight: 700; letter-spacing: -0.03em;
+    color: var(--snow); margin-bottom: 20px;
+  }
+
+  /* Steps */
+  .dl-steps { margin-top: 56px; }
+  .dl-step-list {
+    display: flex; flex-direction: column;
+    border-top: 1px solid var(--bdr);
     margin-bottom: 56px;
-    transition: border-color .2s;
   }
-  .dl-card:hover { border-color: rgba(45,255,138,0.2); }
-  .dlc-left { display: flex; align-items: center; gap: 20px; }
-  .dlc-icon { width: 52px; height: 52px; flex-shrink: 0; }
-  .dlc-icon svg { width: 100%; height: 100%; }
-  .dlc-name { font-size: 18px; font-weight: 700; letter-spacing: -0.03em; color: var(--snow); }
-  .dlc-meta { font-size: 11px; color: var(--mute); margin-top: 4px; }
-  .dlc-btn  { flex-shrink: 0; padding: 13px 24px; font-size: 14px; border-radius: 10px; }
-
-  .dl-steps-h { font-size: 22px; font-weight: 700; letter-spacing: -0.035em; color: var(--snow); margin-bottom: 24px; }
-
-  .dl-step-list { display: flex; flex-direction: column; border-top: 1px solid var(--bdr); margin-bottom: 56px; }
   .dl-step {
-    display: grid; grid-template-columns: 56px 1fr; gap: 0 24px;
-    padding: 28px 0; border-bottom: 1px solid var(--bdr);
+    display: grid; grid-template-columns: 72px 1fr;
+    gap: 24px; padding: 28px 0;
+    border-bottom: 1px solid var(--bdr);
+    transition: background .15s;
   }
-  .dls-n     { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--mute); padding-top: 4px; transition: color .15s; }
+  .dls-num-wrap {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+    padding-top: 2px;
+  }
+  .dls-n {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    color: var(--mute); transition: color .15s;
+  }
   .dl-step:hover .dls-n { color: var(--g); }
-  .dls-title { font-size: 16px; font-weight: 700; letter-spacing: -0.025em; color: var(--snow); margin-bottom: 8px; }
-  .dls-body  { font-size: 14px; line-height: 1.75; color: var(--mute); max-width: 580px; }
+  .dls-icon-ring {
+    width: 30px; height: 30px;
+    border: 1px solid rgba(0,200,83,0.2);
+    border-radius: 8px;
+    background: rgba(0,200,83,0.06);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dls-body { display: flex; flex-direction: column; gap: 8px; }
+  .dls-title { font-size: 16px; font-weight: 700; letter-spacing: -0.025em; color: var(--snow); }
+  .dls-desc  { font-size: 14px; line-height: 1.75; color: var(--mute); max-width: 580px; }
 
-  .dl-req-h { font-size: 22px; font-weight: 700; letter-spacing: -0.035em; color: var(--snow); margin-bottom: 20px; }
+  /* Requirements */
+  .dl-req { margin-bottom: 56px; }
   .dl-req-grid {
     display: flex; flex-direction: column;
-    background: var(--s1); border-radius: 10px; border: 1px solid var(--bdr);
+    background: var(--s1); border-radius: 12px; border: 1px solid var(--bdr);
     overflow: hidden;
   }
   .dl-req-row {
     display: grid; grid-template-columns: 180px 1fr;
-    padding: 14px 20px; border-bottom: 1px solid var(--bdr);
+    padding: 13px 20px; border-bottom: 1px solid var(--bdr);
     align-items: center; gap: 16px;
   }
   .dl-req-row:last-child { border-bottom: none; }
-  .dl-req-k  { font-size: 12px; color: var(--mute); }
+  .dl-req-k  { font-size: 11px; color: var(--mute); letter-spacing: 0.03em; }
   .dl-req-v  { font-size: 14px; color: var(--pale); }
 
+  /* Bottom note */
+  .dl-bottom-cta { text-align: center; padding: 0 0 8px; }
+  .dl-bottom-text { font-size: 14px; color: var(--mute); }
+  .dl-bottom-text a { color: var(--g); text-decoration: none; }
+  .dl-bottom-text a:hover { text-decoration: underline; }
+
+  /* Responsive */
   @media (max-width: 640px) {
-    .dl-card { flex-direction: column; align-items: flex-start; }
+    .dl-hero { padding: 60px 0 48px; }
+    .dl-badges { gap: 6px; }
+    .dl-step  { grid-template-columns: 52px 1fr; gap: 16px; }
     .dl-req-row { grid-template-columns: 1fr; gap: 4px; }
   }
 </style>
