@@ -38,8 +38,13 @@ import AppWindow from './AppWindow.astro';
           </a>
         </div>
 
+        <a href="/terms#refunds" class="hmc-refund-banner" data-reveal data-d="4">
+          <iconify-icon icon="lucide:shield-check" style="font-size:14px;" aria-hidden="true"></iconify-icon>
+          Try risk free. First Cloud subscription charge is refundable for 14 days with no questions asked.
+        </a>
+
         <!-- Metrics -->
-        <div class="hmc-metrics" data-reveal data-d="4">
+        <div class="hmc-metrics" data-reveal data-d="5">
           <div class="hmc-metric">
             <span class="hmcm-n">340%</span>
             <span class="hmcm-l mono">avg prompt clarity gain</span>
@@ -205,6 +210,27 @@ import AppWindow from './AppWindow.astro';
   .hmc-btn-main { padding: 13px 24px; font-size: 15px; border-radius: 9px; }
   .hmc-btn-sub  { padding: 13px 14px; font-size: 15px; color: var(--mid); }
   .hmc-btn-sub:hover { color: var(--ink); }
+
+  .hmc-refund-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 22px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--acc-bdr);
+    background: var(--acc-low);
+    color: var(--acc);
+    font-size: 12px;
+    line-height: 1.5;
+    max-width: 620px;
+    transition: border-color .13s, background .13s, color .13s;
+  }
+  .hmc-refund-banner:hover {
+    border-color: rgba(26,107,64,0.35);
+    background: rgba(26,107,64,0.13);
+    color: #145735;
+  }
 
   /* Metrics */
   .hmc-metrics { display: flex; align-items: center; }

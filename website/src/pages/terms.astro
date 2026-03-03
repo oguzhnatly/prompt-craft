@@ -42,7 +42,7 @@ import Footer from '../components/Footer.astro';
           </div>
           <div class="legal-summary">
             <iconify-icon icon="lucide:file-check" style="font-size:16px;color:var(--acc);flex-shrink:0;margin-top:2px;"></iconify-icon>
-            <p>Plain-English summary: You buy a license, you own it. Pro is a one-time payment with no renewal. You can use it commercially. You cannot resell it, reverse-engineer it, or share it with others. 30-day money-back guarantee on Pro. Cancel Cloud anytime.</p>
+            <p>Plain-English summary: You buy a license, you own it. Pro is one-time and non-refundable. Cloud is monthly and cancellable anytime. Only your first Cloud subscription charge is refundable within 14 days of the initial subscription date, no questions asked. Renewal charges are non-refundable.</p>
           </div>
         </div>
 
@@ -74,7 +74,7 @@ import Footer from '../components/Footer.astro';
                 <li>Use your own API keys for any supported AI provider</li>
                 <li>Full Ollama local model support</li>
                 <li>All 1.x version updates included at no additional cost</li>
-                <li>30-day money-back guarantee</li>
+                <li>Non-refundable after purchase</li>
               </ul>
             </div>
             <div class="legal-tier legal-tier-cloud">
@@ -89,6 +89,7 @@ import Footer from '../components/Footer.astro';
                 <li>Access to Claude, GPT-4o, Gemini, DeepSeek, Kimi via proxy</li>
                 <li>Context memory across sessions (Cloud-synced)</li>
                 <li>Cancel at any time — access continues until period end</li>
+                <li>First subscription charge refundable within 14 days of initial subscription date only</li>
               </ul>
             </div>
           </div>
@@ -188,25 +189,36 @@ import Footer from '../components/Footer.astro';
           <h2>Refund policy</h2>
 
           <div class="legal-refund-grid">
-            <div class="legal-refund">
+            <div class="legal-refund legal-refund-accent">
               <div class="lr-header">
                 <iconify-icon icon="lucide:badge-check" style="font-size:16px;color:var(--acc);"></iconify-icon>
-                <strong>Pro License — 30-day guarantee</strong>
+                <strong>No questions refund window</strong>
               </div>
-              <p>If you are not satisfied with PromptCraft for any reason within 30 days of purchase, email <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a> with your order ID and we will issue a full refund, no questions asked. The refund will be processed through Stripe and will appear in 5 to 10 business days depending on your bank.</p>
-              <p>After 30 days, Pro licenses are non-refundable. The license remains valid indefinitely and all 1.x updates continue to be included.</p>
+              <p><strong>Eligible charge:</strong> only the first PromptCraft Cloud subscription charge on a new subscription.</p>
+              <p><strong>Window:</strong> 14 calendar days from the initial subscription timestamp.</p>
+              <p><strong>Condition:</strong> no reason required. If requested inside the window, it is approved.</p>
             </div>
             <div class="legal-refund">
               <div class="lr-header">
-                <iconify-icon icon="lucide:refresh-cw" style="font-size:16px;color:var(--acc);"></iconify-icon>
-                <strong>Cloud License — cancel anytime</strong>
+                <iconify-icon icon="lucide:x-circle" style="font-size:16px;color:#dc2626;"></iconify-icon>
+                <strong>Outside scope</strong>
               </div>
-              <p>You may cancel your Cloud subscription at any time. Access continues until the end of the current billing period. We do not pro-rate partial months on cancellation.</p>
-              <p>If you cancel within 7 days of your first Cloud subscription charge and have not used the Cloud proxy, we will refund the first month's payment. Subsequent monthly charges are non-refundable except at our discretion for service failures.</p>
+              <p>Renewal charges are non-refundable.</p>
+              <p>One-time Pro license purchases are non-refundable.</p>
+              <p>Upgrades, add-ons, taxes, currency conversion differences, and payment processor fees are non-refundable except where mandatory law requires otherwise.</p>
             </div>
           </div>
 
-          <p>All refunds are credited back to the original payment method via Stripe. We cannot issue refunds to a different card or bank account.</p>
+          <ul class="legal-ul">
+            <li><strong>How to request:</strong> email <a href="mailto:hello@promptcraft.app">hello@promptcraft.app</a> with your order ID and purchase email.</li>
+            <li><strong>Verification:</strong> we verify charge identity and first-subscription status only. No questionnaire is required.</li>
+            <li><strong>Processing target:</strong> refund decision within 2 business days. Payment return speed depends on card network and bank.</li>
+            <li><strong>Funding source:</strong> refunds are issued only to the original payment method used for the charge.</li>
+            <li><strong>Subscription status:</strong> approved refund immediately terminates Cloud subscription access and future billing for that subscription.</li>
+            <li><strong>Abuse safeguard:</strong> repeated refund cycling on new subscriptions may result in refusal of future subscriptions.</li>
+          </ul>
+
+          <p>Where consumer protection laws require broader rights, those mandatory rights apply in addition to this policy.</p>
         </section>
 
         <section id="chargebacks">
@@ -277,7 +289,7 @@ import Footer from '../components/Footer.astro';
         <section id="changes">
           <h2>Changes to these Terms</h2>
           <p>We may update these Terms from time to time. For material changes, we will notify you by email at the address associated with your purchase at least 14 days before the change takes effect. For minor or clarifying changes, we may update the Terms without individual notice but will update the "Last updated" date above.</p>
-          <p>Your continued use of PromptCraft after the effective date of updated Terms constitutes acceptance of the revised Terms. If you do not agree to the revised Terms, you may cancel your subscription (Cloud) or request a refund within the applicable refund window (Pro).</p>
+          <p>Your continued use of PromptCraft after the effective date of updated Terms constitutes acceptance of the revised Terms. If you do not agree to the revised Terms, you may cancel your Cloud subscription before the next renewal date.</p>
         </section>
 
         <section id="contact">
@@ -350,6 +362,7 @@ import Footer from '../components/Footer.astro';
   .lr-header strong { font-size: 14px; font-weight: 600; color: var(--ink); }
   .legal-refund p { font-size: 13px; line-height: 1.75; color: var(--mid); margin: 0; }
   .legal-refund p a { color: var(--acc); }
+  .legal-refund-accent { border-color: rgba(26,107,64,0.35); background: rgba(26,107,64,0.05); }
 
   .legal-contact { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 8px; margin: 12px 0; font-size: 14px; font-weight: 500; color: var(--ink); }
 
