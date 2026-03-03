@@ -262,7 +262,8 @@ import AppWindow from './AppWindow.astro';
   .hp-inner { display: flex; flex-direction: column; gap: 0; padding-top: 20px; }
   .hp-row { display: flex; align-items: center; gap: 24px; padding: 10px 0; flex-wrap: nowrap; }
   .hp-divider { height: 1px; background: var(--bdr); }
-  .hp-label { font-size: 10px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; flex-shrink: 0; white-space: nowrap; }
+  .hp-label { font-size: 10px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; flex-shrink: 0; white-space: nowrap; min-width: 96px; }
+  .hp-logos { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; flex: 1; }
   .hp-logo {
     display: flex; align-items: center; gap: 6px;
     padding: 6px 12px; border-radius: 6px;
