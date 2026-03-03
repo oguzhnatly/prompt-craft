@@ -149,8 +149,7 @@ const stages = [
   /* Pipeline section spacing container */
   #pipeline-track {
     height: auto;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding-top: 8px;
   }
 
   #pipeline {
@@ -169,7 +168,7 @@ const stages = [
     width: min(calc(100% - 80px), 1080px);
     margin: 0 auto;
     padding-top: 0;
-    padding-bottom: 16px;
+    padding-bottom: 40px;
     box-sizing: border-box;
   }
 
@@ -188,10 +187,10 @@ const stages = [
 
   .pl-ide {
     flex: 0 0 auto;
-    min-height: 0;
+    min-height: 470px;
     width: min(calc(100% - 80px), 1080px);
     margin: 0 auto;
-    display: grid; grid-template-columns: 338px 1fr;
+    display: grid; grid-template-columns: 338px 1fr; grid-template-rows: 1fr;
     border-top: 1px solid var(--bdr);
     border-bottom: 1px solid var(--bdr);
     background: var(--bg);
@@ -211,8 +210,8 @@ const stages = [
   .pl-stage {
     display: grid; grid-template-columns: 32px 1fr 4px;
     align-items: center; gap: 6px;
-    padding: 8px 12px;
-    min-height: 0;
+    padding: 0 12px;
+    min-height: 64px;
     flex: 0 0 auto;
     border: none; border-bottom: 1px solid var(--bdr);
     background: var(--bg); text-align: left;
@@ -239,20 +238,31 @@ const stages = [
 
   .pl-panel-wrap {
     position: relative;
-    overflow: visible;
-    height: auto;
+    overflow: hidden;
+    height: 100%;
   }
   .pl-panel {
+    position: absolute; inset: 0;
     padding: 10px 14px 10px;
-    display: none;
-    flex-direction: column;
+    display: flex; flex-direction: column;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .42s var(--out), transform .42s var(--out);
+    pointer-events: none;
+    overflow-y: auto;
+    scrollbar-width: none;
   }
+  /* Single inner wrapper — margin:auto is the only cross-browser reliable
+     vertical-center technique when the flex container also has overflow-y:auto */
   .plp-inner {
     display: flex; flex-direction: column; gap: 10px;
     margin: 0;
   }
+  .pl-panel::-webkit-scrollbar { display: none; }
   .pl-panel.active {
-    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
   .plp-top { display: flex; flex-direction: column; gap: 8px; }
@@ -295,7 +305,7 @@ const stages = [
   }
   .pl-footer-row {
     display: flex; align-items: center; gap: 8px;
-    padding: 0;
+    padding: 8px 12px 12px;
   }
   .plf-acc { color: var(--acc); font-size: 12px; }
   .plf-meta { font-size: 12px; color: var(--dim); }
@@ -304,7 +314,7 @@ const stages = [
 
   @media (max-width: 900px) {
     #pipeline-track { height: auto; }
-    #pipeline { position: static; height: auto; overflow: visible; padding-top: 0; }
+    #pipeline { position: static; height: auto; overflow: visible; padding-top: 48px; }
     .pl-header-wrap,
     .pl-ide,
     .pl-footer-wrap { width: 100%; }
@@ -313,7 +323,7 @@ const stages = [
     .pl-ide { flex: none; }
     .pl-ide { grid-template-columns: 1fr; min-height: 520px; }
     .pl-stages { border-right: none; border-bottom: 1px solid var(--bdr); display: grid; grid-template-columns: 1fr 1fr; }
-    .pl-panel-wrap { min-height: 0; }
+    .pl-panel-wrap { min-height: 380px; }
     .pl-panel { padding: 24px 20px; }
     .pl-footer-row { padding: 12px 20px 24px; }
   }
@@ -322,7 +332,6 @@ const stages = [
 <script>
   const tabs    = Array.from(document.querySelectorAll('.pl-stage'));
   const panels  = Array.from(document.querySelectorAll('.pl-panel'));
-  const track   = document.getElementById('pipeline-track');
 
   const TOTAL = tabs.length;
   let currentStage = 0;
@@ -344,21 +353,6 @@ const stages = [
 
   }
 
-  // Scroll driven stage advance without lock spacing
-  const updateStageFromScroll = () => {
-    if (!track || window.innerWidth <= 900) return;
-    const rect = track.getBoundingClientRect();
-    const viewport = window.innerHeight || 1;
-    const startLine = viewport * 0.2;
-    const traveled = startLine - rect.top;
-    const span = rect.height + viewport * 0.2;
-    const progress = Math.max(0, Math.min(1, traveled / Math.max(1, span)));
-    const idx = Math.min(TOTAL - 1, Math.floor(progress * TOTAL));
-    setStage(idx);
-  };
-
-  window.addEventListener('scroll', updateStageFromScroll, { passive: true });
-
   // Tab clicks
   tabs.forEach((tab, i) => {
     tab.addEventListener('click', () => setStage(i, true));
@@ -369,5 +363,4 @@ const stages = [
   });
 
   setStage(0, true);
-  updateStageFromScroll();
 </script>
