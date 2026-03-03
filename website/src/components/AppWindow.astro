@@ -68,25 +68,17 @@
     </div>
   </div>
 
-  <div class="aw-screen" id="aw-export-screen" hidden>
-    <div class="aw-screen-header">
-      <button class="aw-screen-back" id="aw-export-back" aria-label="Back to main view">
-        <iconify-icon icon="lucide:chevron-left" style="font-size:12px;"></iconify-icon>
-        <span>Export</span>
-      </button>
+  <div class="aw-export-pop" id="aw-export-pop" hidden>
+    <div class="aw-export-group">
+      <div class="aw-export-h mono">Clipboard formats</div>
+      <button class="aw-export-row" id="aw-download-txt">Plain text .txt</button>
+      <button class="aw-export-row" id="aw-download-md">Markdown .md</button>
     </div>
-    <div class="aw-screen-body aw-export-body">
-      <div class="aw-export-group">
-        <div class="aw-export-h mono">Clipboard formats</div>
-        <button class="aw-export-row" id="aw-download-txt">Plain text .txt</button>
-        <button class="aw-export-row" id="aw-download-md">Markdown .md</button>
-      </div>
-      <div class="aw-export-group">
-        <div class="aw-export-h mono">System prompt formats</div>
-        <button class="aw-export-row" id="aw-download-cursor">Cursor Rules .cursorrules</button>
-        <button class="aw-export-row" id="aw-download-claude">Claude Project Instructions</button>
-        <button class="aw-export-row" id="aw-download-chatgpt">ChatGPT Custom Instructions</button>
-      </div>
+    <div class="aw-export-group">
+      <div class="aw-export-h mono">System prompt formats</div>
+      <button class="aw-export-row" id="aw-download-cursor">Cursor Rules .cursorrules</button>
+      <button class="aw-export-row" id="aw-download-claude">Claude Project Instructions</button>
+      <button class="aw-export-row" id="aw-download-chatgpt">ChatGPT Custom Instructions</button>
     </div>
   </div>
 
@@ -344,7 +336,7 @@
     padding: 0 16px;
     display: flex;
     align-items: center;
-    border-bottom: 0.5px solid var(--aw-pill-bdr);
+    border-bottom: 0.5px solid #d9d5d2;
   }
   .aw-screen-back {
     display: inline-flex;
@@ -352,49 +344,60 @@
     gap: 4px;
     border: none;
     background: transparent;
-    color: var(--aw-text);
+    color: #222;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     padding: 0;
   }
   .aw-screen-back iconify-icon { font-size: 12px !important; }
+
+  .aw-screen-history {
+    opacity: 0;
+    transform: translateX(16px);
+    transition: opacity .2s ease, transform .24s cubic-bezier(.2,.9,.25,1);
+  }
+  .aw-screen-history.is-open {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
   .aw-screen-body {
     flex: 1;
     overflow: auto;
-    padding: 8px 16px 8px;
+    padding: 8px 16px 10px;
   }
 
   .aw-history-top { margin-bottom: 8px; }
   .aw-history-meta {
     font-size: 11px;
-    color: var(--aw-desc);
-    margin-bottom: 4px;
+    color: #888;
+    margin-bottom: 6px;
   }
   .aw-history-search-wrap {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.5);
-    border: 0.5px solid var(--aw-pill-bdr);
-    margin-bottom: 8px;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.9);
+    border: 0.5px solid #d9d5d2;
+    margin-bottom: 10px;
   }
   .aw-history-search {
     border: none;
     outline: none;
     background: transparent;
-    color: var(--aw-text);
+    color: #222;
     font-size: 13px;
     width: 100%;
     font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
   }
-  .aw-history-search::placeholder { color: var(--aw-desc); }
+  .aw-history-search::placeholder { color: #9b9b9b; }
   .aw-history-search-clear {
     border: none;
     background: transparent;
-    color: var(--aw-desc);
+    color: #9b9b9b;
     cursor: pointer;
     padding: 0;
     display: inline-flex;
@@ -402,18 +405,18 @@
   }
   .aw-history-filters {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     overflow-x: auto;
     padding-bottom: 4px;
     scrollbar-width: none;
   }
   .aw-history-filters::-webkit-scrollbar { display: none; }
   .aw-history-filter {
-    border: 0.5px solid var(--aw-pill-bdr);
-    background: var(--aw-pill-bg);
-    color: var(--aw-pill-text);
+    border: 0.5px solid #d4d0cd;
+    background: #ece9e7;
+    color: #444;
     border-radius: 999px;
-    padding: 5px 10px;
+    padding: 6px 12px;
     font-size: 11px;
     font-weight: 500;
     white-space: nowrap;
@@ -427,23 +430,19 @@
   .aw-history-group-label {
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.08em;
-    color: var(--aw-desc);
+    letter-spacing: 0.12em;
+    color: #8f8f8f;
     text-transform: uppercase;
-    margin: 2px 0 2px;
+    margin: 6px 0 4px;
   }
-  .aw-history-list-full {
-    display: flex;
-    flex-direction: column;
-  }
+  .aw-history-list-full { display: flex; flex-direction: column; }
   .aw-history-item {
     border: none;
-    border-bottom: 0.5px solid var(--aw-pill-bdr);
     text-align: left;
     width: 100%;
     background: transparent;
-    color: var(--aw-text);
-    padding: 8px 22px 8px 0;
+    color: #222;
+    padding: 8px 0 10px;
     font-size: 12px;
     line-height: 1.45;
     cursor: pointer;
@@ -454,76 +453,103 @@
     outline: 1px solid #0A84FF;
     outline-offset: -1px;
   }
-  .aw-history-line { font-size: 12px; line-height: 1.35; color: var(--aw-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .aw-history-meta-line { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
-  .aw-history-badge {
-    padding: 2px 6px;
-    border-radius: 999px;
-    background: rgba(10,132,255,0.12);
-    color: #0A84FF;
-    font-size: 9px;
-    font-weight: 500;
+  .aw-history-line {
+    font-size: 12px;
+    line-height: 1.42;
+    color: #222;
+    white-space: normal;
+    word-break: break-word;
   }
-  .aw-history-time { font-size: 10px; color: var(--aw-desc); }
+  .aw-history-meta-line { display: flex; align-items: center; gap: 0; margin-top: 4px; }
+  .aw-history-badge {
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #222;
+    font-size: 12px;
+    font-weight: 400;
+  }
+  .aw-history-time { font-size: 12px; color: #555; }
   .aw-history-star {
-    position: absolute;
-    right: 2px;
-    top: 50%;
-    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6px;
     border: none;
     background: transparent;
-    color: rgba(0,0,0,0.45);
-    font-size: 13px;
+    color: rgba(0,0,0,0.7);
+    font-size: 16px;
     line-height: 1;
     cursor: pointer;
-    padding: 2px;
+    padding: 0;
   }
   .aw-history-star:hover { color: #f0b429; }
   .aw-history-clear-all {
-    margin-top: 8px;
+    margin-top: 10px;
     border: none;
     background: transparent;
-    color: #d33;
+    color: #cc3a32;
     font-size: 12px;
     cursor: pointer;
     padding: 4px 0;
     text-align: left;
   }
 
-  .aw-export-body {
+  .aw-export-pop {
+    position: absolute;
+    right: 16px;
+    bottom: 94px;
+    width: 310px;
+    max-height: 390px;
+    overflow: auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
+    background: #efebe8;
+    border: 0.5px solid #d0ccca;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+    padding: 10px;
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+    transform-origin: bottom right;
+    transition: opacity .18s ease, transform .2s cubic-bezier(.2,.9,.25,1);
+    z-index: 45;
+  }
+  .aw-export-pop[hidden] { display: none !important; }
+  .aw-export-pop.is-open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
   .aw-export-group {
-    border: 0.5px solid var(--aw-pill-bdr);
+    border: 0.5px solid #d6d2cf;
     border-radius: 10px;
     overflow: hidden;
-    background: rgba(255,255,255,0.58);
+    background: #f6f4f2;
   }
   .aw-export-h {
     font-size: 11px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--aw-desc);
-    padding: 8px 10px;
-    border-bottom: 0.5px solid var(--aw-pill-bdr);
+    color: #9a9692;
+    padding: 10px 12px;
+    border-bottom: 0.5px solid #d6d2cf;
     background: rgba(0,0,0,0.03);
   }
   .aw-export-row {
     width: 100%;
     text-align: left;
     border: none;
-    border-bottom: 0.5px solid var(--aw-pill-bdr);
-    background: transparent;
-    color: var(--aw-text);
-    font-size: 12px;
-    min-height: 44px;
-    padding: 0 10px;
+    border-bottom: 0.5px solid #d6d2cf;
+    background: #f6f4f2;
+    color: #222;
+    font-size: 16px;
+    min-height: 58px;
+    padding: 0 20px;
     cursor: pointer;
   }
   .aw-export-row:last-child { border-bottom: none; }
-  .aw-export-row:hover { background: rgba(0,0,0,0.04); }
+  .aw-export-row:hover { background: #f1efed; }
 
   /* ── Input section ───────────────────────────── */
   .aw-input-section {
@@ -969,8 +995,7 @@ This drives executive grade outputs instead of generic commentary.`
   const historyFilters = document.querySelectorAll<HTMLButtonElement>('.aw-history-filter');
   const historyClearAll = document.getElementById('aw-history-clear-all')! as HTMLButtonElement;
   const downloadBtn  = document.getElementById('aw-download-btn')! as HTMLButtonElement;
-  const exportScreen = document.getElementById('aw-export-screen')! as HTMLElement;
-  const exportBack   = document.getElementById('aw-export-back')! as HTMLButtonElement;
+  const exportPop    = document.getElementById('aw-export-pop')! as HTMLElement;
   const dlTxtBtn     = document.getElementById('aw-download-txt')! as HTMLButtonElement;
   const dlMdBtn      = document.getElementById('aw-download-md')! as HTMLButtonElement;
   const dlCursorBtn  = document.getElementById('aw-download-cursor')! as HTMLButtonElement;
@@ -995,9 +1020,43 @@ This drives executive grade outputs instead of generic commentary.`
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  function hideScreens() {
-    historyScreen.hidden = true;
-    exportScreen.hidden = true;
+  function openHistoryScreen() {
+    closeExportPopup(true);
+    historyScreen.hidden = false;
+    requestAnimationFrame(() => historyScreen.classList.add('is-open'));
+  }
+
+  function closeHistoryScreen(immediate = false) {
+    historyScreen.classList.remove('is-open');
+    if (immediate) {
+      historyScreen.hidden = true;
+      return;
+    }
+    setTimeout(() => {
+      if (!historyScreen.classList.contains('is-open')) historyScreen.hidden = true;
+    }, 200);
+  }
+
+  function openExportPopup() {
+    closeHistoryScreen(true);
+    exportPop.hidden = false;
+    requestAnimationFrame(() => exportPop.classList.add('is-open'));
+  }
+
+  function closeExportPopup(immediate = false) {
+    exportPop.classList.remove('is-open');
+    if (immediate) {
+      exportPop.hidden = true;
+      return;
+    }
+    setTimeout(() => {
+      if (!exportPop.classList.contains('is-open')) exportPop.hidden = true;
+    }, 180);
+  }
+
+  function hideOverlays() {
+    closeHistoryScreen();
+    closeExportPopup();
   }
 
   function addHistory(value: string) {
@@ -1076,7 +1135,7 @@ This drives executive grade outputs instead of generic commentary.`
         outputText.style.display = 'block';
         outputRow.style.visibility = 'visible';
         clipTag.style.display = 'none';
-        hideScreens();
+        hideOverlays();
       };
 
       row.addEventListener('click', useEntry);
@@ -1110,7 +1169,7 @@ This drives executive grade outputs instead of generic commentary.`
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-    hideScreens();
+    hideOverlays();
   }
 
   function setInputText(text: string) {
@@ -1229,13 +1288,12 @@ This drives executive grade outputs instead of generic commentary.`
   });
 
   historyBtn.addEventListener('click', () => {
-    hideScreens();
-    historyScreen.hidden = false;
+    openHistoryScreen();
     renderHistory();
   });
 
   historyBack.addEventListener('click', () => {
-    historyScreen.hidden = true;
+    closeHistoryScreen();
   });
 
   historySearch.addEventListener('input', () => {
@@ -1269,12 +1327,11 @@ This drives executive grade outputs instead of generic commentary.`
   });
 
   downloadBtn.addEventListener('click', () => {
-    hideScreens();
-    exportScreen.hidden = false;
-  });
-
-  exportBack.addEventListener('click', () => {
-    exportScreen.hidden = true;
+    if (!exportPop.hidden) {
+      closeExportPopup();
+      return;
+    }
+    openExportPopup();
   });
 
   dlTxtBtn.addEventListener('click', () => downloadOutput('txt'));
@@ -1301,20 +1358,24 @@ This drives executive grade outputs instead of generic commentary.`
     outputRow.style.visibility = 'hidden';
     emptyState.style.display = 'flex';
     clipTag.style.display = 'none';
-    hideScreens();
+    hideOverlays();
   });
 
   document.addEventListener('click', (e) => {
     const target = e.target as Node;
     if (!appWin.contains(target)) return;
-    if (historyScreen.hidden && exportScreen.hidden) return;
-    if (historyScreen.contains(target) || historyBtn.contains(target) || exportScreen.contains(target) || downloadBtn.contains(target)) return;
-    hideScreens();
+    const historyVisible = !historyScreen.hidden;
+    const exportVisible = !exportPop.hidden;
+    if (!historyVisible && !exportVisible) return;
+    if (historyScreen.contains(target) || historyBtn.contains(target) || exportPop.contains(target) || downloadBtn.contains(target)) return;
+    hideOverlays();
   });
 
   // Init: force overlay screens closed
   historyScreen.hidden = true;
-  exportScreen.hidden = true;
+  historyScreen.classList.remove('is-open');
+  exportPop.hidden = true;
+  exportPop.classList.remove('is-open');
 
   // Init: light mode (no .dark class), moon icon visible
   setStyle('research');

@@ -68,7 +68,7 @@ const stages = [
 
 <div id="pipeline-track">
 <section id="pipeline" aria-labelledby="pipeline-heading">
-  <div class="pl-header-wrap">
+  <div class="wrap pl-header-wrap">
     <div class="pl-header">
       <span class="eyebrow"><span class="eyebrow-dot"></span>Under the hood</span>
       <h2 id="pipeline-heading" class="pl-h2">The pipeline, in full.</h2>
@@ -76,7 +76,7 @@ const stages = [
     </div>
   </div>
 
-  <div class="pl-ide" id="pl-ide" role="tablist" aria-label="Pipeline stage inspector">
+  <div class="wrap pl-ide" id="pl-ide" role="tablist" aria-label="Pipeline stage inspector">
 
         <div class="pl-stages">
           {stages.map((s, i) => (
@@ -174,9 +174,8 @@ const stages = [
 
   .pl-header-wrap {
     flex-shrink: 0;
-    max-width: 1160px; width: 100%;
-    margin: 0 auto;
-    padding: 0 0 4px;
+    padding-top: 0;
+    padding-bottom: 4px;
     box-sizing: border-box;
   }
 
@@ -196,9 +195,6 @@ const stages = [
   .pl-ide {
     flex: 1;
     min-height: 0;
-    width: 100%;
-    max-width: 1160px;
-    margin: 0 auto;
     display: grid; grid-template-columns: 340px 1fr; grid-template-rows: 1fr;
     border-top: 1px solid var(--bdr);
     border-bottom: 1px solid var(--bdr);
