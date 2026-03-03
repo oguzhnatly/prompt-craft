@@ -178,7 +178,7 @@ const stages = [
 
   .pl-header-wrap {
     flex-shrink: 0;
-    width: min(100%, 1080px);
+    width: min(calc(100% - 80px), 1080px);
     margin: 0 auto;
     padding-top: 0;
     padding-bottom: 4px;
@@ -201,7 +201,7 @@ const stages = [
   .pl-ide {
     flex: 1;
     min-height: 0;
-    width: min(100%, 1080px);
+    width: min(calc(100% - 80px), 1080px);
     margin: 0 auto;
     display: grid; grid-template-columns: 340px 1fr; grid-template-rows: 1fr;
     border-top: 1px solid var(--bdr);
@@ -303,7 +303,7 @@ const stages = [
 
   .pl-progress-wrap {
     flex-shrink: 0;
-    width: min(100%, 1080px);
+    width: min(calc(100% - 80px), 1080px);
     margin: 0 auto;
   }
   .pl-progress {
@@ -345,7 +345,7 @@ const stages = [
 
   .pl-footer-wrap {
     flex-shrink: 0;
-    width: min(100%, 1080px);
+    width: min(calc(100% - 80px), 1080px);
     margin: 0 auto;
   }
   .pl-footer-row {
@@ -399,6 +399,10 @@ const stages = [
   @media (max-width: 900px) {
     #pipeline-track { height: auto; }
     #pipeline { position: static; height: auto; overflow: visible; padding-top: 48px; }
+    .pl-header-wrap,
+    .pl-ide,
+    .pl-progress-wrap,
+    .pl-footer-wrap { width: 100%; }
     .pl-header-wrap { padding: 0; }
     .pl-header { padding: 0 20px 16px; }
     .pl-ide { flex: none; }
