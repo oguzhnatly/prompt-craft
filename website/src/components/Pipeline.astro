@@ -107,14 +107,12 @@ const stages = [
               role="tabpanel"
               aria-labelledby={`pls-tab-${s.id}`}
             >
-              <div class="plp-text">
-                <div class="plp-top">
-                  <span class="plp-n mono">{s.n} / 07</span>
-                  <h3 class="plp-name">{s.name}</h3>
-                  <p class="plp-headline">{s.headline}</p>
-                </div>
-                <p class="plp-body">{s.body}</p>
+              <div class="plp-top">
+                <span class="plp-n mono">{s.n} / 07</span>
+                <h3 class="plp-name">{s.name}</h3>
+                <p class="plp-headline">{s.headline}</p>
               </div>
+              <p class="plp-body">{s.body}</p>
               <div class="plp-io">
                 <div class="plp-io-pane">
                   <span class="plp-io-label mono">input</span>
@@ -163,7 +161,7 @@ const stages = [
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding-top: 48px;
+    padding-top: 88px;
     box-sizing: border-box;
   }
 
@@ -192,7 +190,7 @@ const stages = [
     flex: 1;
     min-height: 0;
     width: 100%;
-    display: grid; grid-template-columns: 300px 1fr; grid-template-rows: 1fr;
+    display: grid; grid-template-columns: 220px 1fr; grid-template-rows: 1fr;
     border-top: 1px solid var(--bdr);
     border-bottom: 1px solid var(--bdr);
     background: var(--bg);
@@ -242,7 +240,7 @@ const stages = [
   .pl-panel {
     position: absolute; inset: 0;
     padding: 32px 44px 28px;
-    display: flex; flex-direction: column; justify-content: space-between; gap: 0;
+    display: flex; flex-direction: column; justify-content: center; gap: 16px;
     opacity: 0;
     transform: translateY(10px);
     transition: opacity .42s var(--out), transform .42s var(--out);
@@ -256,9 +254,6 @@ const stages = [
     transform: translateY(0);
     pointer-events: auto;
   }
-
-  /* Text group: heading + body — anchored to top */
-  .plp-text { display: flex; flex-direction: column; gap: 16px; }
 
   .plp-top { display: flex; flex-direction: column; gap: 8px; }
   .plp-n { font-size: 10px; color: var(--dim); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
