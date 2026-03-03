@@ -11,7 +11,7 @@
     <span class="aw-title">PromptCraft</span>
     <div class="aw-header-btns">
       <!-- clock.arrow.circlepath -->
-      <button class="aw-icon-btn" tabindex="-1" aria-hidden="true" title="History">
+      <button class="aw-icon-btn" id="aw-history-btn" title="History" aria-label="Open history">
         <svg viewBox="0 0 16 16" fill="none">
           <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/>
           <path d="M8 4.5v4L10.5 10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -34,6 +34,16 @@
   </div>
 
   <div class="aw-sep"></div>
+
+  <div class="aw-pop aw-history-pop" id="aw-history-pop" hidden>
+    <div class="aw-pop-title mono">History</div>
+    <div class="aw-history-list" id="aw-history-list"></div>
+  </div>
+
+  <div class="aw-pop aw-download-pop" id="aw-download-pop" hidden>
+    <button class="aw-pop-btn" id="aw-download-txt">Download .txt</button>
+    <button class="aw-pop-btn" id="aw-download-md">Download .md</button>
+  </div>
 
   <!-- ── Input area ── -->
   <div class="aw-input-section">
@@ -112,13 +122,13 @@
         On clipboard
       </span>
       <div class="aw-row-right">
-        <button class="aw-act-btn" tabindex="-1" aria-hidden="true">
+        <button class="aw-act-btn" id="aw-download-btn" title="Download output" aria-label="Download output">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 3v9M4 9l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="aw-act-btn" id="aw-copy-btn" tabindex="-1" aria-hidden="true">
+        <button class="aw-act-btn" id="aw-copy-btn" title="Copy output" aria-label="Copy output">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 11V3h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         </button>
-        <button class="aw-act-btn aw-act-close" id="aw-clear-out-btn" tabindex="-1" aria-hidden="true">
+        <button class="aw-act-btn aw-act-close" id="aw-clear-out-btn" title="Clear output" aria-label="Clear output">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" class="aw-close-circle"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" class="aw-close-x" stroke-width="1.3" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -274,6 +284,68 @@
   }
   .aw-icon-btn svg { width: 14px; height: 14px; }
   .aw-icon-btn:hover { background: var(--aw-icon-hbg); color: var(--aw-icon-h); }
+
+  .aw-pop {
+    position: absolute;
+    z-index: 30;
+    min-width: 184px;
+    background: var(--aw-bg);
+    border: 1px solid var(--aw-well-bdr);
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    overflow: hidden;
+  }
+  .aw-history-pop {
+    top: 46px;
+    right: 56px;
+  }
+  .aw-download-pop {
+    right: 16px;
+    bottom: 96px;
+  }
+  .aw-pop-title {
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--aw-desc);
+    padding: 10px 12px 6px;
+  }
+  .aw-history-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 170px;
+    overflow: auto;
+    padding: 0 6px 8px;
+    gap: 4px;
+  }
+  .aw-history-item {
+    border: none;
+    text-align: left;
+    width: 100%;
+    background: var(--aw-pill-bg);
+    color: var(--aw-text);
+    border-radius: 7px;
+    padding: 7px 8px;
+    font-size: 11px;
+    line-height: 1.45;
+    cursor: pointer;
+  }
+  .aw-history-item:hover {
+    background: var(--aw-pill-h);
+  }
+  .aw-pop-btn {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: transparent;
+    color: var(--aw-text);
+    font-size: 12px;
+    padding: 9px 12px;
+    cursor: pointer;
+  }
+  .aw-pop-btn:hover {
+    background: var(--aw-pill-bg);
+  }
 
   /* ── Input section ───────────────────────────── */
   .aw-input-section {
@@ -685,6 +757,7 @@ This drives executive grade outputs instead of generic commentary.`
   let currentStyle: keyof typeof outputByStyle = 'research';
   let currentVerb = 0;
   let runToken = 0;
+  const outputHistory: string[] = [];
 
   const inputEl      = document.getElementById('aw-input-text')! as HTMLElement;
   const placeholder  = document.getElementById('aw-placeholder')! as HTMLElement;
@@ -705,6 +778,16 @@ This drives executive grade outputs instead of generic commentary.`
   const themeBtn     = document.getElementById('aw-theme-btn')! as HTMLButtonElement;
   const themeMoon    = themeBtn.querySelector('.aw-theme-moon') as HTMLElement;
   const themeSun     = themeBtn.querySelector('.aw-theme-sun') as HTMLElement;
+  const historyBtn   = document.getElementById('aw-history-btn')! as HTMLButtonElement;
+  const historyPop   = document.getElementById('aw-history-pop')! as HTMLElement;
+  const historyList  = document.getElementById('aw-history-list')! as HTMLElement;
+  const downloadBtn  = document.getElementById('aw-download-btn')! as HTMLButtonElement;
+  const downloadPop  = document.getElementById('aw-download-pop')! as HTMLElement;
+  const dlTxtBtn     = document.getElementById('aw-download-txt')! as HTMLButtonElement;
+  const dlMdBtn      = document.getElementById('aw-download-md')! as HTMLButtonElement;
+  const copyBtn      = document.getElementById('aw-copy-btn')! as HTMLButtonElement;
+  const clearOutBtn  = document.getElementById('aw-clear-out-btn')! as HTMLButtonElement;
+  const clipTag      = document.getElementById('aw-clipboard-tag')! as HTMLElement;
 
   const inputTextNode = document.createTextNode('');
   inputEl.appendChild(inputTextNode);
@@ -719,6 +802,61 @@ This drives executive grade outputs instead of generic commentary.`
 
   function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function hidePops() {
+    historyPop.hidden = true;
+    downloadPop.hidden = true;
+  }
+
+  function addHistory(value: string) {
+    const cleaned = value.trim();
+    if (!cleaned) return;
+    if (outputHistory[0] === cleaned) return;
+    outputHistory.unshift(cleaned);
+    if (outputHistory.length > 8) outputHistory.length = 8;
+    renderHistory();
+  }
+
+  function renderHistory() {
+    historyList.innerHTML = '';
+    if (!outputHistory.length) {
+      const empty = document.createElement('div');
+      empty.className = 'aw-pop-title mono';
+      empty.textContent = 'No outputs yet';
+      historyList.appendChild(empty);
+      return;
+    }
+    outputHistory.forEach((entry, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'aw-history-item';
+      btn.textContent = `${idx + 1}. ${entry.slice(0, 96)}${entry.length > 96 ? '…' : ''}`;
+      btn.addEventListener('click', () => {
+        outputText.textContent = entry;
+        emptyState.style.display = 'none';
+        outputText.style.display = 'block';
+        outputRow.style.visibility = 'visible';
+        clipTag.style.display = 'none';
+        hidePops();
+      });
+      historyList.appendChild(btn);
+    });
+  }
+
+  function downloadOutput(ext: 'txt' | 'md') {
+    const text = outputText.textContent?.trim() || '';
+    if (!text) return;
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    a.href = url;
+    a.download = `promptcraft-output-${stamp}.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    hidePops();
   }
 
   function setInputText(text: string) {
@@ -811,6 +949,8 @@ This drives executive grade outputs instead of generic commentary.`
 
     if (token !== runToken) return;
     outputWell.classList.remove('processing');
+    clipTag.style.display = 'none';
+    addHistory(finalOutput);
   }
 
   // Style selection clicks
@@ -834,8 +974,52 @@ This drives executive grade outputs instead of generic commentary.`
     runOptimization({ animateInput: false });
   });
 
+  historyBtn.addEventListener('click', () => {
+    const willOpen = historyPop.hidden;
+    hidePops();
+    if (willOpen) historyPop.hidden = false;
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    const willOpen = downloadPop.hidden;
+    hidePops();
+    if (willOpen) downloadPop.hidden = false;
+  });
+
+  dlTxtBtn.addEventListener('click', () => downloadOutput('txt'));
+  dlMdBtn.addEventListener('click', () => downloadOutput('md'));
+
+  copyBtn.addEventListener('click', async () => {
+    const text = outputText.textContent?.trim() || '';
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      clipTag.style.display = 'inline-flex';
+      setTimeout(() => { clipTag.style.display = 'none'; }, 1500);
+    } catch {
+      clipTag.style.display = 'none';
+    }
+  });
+
+  clearOutBtn.addEventListener('click', () => {
+    outputText.textContent = '';
+    outputText.style.display = 'none';
+    outputRow.style.visibility = 'hidden';
+    emptyState.style.display = 'flex';
+    clipTag.style.display = 'none';
+    hidePops();
+  });
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as Node;
+    if (!appWin.contains(target)) return;
+    if (historyPop.contains(target) || historyBtn.contains(target) || downloadPop.contains(target) || downloadBtn.contains(target)) return;
+    hidePops();
+  });
+
   // Init: light mode (no .dark class), moon icon visible
   setStyle('research');
   setVerbosity(0);
+  renderHistory();
   runOptimization({ animateInput: true });
 </script>

@@ -72,7 +72,7 @@ const stages = [
     <div class="pl-header">
       <span class="eyebrow"><span class="eyebrow-dot"></span>Under the hood</span>
       <h2 id="pipeline-heading" class="pl-h2">The pipeline, in full.</h2>
-      <p class="pl-sub">Scroll to step through each stage. At 01 and 07 normal scrolling resumes.</p>
+      <p class="pl-sub">Watch how a rough prompt becomes production grade instructions through seven deterministic transformation stages.</p>
     </div>
   </div>
 
@@ -107,6 +107,7 @@ const stages = [
               role="tabpanel"
               aria-labelledby={`pls-tab-${s.id}`}
             >
+              <div class="plp-inner">
               <div class="plp-top">
                 <span class="plp-n mono">{s.n} / 07</span>
                 <h3 class="plp-name">{s.name}</h3>
@@ -126,6 +127,7 @@ const stages = [
                   <code class="plp-io-code mono">{s.out}</code>
                 </div>
               </div>
+              </div><!-- /.plp-inner -->
             </div>
           ))}
         </div>
@@ -143,6 +145,11 @@ const stages = [
     <span class="plf-acc mono">pipeline.execute(input)</span>
     <iconify-icon icon="lucide:arrow-right" style="font-size:11px;vertical-align:middle;color:var(--mid);" aria-hidden="true"></iconify-icon>
     <span class="plf-meta mono">optimized, model-ready · avg <strong>140ms</strong></span>
+  </div>
+
+  <div class="pl-scroll-hint" aria-hidden="true">
+    <div class="pl-scroll-mouse"><span class="pl-scroll-wheel"></span></div>
+    <span class="pl-scroll-text mono">Scroll</span>
   </div>
 
 </section>
@@ -240,13 +247,19 @@ const stages = [
   .pl-panel {
     position: absolute; inset: 0;
     padding: 32px 44px 28px;
-    display: flex; flex-direction: column; justify-content: center; gap: 16px;
+    display: flex; flex-direction: column;
     opacity: 0;
     transform: translateY(10px);
     transition: opacity .42s var(--out), transform .42s var(--out);
     pointer-events: none;
     overflow-y: auto;
     scrollbar-width: none;
+  }
+  /* Single inner wrapper — margin:auto is the only cross-browser reliable
+     vertical-center technique when the flex container also has overflow-y:auto */
+  .plp-inner {
+    display: flex; flex-direction: column; gap: 16px;
+    margin: auto 0;
   }
   .pl-panel::-webkit-scrollbar { display: none; }
   .pl-panel.active {
@@ -325,6 +338,46 @@ const stages = [
   .plf-meta { font-size: 12px; color: var(--dim); }
   .plf-meta strong { color: var(--ink2); }
 
+  .pl-scroll-hint {
+    position: absolute;
+    right: 14px;
+    bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--dim);
+    opacity: 0.72;
+    pointer-events: none;
+  }
+  .pl-scroll-mouse {
+    width: 16px;
+    height: 24px;
+    border: 1px solid var(--bdr-hi);
+    border-radius: 999px;
+    display: flex;
+    justify-content: center;
+    padding-top: 4px;
+    box-sizing: border-box;
+    background: rgba(255,255,255,0.45);
+  }
+  .pl-scroll-wheel {
+    width: 2px;
+    height: 6px;
+    border-radius: 2px;
+    background: var(--dim);
+    animation: pl-wheel 1.35s ease-in-out infinite;
+  }
+  .pl-scroll-text {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  @keyframes pl-wheel {
+    0% { transform: translateY(0); opacity: 0.95; }
+    60% { transform: translateY(6px); opacity: 0.2; }
+    100% { transform: translateY(0); opacity: 0.95; }
+  }
+
   @media (max-width: 900px) {
     #pipeline-track { height: auto; }
     #pipeline { position: static; height: auto; overflow: visible; padding-top: 48px; }
@@ -337,6 +390,11 @@ const stages = [
     .pl-panel { padding: 24px 20px; }
     .pl-progress { margin: 12px 0 0; }
     .pl-footer-row { padding: 12px 20px 24px; }
+    .pl-scroll-hint { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pl-scroll-wheel { animation: none; }
   }
 </style>
 
