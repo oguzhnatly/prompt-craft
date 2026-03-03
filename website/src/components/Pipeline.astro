@@ -197,7 +197,7 @@ const stages = [
     flex: 1;
     min-height: 0;
     width: 100%;
-    display: grid; grid-template-columns: 304px 1fr; grid-template-rows: 1fr;
+    display: grid; grid-template-columns: 324px 1fr; grid-template-rows: 1fr;
     border-top: 1px solid var(--bdr);
     border-bottom: 1px solid var(--bdr);
     background: var(--bg);
@@ -229,8 +229,8 @@ const stages = [
   .pls-n { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--dim); }
   .pl-stage.active .pls-n { color: var(--acc); }
   .pls-info { display: flex; flex-direction: column; gap: 2px; }
-  .pls-name { font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: -0.015em; }
-  .pls-tag  { font-size: 10px; color: var(--dim); letter-spacing: 0.04em; }
+  .pls-name { font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: -0.015em; white-space: nowrap; }
+  .pls-tag  { font-size: 10px; color: var(--dim); letter-spacing: 0.04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .pls-indicator {
     height: 100%; width: 3px; border-radius: 2px;
     background: transparent;
