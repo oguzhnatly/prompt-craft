@@ -43,8 +43,28 @@
       </button>
     </div>
     <div class="aw-screen-body aw-history-body">
-      <div class="aw-history-meta mono" id="aw-history-meta">0 optimizations</div>
+      <div class="aw-history-top">
+        <div class="aw-history-meta" id="aw-history-meta">0 optimizations</div>
+        <div class="aw-history-search-wrap">
+          <iconify-icon icon="lucide:search" style="font-size:12px;color:var(--aw-desc);"></iconify-icon>
+          <input id="aw-history-search" class="aw-history-search" type="text" placeholder="Search history..." />
+          <button class="aw-history-search-clear" id="aw-history-search-clear" aria-label="Clear search" hidden>
+            <iconify-icon icon="lucide:x-circle" style="font-size:12px;"></iconify-icon>
+          </button>
+        </div>
+        <div class="aw-history-filters" id="aw-history-filters">
+          <button class="aw-history-filter active" data-filter="all">All</button>
+          <button class="aw-history-filter" data-filter="favorites">Favorites</button>
+          <button class="aw-history-filter" data-filter="general">General</button>
+          <button class="aw-history-filter" data-filter="engineering">Engineering</button>
+          <button class="aw-history-filter" data-filter="research">Research</button>
+          <button class="aw-history-filter" data-filter="content">Content</button>
+          <button class="aw-history-filter" data-filter="analysis">Analysis</button>
+        </div>
+      </div>
+      <div class="aw-history-group-label mono">Today</div>
       <div class="aw-history-list-full" id="aw-history-list"></div>
+      <button class="aw-history-clear-all" id="aw-history-clear-all">Clear All History</button>
     </div>
   </div>
 
@@ -314,16 +334,15 @@
     position: absolute;
     inset: 0;
     z-index: 40;
-    background: #F4EEEB;
+    background: var(--aw-bg);
     display: flex;
     flex-direction: column;
   }
   .aw-screen-header {
-    height: 56px;
-    padding: 0 18px;
+    height: 44px;
+    padding: 0 16px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #E2DCD9;
   }
   .aw-screen-back {
     display: inline-flex;
@@ -331,81 +350,174 @@
     gap: 4px;
     border: none;
     background: transparent;
-    color: #26201C;
-    font-size: 20px;
+    color: var(--aw-text);
+    font-size: 15px;
     font-weight: 600;
-    letter-spacing: -0.01em;
     cursor: pointer;
     padding: 0;
   }
-  .aw-screen-back iconify-icon { font-size: 14px !important; margin-top: 1px; }
+  .aw-screen-back iconify-icon { font-size: 12px !important; }
   .aw-screen-body {
     flex: 1;
     overflow: auto;
-    padding: 14px 14px 16px;
+    padding: 8px 16px 8px;
   }
 
+  .aw-history-top { margin-bottom: 8px; }
   .aw-history-meta {
     font-size: 11px;
-    color: #9C9A98;
-    margin: 2px 2px 8px;
-    letter-spacing: 0.11em;
+    color: var(--aw-desc);
+    margin-bottom: 4px;
+  }
+  .aw-history-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.5);
+    border: 0.5px solid var(--aw-pill-bdr);
+    margin-bottom: 8px;
+  }
+  .aw-history-search {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--aw-text);
+    font-size: 13px;
+    width: 100%;
+    font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  }
+  .aw-history-search::placeholder { color: var(--aw-desc); }
+  .aw-history-search-clear {
+    border: none;
+    background: transparent;
+    color: var(--aw-desc);
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+  }
+  .aw-history-filters {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .aw-history-filters::-webkit-scrollbar { display: none; }
+  .aw-history-filter {
+    border: 0.5px solid var(--aw-pill-bdr);
+    background: var(--aw-pill-bg);
+    color: var(--aw-pill-text);
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .aw-history-filter.active {
+    background: #0A84FF;
+    color: #fff;
+    border-color: transparent;
+  }
+  .aw-history-group-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--aw-desc);
     text-transform: uppercase;
+    margin: 2px 0 2px;
   }
   .aw-history-list-full {
     display: flex;
     flex-direction: column;
-    gap: 10px;
   }
   .aw-history-item {
-    border: 1px solid #E6E2DF;
+    border: none;
+    border-bottom: 0.5px solid var(--aw-pill-bdr);
     text-align: left;
     width: 100%;
-    background: #FFFFFF;
-    color: #22201D;
-    border-radius: 10px;
-    padding: 12px 13px;
-    font-size: 14px;
+    background: transparent;
+    color: var(--aw-text);
+    padding: 8px 22px 8px 0;
+    font-size: 12px;
     line-height: 1.45;
     cursor: pointer;
+    position: relative;
   }
-  .aw-history-item:hover { background: #F8F6F5; }
+  .aw-history-item:hover { background: rgba(0,0,0,0.03); }
+  .aw-history-line { font-size: 12px; line-height: 1.35; color: var(--aw-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .aw-history-meta-line { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
+  .aw-history-badge {
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: rgba(10,132,255,0.12);
+    color: #0A84FF;
+    font-size: 9px;
+    font-weight: 500;
+  }
+  .aw-history-time { font-size: 10px; color: var(--aw-desc); }
+  .aw-history-star {
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: rgba(0,0,0,0.45);
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px;
+  }
+  .aw-history-star:hover { color: #f0b429; }
+  .aw-history-clear-all {
+    margin-top: 8px;
+    border: none;
+    background: transparent;
+    color: #d33;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 4px 0;
+    text-align: left;
+  }
 
   .aw-export-body {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
   }
   .aw-export-group {
-    border: 1px solid #E6E2DF;
-    border-radius: 12px;
+    border: 0.5px solid var(--aw-pill-bdr);
+    border-radius: 10px;
     overflow: hidden;
-    background: #FFFFFF;
+    background: rgba(255,255,255,0.58);
   }
   .aw-export-h {
     font-size: 11px;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #9C9A98;
-    padding: 9px 12px;
-    border-bottom: 1px solid #E6E2DF;
-    background: #EFEDEC;
+    color: var(--aw-desc);
+    padding: 8px 10px;
+    border-bottom: 0.5px solid var(--aw-pill-bdr);
+    background: rgba(0,0,0,0.03);
   }
   .aw-export-row {
     width: 100%;
     text-align: left;
     border: none;
-    border-bottom: 1px solid #ECE8E6;
-    background: #FFFFFF;
-    color: #22201D;
-    font-size: 15px;
-    line-height: 1.3;
-    min-height: 56px;
-    padding: 0 14px;
+    border-bottom: 0.5px solid var(--aw-pill-bdr);
+    background: transparent;
+    color: var(--aw-text);
+    font-size: 12px;
+    min-height: 44px;
+    padding: 0 10px;
     cursor: pointer;
   }
   .aw-export-row:last-child { border-bottom: none; }
-  .aw-export-row:hover { background: #F8F6F5; }
+  .aw-export-row:hover { background: rgba(0,0,0,0.04); }
 
   /* ── Input section ───────────────────────────── */
   .aw-input-section {
@@ -818,7 +930,9 @@ This drives executive grade outputs instead of generic commentary.`
   let currentStyle: keyof typeof outputByStyle = 'research';
   let currentVerb = 0;
   let runToken = 0;
-  const outputHistory: string[] = [];
+  const outputHistory: Array<{ text: string; style: keyof typeof outputByStyle; ts: number; favorite: boolean }> = [];
+  let historyFilter: 'all' | 'favorites' | keyof typeof outputByStyle = 'all';
+  let historyQuery = '';
 
   const inputEl      = document.getElementById('aw-input-text')! as HTMLElement;
   const placeholder  = document.getElementById('aw-placeholder')! as HTMLElement;
@@ -844,6 +958,10 @@ This drives executive grade outputs instead of generic commentary.`
   const historyBack  = document.getElementById('aw-history-back')! as HTMLButtonElement;
   const historyMeta  = document.getElementById('aw-history-meta')! as HTMLElement;
   const historyList  = document.getElementById('aw-history-list')! as HTMLElement;
+  const historySearch = document.getElementById('aw-history-search')! as HTMLInputElement;
+  const historySearchClear = document.getElementById('aw-history-search-clear')! as HTMLButtonElement;
+  const historyFilters = document.querySelectorAll<HTMLButtonElement>('.aw-history-filter');
+  const historyClearAll = document.getElementById('aw-history-clear-all')! as HTMLButtonElement;
   const downloadBtn  = document.getElementById('aw-download-btn')! as HTMLButtonElement;
   const exportScreen = document.getElementById('aw-export-screen')! as HTMLElement;
   const exportBack   = document.getElementById('aw-export-back')! as HTMLButtonElement;
@@ -879,28 +997,73 @@ This drives executive grade outputs instead of generic commentary.`
   function addHistory(value: string) {
     const cleaned = value.trim();
     if (!cleaned) return;
-    if (outputHistory[0] === cleaned) return;
-    outputHistory.unshift(cleaned);
-    if (outputHistory.length > 8) outputHistory.length = 8;
+    if (outputHistory[0]?.text === cleaned) return;
+    outputHistory.unshift({ text: cleaned, style: currentStyle, ts: Date.now(), favorite: false });
+    if (outputHistory.length > 24) outputHistory.length = 24;
     renderHistory();
+  }
+
+  function relativeTime(ts: number) {
+    const diff = Math.max(0, Math.floor((Date.now() - ts) / 1000));
+    if (diff < 60) return `${diff}s ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    return `${Math.floor(diff / 3600)}h ago`;
   }
 
   function renderHistory() {
     historyList.innerHTML = '';
+
+    let filtered = outputHistory;
+    if (historyFilter === 'favorites') filtered = filtered.filter(e => e.favorite);
+    else if (historyFilter !== 'all') filtered = filtered.filter(e => e.style === historyFilter);
+
+    const q = historyQuery.trim().toLowerCase();
+    if (q) filtered = filtered.filter(e => e.text.toLowerCase().includes(q));
+
     historyMeta.textContent = `${outputHistory.length} optimization${outputHistory.length === 1 ? '' : 's'}`;
-    if (!outputHistory.length) {
+
+    if (!filtered.length) {
       const empty = document.createElement('div');
       empty.className = 'aw-history-item';
-      empty.textContent = 'No optimizations yet. Optimize once to populate this screen.';
+      empty.textContent = q ? `No results for \"${historyQuery}\"` : 'No matching entries';
       historyList.appendChild(empty);
       return;
     }
-    outputHistory.forEach((entry, idx) => {
+
+    filtered.forEach((entry) => {
       const btn = document.createElement('button');
       btn.className = 'aw-history-item';
-      btn.textContent = `${idx + 1}. ${entry.slice(0, 180)}${entry.length > 180 ? '…' : ''}`;
+
+      const preview = document.createElement('div');
+      preview.className = 'aw-history-line';
+      preview.textContent = entry.text.slice(0, 120).replace(/\n+/g, ' ') + (entry.text.length > 120 ? '…' : '');
+
+      const meta = document.createElement('div');
+      meta.className = 'aw-history-meta-line';
+
+      const styleBadge = document.createElement('span');
+      styleBadge.className = 'aw-history-badge';
+      styleBadge.textContent = entry.style[0].toUpperCase() + entry.style.slice(1);
+
+      const time = document.createElement('span');
+      time.className = 'aw-history-time';
+      time.textContent = relativeTime(entry.ts);
+
+      const star = document.createElement('button');
+      star.type = 'button';
+      star.className = 'aw-history-star';
+      star.innerHTML = entry.favorite ? '★' : '☆';
+      star.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        entry.favorite = !entry.favorite;
+        renderHistory();
+      });
+
+      meta.append(styleBadge, time);
+      btn.append(preview, meta, star);
+
       btn.addEventListener('click', () => {
-        outputText.textContent = entry;
+        outputText.textContent = entry.text;
         emptyState.style.display = 'none';
         outputText.style.display = 'block';
         outputRow.style.visibility = 'visible';
@@ -1052,10 +1215,41 @@ This drives executive grade outputs instead of generic commentary.`
   historyBtn.addEventListener('click', () => {
     hideScreens();
     historyScreen.hidden = false;
+    renderHistory();
   });
 
   historyBack.addEventListener('click', () => {
     historyScreen.hidden = true;
+  });
+
+  historySearch.addEventListener('input', () => {
+    historyQuery = historySearch.value;
+    historySearchClear.hidden = historyQuery.length === 0;
+    renderHistory();
+  });
+
+  historySearchClear.addEventListener('click', () => {
+    historyQuery = '';
+    historySearch.value = '';
+    historySearchClear.hidden = true;
+    renderHistory();
+  });
+
+  historyFilters.forEach(btn => {
+    btn.addEventListener('click', () => {
+      historyFilters.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      if (f === 'all' || f === 'favorites' || f === 'general' || f === 'engineering' || f === 'research' || f === 'content' || f === 'analysis') {
+        historyFilter = f;
+      }
+      renderHistory();
+    });
+  });
+
+  historyClearAll.addEventListener('click', () => {
+    outputHistory.length = 0;
+    renderHistory();
   });
 
   downloadBtn.addEventListener('click', () => {
