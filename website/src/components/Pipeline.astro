@@ -107,12 +107,14 @@ const stages = [
               role="tabpanel"
               aria-labelledby={`pls-tab-${s.id}`}
             >
-              <div class="plp-top">
-                <span class="plp-n mono">{s.n} / 07</span>
-                <h3 class="plp-name">{s.name}</h3>
-                <p class="plp-headline">{s.headline}</p>
+              <div class="plp-text">
+                <div class="plp-top">
+                  <span class="plp-n mono">{s.n} / 07</span>
+                  <h3 class="plp-name">{s.name}</h3>
+                  <p class="plp-headline">{s.headline}</p>
+                </div>
+                <p class="plp-body">{s.body}</p>
               </div>
-              <p class="plp-body">{s.body}</p>
               <div class="plp-io">
                 <div class="plp-io-pane">
                   <span class="plp-io-label mono">input</span>
@@ -240,7 +242,7 @@ const stages = [
   .pl-panel {
     position: absolute; inset: 0;
     padding: 32px 44px 28px;
-    display: flex; flex-direction: column; gap: 16px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 0;
     opacity: 0;
     transform: translateY(10px);
     transition: opacity .42s var(--out), transform .42s var(--out);
@@ -248,13 +250,15 @@ const stages = [
     overflow-y: auto;
     scrollbar-width: none;
   }
-  /* plp-spacer removed — plp-io always has margin-top: 20px */
   .pl-panel::-webkit-scrollbar { display: none; }
   .pl-panel.active {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
   }
+
+  /* Text group: heading + body — anchored to top */
+  .plp-text { display: flex; flex-direction: column; gap: 16px; }
 
   .plp-top { display: flex; flex-direction: column; gap: 8px; }
   .plp-n { font-size: 10px; color: var(--dim); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
@@ -263,7 +267,6 @@ const stages = [
   .plp-body { font-size: 14px; line-height: 1.8; color: var(--mid); }
 
   .plp-io {
-    margin-top: 20px;
     display: flex; flex-direction: column;
     border: 1px solid var(--bdr); border-radius: 10px;
     overflow: hidden;
