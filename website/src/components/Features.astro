@@ -130,16 +130,16 @@
       <span class="ftr-n mono">03</span>
       <h3 class="ftr-h3">Faster than you can blink. Private by design.</h3>
       <p class="ftr-body">
-        The entire 7-stage pipeline runs on your Mac in under 200ms. Your prompts never reach an external server until they touch your chosen AI provider — and with Ollama, that never happens at all. One read-only Accessibility permission. No telemetry. No logging. No account required for the app itself.
+        The entire 7-stage pipeline runs on your Mac in under 200ms. Your prompts never reach an external server until they touch your chosen AI provider — and with <mark class="hl">Ollama</mark>, that never happens at all. One <mark class="hl">read-only</mark> Accessibility permission. No telemetry. No logging. No account required for the app itself.
       </p>
       <div class="ftr-detail">
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
-          Zero telemetry, not even anonymous usage data
+          <mark class="hl">Zero telemetry</mark>, not even anonymous usage data
         </div>
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
-          Signed with Developer ID, notarized by Apple
+          Signed with Developer ID, <mark class="hl">notarized by Apple</mark>
         </div>
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
@@ -155,12 +155,12 @@
       <span class="ftr-n mono">04</span>
       <h3 class="ftr-h3">A second brain that learns your work.</h3>
       <p class="ftr-body">
-        Every optimization is embedded locally using Apple's NaturalLanguage framework and stored in a private SQLite database on your Mac. Over time, PromptCraft builds a semantic map of your projects, technical vocabulary, and working patterns. Future prompts automatically retrieve the most relevant past context and inject it into the assembly stage without you writing a single word of background.
+        Every optimization is embedded locally using <mark class="hl">Apple's NaturalLanguage framework</mark> and stored in a private <mark class="hl">SQLite database</mark> on your Mac. Over time, PromptCraft builds a semantic map of your projects, technical vocabulary, and working patterns. Future prompts automatically retrieve the most relevant past context and inject it into the assembly stage without you writing a single word of background.
       </p>
       <div class="ftr-detail">
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
-          On-device embeddings, no API call, no cloud sync
+          <mark class="hl">On-device embeddings</mark>, no API call, no cloud sync
         </div>
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
@@ -172,7 +172,7 @@
         </div>
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
-          Up to 1,000 context entries, relevance threshold filtering
+          Up to <mark class="hl">1,000 context entries</mark>, relevance threshold filtering
         </div>
       </div>
     </div>
@@ -231,7 +231,7 @@
       <span class="ftr-n mono">05</span>
       <h3 class="ftr-h3">Works in every app, not just PromptCraft.</h3>
       <p class="ftr-body">
-        The menu bar popover is the main interface. But PromptCraft also runs an inline overlay that intercepts selected text in any application, a watch folder that processes files on drop, a local REST API for scripting and workflows, and an Alfred workflow for keyboard-first users. Wherever you write, PromptCraft can reach it.
+        The menu bar popover is the main interface. But PromptCraft also runs an inline overlay that intercepts selected text in <mark class="hl">any macOS application</mark>, a watch folder that processes files on drop, a local REST API for scripting and workflows, and an Alfred workflow for keyboard-first users. Wherever you write, PromptCraft can reach it.
       </p>
       <div class="ftr-detail">
         <div class="ftrd-item">
@@ -244,7 +244,7 @@
         </div>
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
-          Rate limited local API, 10 requests per minute
+          Rate limited local API, <mark class="hl">10 requests per minute</mark>
         </div>
       </div>
     </div>
@@ -265,15 +265,15 @@
         </div>
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
-          Save as .cursorrules, Claude Project Instructions, or ChatGPT Custom Instructions
+          Save as <mark class="hl">.cursorrules</mark>, <mark class="hl">Claude Project Instructions</mark>, or ChatGPT Custom Instructions
         </div>
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
-          Explain mode shows exactly why the output changed from the input
+          <mark class="hl">Explain mode</mark> shows exactly why the output changed from the input
         </div>
         <div class="ftrd-item">
           <iconify-icon icon="lucide:check" style="font-size:14px;color:var(--acc);flex-shrink:0;margin-top:1px;" aria-hidden="true"></iconify-icon>
-          Diff view highlights every word the pipeline added or changed
+          <mark class="hl">Diff view</mark> highlights every word the pipeline added or changed
         </div>
       </div>
     </div>
@@ -348,6 +348,16 @@
     display: flex; flex-direction: column; gap: 20px;
   }
   .ft-row-b .ftr-text { order: 1; }
+
+  /* Inline keyword highlights */
+  mark.hl {
+    background: rgba(26,107,64,0.09);
+    color: var(--acc);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-weight: 550;
+    font-style: normal;
+  }
 
   .ftr-n { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: var(--acc); }
   .ftr-h3 { font-size: clamp(20px, 2.5vw, 28px); font-weight: 700; letter-spacing: -0.035em; color: var(--ink); line-height: 1.2; }
