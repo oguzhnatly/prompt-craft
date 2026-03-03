@@ -202,7 +202,6 @@ const {
 
 <script>
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isFinePointer = window.matchMedia('(pointer: fine)').matches;
 
   // ── Scroll reveal via IntersectionObserver ──────────────────
   const autoRevealTargets = [
@@ -254,58 +253,4 @@ const {
     btn.addEventListener('pointerleave', () => btn.style.transform = '');
   });
 
-  // ── Desktop wheel smoothing (slower + smooth full-page scroll) ──
-  if (!prefersReducedMotion && isFinePointer) {
-    let targetY = window.scrollY;
-    let rafId = null;
-    const SPEED = 1.08;
-    const EASE = 0.26;
-    const MAX_STEP = 150;
-
-    const canScrollInside = (start, deltaY) => {
-      let node = start instanceof Element ? start : null;
-      while (node && node !== document.body) {
-        const style = getComputedStyle(node);
-        const overflowY = style.overflowY;
-        const isScrollable = (overflowY === 'auto' || overflowY === 'scroll') && node.scrollHeight > node.clientHeight + 1;
-        if (isScrollable) {
-          if (deltaY < 0 && node.scrollTop > 0) return true;
-          if (deltaY > 0 && node.scrollTop + node.clientHeight < node.scrollHeight) return true;
-        }
-        node = node.parentElement;
-      }
-      return false;
-    };
-
-    const animate = () => {
-      const current = window.scrollY;
-      const diff = targetY - current;
-      if (Math.abs(diff) < 0.5) {
-        window.scrollTo(0, targetY);
-        rafId = null;
-        return;
-      }
-      window.scrollTo(0, current + diff * EASE);
-      rafId = requestAnimationFrame(animate);
-    };
-
-    window.addEventListener('wheel', (e) => {
-      if (e.ctrlKey || e.metaKey) return;
-      if (canScrollInside(e.target, e.deltaY)) return;
-
-      e.preventDefault();
-
-      const wheelStep = Math.sign(e.deltaY) * Math.min(MAX_STEP, Math.abs(e.deltaY));
-      targetY += wheelStep * SPEED;
-
-      const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-      targetY = Math.max(0, Math.min(maxY, targetY));
-
-      if (rafId === null) rafId = requestAnimationFrame(animate);
-    }, { passive: false });
-
-    window.addEventListener('scroll', () => {
-      if (rafId === null) targetY = window.scrollY;
-    }, { passive: true });
-  }
 </script>
