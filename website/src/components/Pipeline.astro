@@ -148,13 +148,15 @@ const stages = [
 <style>
   /* Track creates scroll distance for sticky stage advance */
   #pipeline-track {
-    height: calc((100vh - 64px) + 6 * 78px);
+    --pl-lock-height: clamp(620px, 76vh, 740px);
+    --pl-step-scroll: 32px;
+    height: calc(var(--pl-lock-height) + 6 * var(--pl-step-scroll));
   }
 
   #pipeline {
     position: sticky;
     top: 64px;
-    height: calc(100vh - 64px);
+    height: var(--pl-lock-height);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -334,7 +336,7 @@ const stages = [
   const track   = document.getElementById('pipeline-track');
 
   const TOTAL = 7;
-  const STEP_PX = 78;
+  const STEP_PX = 32;
   let currentStage = 0;
 
   function setStage(idx, force = false) {
