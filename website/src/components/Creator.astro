@@ -18,12 +18,11 @@
         <footer class="crq-footer">
           <div class="crq-meta">
             <span class="crq-name">Oguzhan Atalay</span>
-            <span class="crq-role mono">@oguzhnatly · Lisbon, Portugal</span>
           </div>
-          <div id="creator-heading" class="crq-stats">
-            <span><strong>265</strong> GitHub stars on flutter_carplay</span>
-            <span><strong>12+</strong> products shipped</span>
-            <span><strong>5+</strong> years full-stack engineering</span>
+          <div id="creator-heading" class="crq-story-wrap">
+            <a href="https://blog.oguzhanatalay.com" target="_blank" rel="noopener" class="crq-story mono">
+              Read the story behind this
+            </a>
           </div>
         </footer>
       </blockquote>
@@ -85,12 +84,24 @@
   }
   .crq-meta { display: flex; flex-direction: column; gap: 4px; }
   .crq-name { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
-  .crq-role { font-size: 12px; color: var(--dim); }
-  .crq-stats {
-    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
-    font-size: 13px; color: var(--mid);
+  .crq-story-wrap { display: flex; align-items: center; }
+  .crq-story {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--bdr-hi);
+    color: var(--mid);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: border-color .13s, color .13s, background .13s;
   }
-  .crq-stats strong { color: var(--ink); font-weight: 700; }
+  .crq-story:hover {
+    color: var(--ink);
+    border-color: var(--acc);
+    background: rgba(26,107,64,0.05);
+  }
 
   /* Timeline */
   .cr-bottom { display: grid; grid-template-columns: 1fr 280px; gap: 64px; align-items: start; }
