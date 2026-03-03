@@ -338,6 +338,7 @@
     display: flex;
     flex-direction: column;
   }
+  .aw-screen[hidden] { display: none !important; }
   .aw-screen-header {
     height: 44px;
     padding: 0 16px;
@@ -1310,6 +1311,10 @@ This drives executive grade outputs instead of generic commentary.`
     if (historyScreen.contains(target) || historyBtn.contains(target) || exportScreen.contains(target) || downloadBtn.contains(target)) return;
     hideScreens();
   });
+
+  // Init: force overlay screens closed
+  historyScreen.hidden = true;
+  exportScreen.hidden = true;
 
   // Init: light mode (no .dark class), moon icon visible
   setStyle('research');
