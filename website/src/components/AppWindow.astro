@@ -68,20 +68,6 @@
     </div>
   </div>
 
-  <div class="aw-export-pop" id="aw-export-pop" hidden>
-    <div class="aw-export-group">
-      <div class="aw-export-h mono">Clipboard formats</div>
-      <button class="aw-export-row" id="aw-download-txt">Plain text .txt</button>
-      <button class="aw-export-row" id="aw-download-md">Markdown .md</button>
-    </div>
-    <div class="aw-export-group">
-      <div class="aw-export-h mono">System prompt formats</div>
-      <button class="aw-export-row" id="aw-download-cursor">Cursor Rules .cursorrules</button>
-      <button class="aw-export-row" id="aw-download-claude">Claude Project Instructions</button>
-      <button class="aw-export-row" id="aw-download-chatgpt">ChatGPT Custom Instructions</button>
-    </div>
-  </div>
-
   <!-- ── Input area ── -->
   <div class="aw-input-section">
     <div class="aw-input-well" id="input-well">
@@ -159,7 +145,7 @@
         On clipboard
       </span>
       <div class="aw-row-right">
-        <button class="aw-act-btn" id="aw-download-btn" title="Download output" aria-label="Download output">
+        <button class="aw-act-btn aw-act-btn-disabled" id="aw-download-btn" title="Download coming soon" aria-label="Download coming soon" aria-disabled="true">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 3v9M4 9l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <button class="aw-act-btn" id="aw-copy-btn" title="Copy output" aria-label="Copy output">
@@ -571,62 +557,6 @@
     padding: 4px 0;
     text-align: left;
   }
-
-  .aw-export-pop {
-    position: absolute;
-    right: 12px;
-    bottom: 74px;
-    width: 314px;
-    max-height: 392px;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: var(--aw-export-bg);
-    border: 0.5px solid var(--aw-export-bdr);
-    border-radius: 16px;
-    box-shadow: 0 14px 30px var(--aw-export-shadow);
-    padding: 10px;
-    opacity: 0;
-    transform: translateY(8px) scale(0.98);
-    transform-origin: bottom right;
-    transition: opacity .18s ease, transform .2s cubic-bezier(.2,.9,.25,1);
-    z-index: 45;
-  }
-  .aw-export-pop[hidden] { display: none !important; }
-  .aw-export-pop.is-open {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  .aw-export-group {
-    border: 0.5px solid var(--aw-export-group-bdr);
-    border-radius: 14px;
-    overflow: hidden;
-    background: var(--aw-export-group-bg);
-  }
-  .aw-export-h {
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--aw-export-head-text);
-    padding: 11px 14px;
-    border-bottom: 0.5px solid var(--aw-export-group-bdr);
-    background: var(--aw-export-head-bg);
-  }
-  .aw-export-row {
-    width: 100%;
-    text-align: left;
-    border: none;
-    border-bottom: 0.5px solid var(--aw-export-group-bdr);
-    background: var(--aw-export-group-bg);
-    color: var(--aw-export-row-text);
-    font-size: 17px;
-    min-height: 56px;
-    padding: 0 18px;
-    cursor: pointer;
-  }
-  .aw-export-row:last-child { border-bottom: none; }
-  .aw-export-row:hover { background: var(--aw-export-row-hover); }
 
   /* ── Input section ───────────────────────────── */
   .aw-input-section {
@@ -1072,12 +1002,6 @@ This drives executive grade outputs instead of generic commentary.`
   const historyFilters = document.querySelectorAll<HTMLButtonElement>('.aw-history-filter');
   const historyClearAll = document.getElementById('aw-history-clear-all')! as HTMLButtonElement;
   const downloadBtn  = document.getElementById('aw-download-btn')! as HTMLButtonElement;
-  const exportPop    = document.getElementById('aw-export-pop')! as HTMLElement;
-  const dlTxtBtn     = document.getElementById('aw-download-txt')! as HTMLButtonElement;
-  const dlMdBtn      = document.getElementById('aw-download-md')! as HTMLButtonElement;
-  const dlCursorBtn  = document.getElementById('aw-download-cursor')! as HTMLButtonElement;
-  const dlClaudeBtn  = document.getElementById('aw-download-claude')! as HTMLButtonElement;
-  const dlChatBtn    = document.getElementById('aw-download-chatgpt')! as HTMLButtonElement;
   const copyBtn      = document.getElementById('aw-copy-btn')! as HTMLButtonElement;
   const clearOutBtn  = document.getElementById('aw-clear-out-btn')! as HTMLButtonElement;
   const clipTag      = document.getElementById('aw-clipboard-tag')! as HTMLElement;
@@ -1098,7 +1022,6 @@ This drives executive grade outputs instead of generic commentary.`
   }
 
   function openHistoryScreen() {
-    closeExportPopup(true);
     historyScreen.hidden = false;
     requestAnimationFrame(() => historyScreen.classList.add('is-open'));
   }
@@ -1113,27 +1036,8 @@ This drives executive grade outputs instead of generic commentary.`
       if (!historyScreen.classList.contains('is-open')) historyScreen.hidden = true;
     }, 200);
   }
-
-  function openExportPopup() {
-    closeHistoryScreen(true);
-    exportPop.hidden = false;
-    requestAnimationFrame(() => exportPop.classList.add('is-open'));
-  }
-
-  function closeExportPopup(immediate = false) {
-    exportPop.classList.remove('is-open');
-    if (immediate) {
-      exportPop.hidden = true;
-      return;
-    }
-    setTimeout(() => {
-      if (!exportPop.classList.contains('is-open')) exportPop.hidden = true;
-    }, 180);
-  }
-
   function hideOverlays() {
     closeHistoryScreen();
-    closeExportPopup();
   }
 
   function addHistory(value: string) {
@@ -1236,28 +1140,6 @@ This drives executive grade outputs instead of generic commentary.`
 
       historyList.appendChild(row);
     });
-  }
-
-  function downloadOutput(ext: 'txt' | 'md' | 'cursorrules' | 'claude.md' | 'chatgpt.txt') {
-    const text = (outputText.textContent?.trim() || getOutputText() || fixedInput).trim();
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const stamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-    a.href = url;
-    const fileName = ext === 'cursorrules'
-      ? '.cursorrules'
-      : ext === 'claude.md'
-        ? `promptcraft-claude-${stamp}.md`
-        : ext === 'chatgpt.txt'
-          ? `promptcraft-chatgpt-${stamp}.txt`
-          : `promptcraft-output-${stamp}.${ext}`;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-    hideOverlays();
   }
 
   function setInputText(text: string) {
@@ -1414,19 +1296,9 @@ This drives executive grade outputs instead of generic commentary.`
     renderHistory();
   });
 
-  downloadBtn.addEventListener('click', () => {
-    if (!exportPop.hidden) {
-      closeExportPopup();
-      return;
-    }
-    openExportPopup();
+  downloadBtn.addEventListener('click', (ev) => {
+    ev.preventDefault();
   });
-
-  dlTxtBtn.addEventListener('click', () => downloadOutput('txt'));
-  dlMdBtn.addEventListener('click', () => downloadOutput('md'));
-  dlCursorBtn.addEventListener('click', () => downloadOutput('cursorrules'));
-  dlClaudeBtn.addEventListener('click', () => downloadOutput('claude.md'));
-  dlChatBtn.addEventListener('click', () => downloadOutput('chatgpt.txt'));
 
   copyBtn.addEventListener('click', async () => {
     const text = outputText.textContent?.trim() || '';
@@ -1452,18 +1324,14 @@ This drives executive grade outputs instead of generic commentary.`
   document.addEventListener('click', (e) => {
     const target = e.target as Node;
     if (!appWin.contains(target)) return;
-    const historyVisible = !historyScreen.hidden;
-    const exportVisible = !exportPop.hidden;
-    if (!historyVisible && !exportVisible) return;
-    if (historyScreen.contains(target) || historyBtn.contains(target) || exportPop.contains(target) || downloadBtn.contains(target)) return;
+    if (historyScreen.hidden) return;
+    if (historyScreen.contains(target) || historyBtn.contains(target)) return;
     hideOverlays();
   });
 
   // Init: force overlay screens closed
   historyScreen.hidden = true;
   historyScreen.classList.remove('is-open');
-  exportPop.hidden = true;
-  exportPop.classList.remove('is-open');
 
   // Init: light mode (no .dark class), moon icon visible
   setStyle('research');
