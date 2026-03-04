@@ -598,9 +598,11 @@ final class MainViewModel: ObservableObject {
     private func fallbackSuggestion(for provider: LLMProvider) -> String {
         switch provider {
         case .anthropicClaude:
-            return " You can try switching to OpenAI or Ollama in Settings."
+            return " You can try switching to OpenAI, OpenRouter, or Ollama in Settings."
         case .openAI:
-            return " You can try switching to Claude or Ollama in Settings."
+            return " You can try switching to Claude, OpenRouter, or Ollama in Settings."
+        case .openRouter:
+            return " Check your OpenRouter API key in Settings or try a different model."
         case .ollama:
             return " Make sure Ollama is running (`ollama serve`)."
         case .custom:

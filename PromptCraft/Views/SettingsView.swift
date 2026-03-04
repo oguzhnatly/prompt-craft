@@ -41,7 +41,7 @@ struct SettingsView: View {
     }
 
     private var selectableProviders: [LLMProvider] {
-        var providers: [LLMProvider] = [.anthropicClaude, .openAI, .ollama]
+        var providers: [LLMProvider] = [.anthropicClaude, .openAI, .openRouter, .ollama]
         if licensingService.licenseType == .cloud {
             providers.append(.promptCraftCloud)
         }
@@ -630,6 +630,7 @@ struct SettingsView: View {
         switch provider {
         case .anthropicClaude: return "Claude"
         case .openAI: return "OpenAI"
+        case .openRouter: return "OpenRouter"
         case .ollama: return "Ollama"
         case .custom: return "Custom"
         case .promptCraftCloud: return "Cloud"

@@ -203,6 +203,6 @@ final class PromptStyleTests: XCTestCase {
     }
 
     func testLLMProviderAllCases() {
-        XCTAssertEqual(LLMProvider.allCases.count, 5)
+        XCTAssertEqual(LLMProvider.allCases.count, 6)
     }
 }

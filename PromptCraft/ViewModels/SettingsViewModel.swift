@@ -349,6 +349,8 @@ final class SettingsViewModel: ObservableObject {
             return URL(string: "https://console.anthropic.com/settings/keys")
         case .openAI:
             return URL(string: "https://platform.openai.com/api-keys")
+        case .openRouter:
+            return URL(string: "https://openrouter.ai/settings/keys")
         default:
             return nil
         }
@@ -360,6 +362,8 @@ final class SettingsViewModel: ObservableObject {
             return "Get your API key at console.anthropic.com"
         case .openAI:
             return "Get your API key at platform.openai.com"
+        case .openRouter:
+            return "Get your free API key at openrouter.ai"
         default:
             return ""
         }

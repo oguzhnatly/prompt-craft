@@ -9,6 +9,7 @@ final class LLMProviderManager {
     private lazy var claudeProvider = ClaudeProvider(keychainService: keychainService)
     private lazy var openAIProvider = OpenAIProvider(keychainService: keychainService)
     private lazy var ollamaProvider = OllamaProvider()
+    private lazy var openRouterProvider = OpenRouterProvider(keychainService: keychainService)
     private lazy var cloudProvider = CloudProvider()
 
     init(
@@ -32,6 +33,7 @@ final class LLMProviderManager {
         case .anthropicClaude: return claudeProvider
         case .openAI: return openAIProvider
         case .ollama: return ollamaProvider
+        case .openRouter: return openRouterProvider
         case .custom: return claudeProvider // Fallback to Claude for custom
         case .promptCraftCloud: return cloudProvider
         }
@@ -68,6 +70,8 @@ final class LLMProviderManager {
                 hasKey = true // Ollama doesn't need a key
             case .promptCraftCloud:
                 hasKey = LicensingService.shared.licenseType == .cloud
+            case .openRouter:
+                hasKey = keychainService.hasAPIKey(for: .openRouter)
             default:
                 hasKey = keychainService.hasAPIKey(for: type)
             }

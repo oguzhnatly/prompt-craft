@@ -7,6 +7,7 @@ enum LLMProvider: String, Codable, CaseIterable {
     case anthropicClaude
     case openAI
     case ollama
+    case openRouter
     case custom
     case promptCraftCloud
 
@@ -15,6 +16,7 @@ enum LLMProvider: String, Codable, CaseIterable {
         case .anthropicClaude: return "Anthropic Claude"
         case .openAI: return "OpenAI"
         case .ollama: return "Ollama"
+        case .openRouter: return "OpenRouter"
         case .custom: return "Custom"
         case .promptCraftCloud: return "PromptCraft Cloud"
         }
@@ -25,6 +27,7 @@ enum LLMProvider: String, Codable, CaseIterable {
         case .anthropicClaude: return "claude-sonnet-4-5-20250929"
         case .openAI: return "gpt-4o"
         case .ollama: return "qwen3"
+        case .openRouter: return "deepseek/deepseek-chat-v3-0324"
         case .custom: return ""
         case .promptCraftCloud: return "pc-standard"
         }

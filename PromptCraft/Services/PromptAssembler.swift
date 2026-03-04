@@ -145,7 +145,7 @@ final class PromptAssembler {
         switch providerType {
         case .anthropicClaude, .promptCraftCloud:
             providerHint = "Use XML tags only when tier guidance allows structure."
-        case .openAI, .ollama, .custom:
+        case .openAI, .ollama, .custom, .openRouter:
             providerHint = "Use plain prose unless tier guidance explicitly permits structure."
         }
 
