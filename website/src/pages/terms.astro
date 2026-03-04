@@ -326,7 +326,7 @@ import Footer from '../components/Footer.astro';
   .legal-summary { display: flex; gap: 12px; align-items: flex-start; padding: 16px 18px; background: rgba(26,107,64,0.06); border: 1px solid rgba(26,107,64,0.2); border-radius: 10px; }
   .legal-summary p { font-size: 13px; line-height: 1.75; color: var(--mid); }
 
-  .legal-body section { border-top: 1px solid var(--bdr); padding: 40px 0; }
+  .legal-body section { border-top: 1px solid var(--bdr); padding: 40px 0; scroll-margin-top: 104px; }
   .legal-body h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); margin-bottom: 16px; }
   .legal-body p { font-size: 14px; line-height: 1.8; color: var(--mid); margin-bottom: 14px; }
   .legal-body p:last-child { margin-bottom: 0; }
@@ -376,26 +376,43 @@ import Footer from '../components/Footer.astro';
 </style>
 
 <script>
-  const sections = document.querySelectorAll<HTMLElement>('.legal-body section[id]');
-  const links = document.querySelectorAll<HTMLAnchorElement>('.ls-link');
+  const sections = Array.from(document.querySelectorAll('.legal-body section[id]'));
+  const links = Array.from(document.querySelectorAll('.ls-link'));
+  const TOP_OFFSET = 112;
 
-  function setActive(id: string) {
-    links.forEach(l => {
+  function setActive(id) {
+    links.forEach((l) => {
       const href = l.getAttribute('href');
-      if (href === '#' + id) l.classList.add('active');
-      else l.classList.remove('active');
+      l.classList.toggle('active', href === '#' + id);
     });
   }
 
-  const observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) setActive((e.target as HTMLElement).id);
-      });
-    },
-    { rootMargin: '-20% 0px -70% 0px', threshold: 0 }
-  );
+  function updateActiveFromScroll() {
+    if (!sections.length) return;
 
-  sections.forEach(s => observer.observe(s));
-  if (sections.length > 0) setActive(sections[0].id);
+    const scrollProbe = window.scrollY + TOP_OFFSET;
+    let activeId = sections[0].id;
+
+    for (const section of sections) {
+      if (section.offsetTop <= scrollProbe) activeId = section.id;
+      else break;
+    }
+
+    const nearBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+    if (nearBottom) activeId = sections[sections.length - 1].id;
+
+    setActive(activeId);
+  }
+
+  window.addEventListener('scroll', updateActiveFromScroll, { passive: true });
+  window.addEventListener('resize', updateActiveFromScroll);
+  window.addEventListener('hashchange', updateActiveFromScroll);
+
+  links.forEach((link) => {
+    link.addEventListener('click', () => {
+      requestAnimationFrame(() => setTimeout(updateActiveFromScroll, 0));
+    });
+  });
+
+  updateActiveFromScroll();
 </script>
