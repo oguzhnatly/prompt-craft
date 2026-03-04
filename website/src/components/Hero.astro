@@ -17,15 +17,9 @@ import AppWindow from './AppWindow.astro';
           </span>
         </div>
 
-        <h1
-          class="hmc-h1 hmc-typing"
-          data-reveal
-          data-d="1"
-          data-line1="Every prompt is optimized in seven stages"
-          data-line2="before any model sees it."
-          aria-label="Every prompt is optimized in seven stages before any model sees it."
-        >
-          <span class="hmc-type-line hmc-type-line-1"></span>
+        <h1 class="hmc-h1 hmc-typing" data-reveal data-d="1">
+          <span class="hmc-typing-line hmc-typing-line-1">Every prompt is optimized in seven stages</span>
+          <span class="hmc-typing-line hmc-typing-line-2">before any model sees it.</span>
         </h1>
 
         <p class="hmc-body" data-reveal data-d="2">
@@ -218,20 +212,25 @@ import AppWindow from './AppWindow.astro';
     gap: 0.08em;
   }
 
-  .hmc-type-line {
+  .hmc-typing-line {
     display: block;
-    min-height: 1.06em;
     width: 100%;
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    filter: blur(8px);
+    will-change: clip-path, filter, opacity;
   }
 
+  .hmc-typing-line-1 {
+    animation:
+      hmcTypingReveal 1.25s steps(38, end) 0.08s forwards,
+      hmcTypingFocus 0.95s ease 0.08s forwards;
+  }
 
-  .hmc-type-char {
-    display: inline-block;
-    opacity: 0;
-    filter: blur(7px);
-    transform: translateY(2px);
-    animation: hmcCharIn .22s cubic-bezier(.16,.84,.26,1) forwards;
-    will-change: opacity, filter, transform;
+  .hmc-typing-line-2 {
+    animation:
+      hmcTypingReveal 1.05s steps(24, end) 0.36s forwards,
+      hmcTypingFocus 0.85s ease 0.36s forwards;
   }
 
   .hmc-body {
@@ -356,19 +355,27 @@ import AppWindow from './AppWindow.astro';
     border-radius: 2px;
   }
 
-  @keyframes hmcCharIn {
+  @keyframes hmcTypingReveal {
+    from {
+      clip-path: inset(0 100% 0 0);
+      opacity: 0;
+    }
     to {
+      clip-path: inset(0 0 0 0);
       opacity: 1;
-      filter: blur(0);
-      transform: translateY(0);
     }
   }
 
+  @keyframes hmcTypingFocus {
+    from { filter: blur(8px); }
+    to { filter: blur(0); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .hmc-type-char {
+    .hmc-typing-line {
+      clip-path: none;
       opacity: 1;
       filter: none;
-      transform: none;
       animation: none;
     }
   }
@@ -430,79 +437,4 @@ import AppWindow from './AppWindow.astro';
   }
 </style>
 
-<script>
-  const heading = document.querySelector('.hmc-typing');
 
-  if (heading && !heading.dataset.typedOnce) {
-    const line1El = heading.querySelector('.hmc-type-line-1');
-    const line1 = heading.dataset.line1 || '';
-    const line2 = heading.dataset.line2 || '';
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const renderFinalText = () => {
-      line1El.textContent = line1;
-      const line2El = document.createElement('span');
-      line2El.className = 'hmc-type-line hmc-type-line-2';
-      line2El.textContent = line2;
-      heading.append(line2El);
-    };
-
-    const charDelay = (ch) => {
-      if (ch === ' ') return 30;
-      if (',.;:'.includes(ch)) return 70;
-      if ('!?'.includes(ch)) return 105;
-      return 58;
-    };
-
-    const typeLine = (target, text, done) => {
-      let index = 0;
-      target.innerHTML = '';
-
-      const step = () => {
-        if (index >= text.length) {
-          done?.();
-          return;
-        }
-
-        const ch = text[index++];
-        const span = document.createElement('span');
-        span.className = 'hmc-type-char';
-        span.textContent = ch;
-        target.append(span);
-
-        setTimeout(step, charDelay(ch));
-      };
-
-      step();
-    };
-
-    const startTyping = () => {
-      heading.dataset.typedOnce = '1';
-      line1El.innerHTML = '';
-
-      setTimeout(() => {
-        typeLine(line1El, line1, () => {
-          setTimeout(() => {
-            const line2El = document.createElement('span');
-            line2El.className = 'hmc-type-line hmc-type-line-2';
-            heading.append(line2El);
-            typeLine(line2El, line2, () => {});
-          }, 700);
-        });
-      }, 280);
-    };
-
-    if (prefersReducedMotion) {
-      renderFinalText();
-    } else {
-      const io = new IntersectionObserver((entries) => {
-        if (entries[0]?.isIntersecting) {
-          io.disconnect();
-          startTyping();
-        }
-      }, { threshold: 0.62 });
-
-      io.observe(heading);
-    }
-  }
-</script>
