@@ -18,8 +18,11 @@ import AppWindow from './AppWindow.astro';
         </div>
 
         <h1 class="hmc-h1 hmc-typing" data-reveal data-d="1">
-          <span class="hmc-typing-line hmc-typing-line-1">Every prompt is optimized in seven stages</span>
-          <span class="hmc-typing-line hmc-typing-line-2">before any model sees it.</span>
+          <span
+            class="hmc-typing-text"
+            data-line1="Every prompt is optimized in seven stages"
+            data-line2="before any model sees it."
+          >Every prompt is optimized in seven stages<br>before any model sees it.</span>
         </h1>
 
         <p class="hmc-body" data-reveal data-d="2">
@@ -212,25 +215,18 @@ import AppWindow from './AppWindow.astro';
     gap: 0.08em;
   }
 
-  .hmc-typing-line {
+  .hmc-typing-text {
     display: block;
     width: 100%;
-    clip-path: inset(0 100% 0 0);
+  }
+
+  .hmc-typed-char {
+    display: inline-block;
     opacity: 0;
     filter: blur(8px);
-    will-change: clip-path, filter, opacity;
-  }
-
-  .hmc-typing-line-1 {
-    animation:
-      hmcTypingReveal 1.25s steps(38, end) 0.08s forwards,
-      hmcTypingFocus 0.95s ease 0.08s forwards;
-  }
-
-  .hmc-typing-line-2 {
-    animation:
-      hmcTypingReveal 1.05s steps(24, end) 0.36s forwards,
-      hmcTypingFocus 0.85s ease 0.36s forwards;
+    transform: translateY(2px);
+    animation: hmcCharIn .24s cubic-bezier(.16,.84,.26,1) forwards;
+    will-change: opacity, filter, transform;
   }
 
   .hmc-body {
@@ -355,27 +351,19 @@ import AppWindow from './AppWindow.astro';
     border-radius: 2px;
   }
 
-  @keyframes hmcTypingReveal {
-    from {
-      clip-path: inset(0 100% 0 0);
-      opacity: 0;
-    }
+  @keyframes hmcCharIn {
     to {
-      clip-path: inset(0 0 0 0);
       opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
     }
-  }
-
-  @keyframes hmcTypingFocus {
-    from { filter: blur(8px); }
-    to { filter: blur(0); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hmc-typing-line {
-      clip-path: none;
+    .hmc-typed-char {
       opacity: 1;
       filter: none;
+      transform: none;
       animation: none;
     }
   }
@@ -437,3 +425,63 @@ import AppWindow from './AppWindow.astro';
     }
   }
 </style>
+
+<script>
+  const typingNode = document.querySelector('.hmc-typing-text');
+
+  if (typingNode && !typingNode.dataset.typedOnce) {
+    const line1 = typingNode.dataset.line1 || '';
+    const line2 = typingNode.dataset.line2 || '';
+    const fullText = `${line1}\n${line2}`;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const renderFinalText = () => {
+      typingNode.innerHTML = '';
+      typingNode.append(document.createTextNode(line1));
+      typingNode.append(document.createElement('br'));
+      typingNode.append(document.createTextNode(line2));
+    };
+
+    const startTyping = () => {
+      typingNode.dataset.typedOnce = '1';
+      typingNode.innerHTML = '';
+
+      const chars = [...fullText];
+      let idx = 0;
+
+      const step = () => {
+        if (idx >= chars.length) return;
+        const ch = chars[idx++];
+
+        if (ch === '\n') {
+          typingNode.append(document.createElement('br'));
+          setTimeout(step, 60);
+          return;
+        }
+
+        const span = document.createElement('span');
+        span.className = 'hmc-typed-char';
+        span.textContent = ch;
+        typingNode.append(span);
+
+        const delayMs = ch === ' ' ? 14 : 26;
+        setTimeout(step, delayMs);
+      };
+
+      setTimeout(step, 120);
+    };
+
+    if (prefersReducedMotion) {
+      renderFinalText();
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        if (entries[0]?.isIntersecting) {
+          io.disconnect();
+          startTyping();
+        }
+      }, { threshold: 0.55 });
+
+      io.observe(typingNode);
+    }
+  }
+</script>
