@@ -222,12 +222,12 @@ import AppWindow from './AppWindow.astro';
     min-height: 2.14em;
   }
 
-  .hmc-typed-char {
+  .hmc-type-char {
     display: inline-block;
     opacity: 0;
     filter: blur(8px);
     transform: translateY(2px);
-    animation: hmcCharIn .24s cubic-bezier(.16,.84,.26,1) forwards;
+    animation: hmcCharIn .20s cubic-bezier(.16,.84,.26,1) forwards;
     will-change: opacity, filter, transform;
   }
 
@@ -362,7 +362,7 @@ import AppWindow from './AppWindow.astro';
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hmc-typed-char {
+    .hmc-type-char {
       opacity: 1;
       filter: none;
       transform: none;
@@ -419,7 +419,6 @@ import AppWindow from './AppWindow.astro';
       line-height: 1.06;
       overflow-wrap: anywhere;
     }
-    .hmc-h1 br { display: none; }
 
     .hmc-metrics {
       flex-wrap: wrap;
@@ -434,7 +433,6 @@ import AppWindow from './AppWindow.astro';
   if (typingNode && !typingNode.dataset.typedOnce) {
     const line1 = typingNode.dataset.line1 || '';
     const line2 = typingNode.dataset.line2 || '';
-    const fullText = `${line1}\n${line2}`;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const renderFinalText = () => {
@@ -444,33 +442,56 @@ import AppWindow from './AppWindow.astro';
       typingNode.append(document.createTextNode(line2));
     };
 
+    const charDelay = (ch) => {
+      if (ch === ' ') return 18;
+      if (',.;:'.includes(ch)) return 55;
+      if ('!?'.includes(ch)) return 90;
+      return 32;
+    };
+
+    const typeLine = (target, text, onDone) => {
+      const chars = [...text];
+      let idx = 0;
+
+      const step = () => {
+        if (idx >= chars.length) {
+          onDone();
+          return;
+        }
+
+        const ch = chars[idx++];
+        const span = document.createElement('span');
+        span.className = 'hmc-type-char';
+        span.textContent = ch;
+        target.append(span);
+
+        setTimeout(step, charDelay(ch));
+      };
+
+      step();
+    };
+
     const startTyping = () => {
       typingNode.dataset.typedOnce = '1';
       typingNode.innerHTML = '';
 
-      const chars = [...fullText];
-      let idx = 0;
+      const line1El = document.createElement('span');
+      const breakEl = document.createElement('br');
+      const line2El = document.createElement('span');
 
-      const step = () => {
-        if (idx >= chars.length) return;
-        const ch = chars[idx++];
+      breakEl.style.display = 'none';
+      line2El.style.display = 'none';
 
-        if (ch === '\n') {
-          typingNode.append(document.createElement('br'));
-          setTimeout(step, 20);
-          return;
-        }
+      typingNode.append(line1El, breakEl, line2El);
 
-        const span = document.createElement('span');
-        span.className = 'hmc-typed-char';
-        span.textContent = ch;
-        typingNode.append(span);
+      typeLine(line1El, line1, () => {
+        breakEl.style.display = 'block';
+        line2El.style.display = 'inline';
 
-        const delayMs = ch === ' ' ? 16 : 28;
-        setTimeout(step, delayMs);
-      };
-
-      setTimeout(step, 120);
+        setTimeout(() => {
+          typeLine(line2El, line2, () => {});
+        }, 180);
+      });
     };
 
     if (prefersReducedMotion) {
