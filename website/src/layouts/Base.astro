@@ -159,26 +159,23 @@ const {
 
   /* ── Scroll reveal ── */
   [data-reveal] {
-    transform: translateY(16px);
-    opacity: 0;
+    --rv-progress: 0;
+    --rv-offset: 16px;
+    opacity: var(--rv-progress);
+    transform: translate3d(0, calc((1 - var(--rv-progress)) * var(--rv-offset)), 0);
     will-change: transform, opacity;
-    transition: transform 0.62s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.52s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  [data-reveal].on {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  [data-reveal][data-d="1"] { transition-delay: 0.04s; }
-  [data-reveal][data-d="2"] { transition-delay: 0.08s; }
-  [data-reveal][data-d="3"] { transition-delay: 0.12s; }
-  [data-reveal][data-d="4"] { transition-delay: 0.16s; }
-  [data-reveal][data-d="5"] { transition-delay: 0.20s; }
+  [data-reveal][data-d="1"] { --rv-offset: 12px; }
+  [data-reveal][data-d="2"] { --rv-offset: 14px; }
+  [data-reveal][data-d="3"] { --rv-offset: 16px; }
+  [data-reveal][data-d="4"] { --rv-offset: 18px; }
+  [data-reveal][data-d="5"] { --rv-offset: 20px; }
 
   @media (prefers-reduced-motion: reduce) {
     [data-reveal] {
+      --rv-progress: 1;
       transform: none;
       opacity: 1;
-      transition: none;
     }
   }
 
@@ -203,7 +200,7 @@ const {
 <script>
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ── Scroll reveal via IntersectionObserver ──────────────────
+  // ── Scroll reveal bound to exact scroll position ───────────
   const autoRevealTargets = [
     ...document.querySelectorAll('main > section, main > div, .legal-body > section')
   ];
@@ -217,22 +214,36 @@ const {
   const revealTargets = Array.from(document.querySelectorAll('[data-reveal]'));
 
   if (prefersReducedMotion) {
-    revealTargets.forEach(el => el.classList.add('on'));
+    revealTargets.forEach((el) => el.style.setProperty('--rv-progress', '1'));
   } else {
-    const io = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          const visible = entry.isIntersecting && entry.intersectionRatio >= 0.08;
-          entry.target.classList.toggle('on', visible);
-        });
-      },
-      {
-        threshold: [0, 0.08, 0.2, 0.35],
-        rootMargin: '-8% 0px -8% 0px'
-      }
-    );
+    let revealRaf = null;
 
-    revealTargets.forEach(el => io.observe(el));
+    const updateRevealFromScroll = () => {
+      const vh = window.innerHeight || 1;
+      const viewportCenter = vh * 0.52;
+
+      revealTargets.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const center = rect.top + rect.height * 0.5;
+        const distance = Math.abs(center - viewportCenter);
+        const maxDistance = vh * 0.72 + rect.height * 0.5;
+        const progress = Math.max(0, Math.min(1, 1 - distance / Math.max(1, maxDistance)));
+        el.style.setProperty('--rv-progress', progress.toFixed(4));
+      });
+    };
+
+    const requestRevealUpdate = () => {
+      if (revealRaf !== null) return;
+      revealRaf = requestAnimationFrame(() => {
+        revealRaf = null;
+        updateRevealFromScroll();
+      });
+    };
+
+    window.addEventListener('scroll', requestRevealUpdate, { passive: true });
+    window.addEventListener('resize', requestRevealUpdate);
+    window.addEventListener('orientationchange', requestRevealUpdate);
+    requestRevealUpdate();
   }
 
   // ── Nav scroll shadow ───────────────────────────────────────
