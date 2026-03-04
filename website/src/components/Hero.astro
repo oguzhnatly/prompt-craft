@@ -332,21 +332,54 @@ import AppWindow from './AppWindow.astro';
   }
   @media (max-width: 860px) {
     .hero-main { min-height: auto; padding: 48px 0 26px; }
-    .hm-grid { grid-template-columns: 1fr; gap: 28px; }
-    .hm-window { align-items: flex-start; justify-content: flex-start; }
-    .hmw-frame { transform: scale(0.88); transform-origin: left top; }
+    .hm-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .hm-copy { min-width: 0; width: 100%; }
+
+    .hm-window {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .hmw-frame {
+      width: min(100%, 356px);
+      transform: none;
+      filter: drop-shadow(0 14px 30px rgba(0,0,0,0.14)) drop-shadow(0 4px 10px rgba(0,0,0,0.08));
+    }
+    .hmw-frame :global(.app-win) {
+      width: 100% !important;
+      max-width: 100%;
+    }
+
     .hmw-refund-pill {
       position: static;
       min-width: 0;
-      width: fit-content;
+      width: min(100%, 320px);
       left: auto;
       top: auto;
       transform: none;
-      margin-top: 14px;
+      margin-top: 0;
+      justify-content: center;
     }
+
     .hmw-refund-pill:hover { transform: translateY(-1px); }
     .hmw-refund-copy strong { font-size: 10px; }
     .hmw-refund-copy span { font-size: 8px; }
-    .hmc-h1 { max-width: 100%; }
+
+    .hmc-h1 {
+      max-width: 100%;
+      font-size: clamp(30px, 10.5vw, 42px);
+      line-height: 1.06;
+      overflow-wrap: anywhere;
+    }
+    .hmc-h1 br { display: none; }
+
+    .hmc-metrics {
+      flex-wrap: wrap;
+      gap: 8px 0;
+    }
   }
 </style>
