@@ -43,5 +43,6 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 5ec6ef2910644610a123117a837e6f46
           workingDirectory: website
           command: pages deploy dist --project-name=promptcraft-web
