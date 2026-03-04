@@ -223,7 +223,7 @@ const {
 
     const updateRevealFromScroll = () => {
       const vh = window.innerHeight || 1;
-      const edgeBand = Math.max(56, vh * 0.10); // only top 10% and bottom 10% react
+      const edgeBand = Math.max(56, vh * 0.15); // only top 15% and bottom 15% react
 
       revealTargets.forEach((el) => {
         const rect = el.getBoundingClientRect();
