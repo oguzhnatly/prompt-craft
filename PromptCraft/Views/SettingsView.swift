@@ -615,9 +615,6 @@ struct SettingsView: View {
                 cloudProviderNote
             } else if config.selectedProvider == .ollama {
                 ollamaConnectionView
-            } else if config.selectedProvider == .openRouter {
-                openRouterConnectionView
-                apiKeyView
             } else {
                 apiKeyView
             }
@@ -743,44 +740,6 @@ struct SettingsView: View {
     @State private var ollamaAutoStartAttempted = false
     @State private var showDeleteModelConfirmation = false
     @State private var modelToDelete: LLMModelInfo?
-
-    // MARK: - OpenRouter Connection View
-
-    private var openRouterConnectionView: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Models")
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(.secondary)
-
-            HStack(spacing: 8) {
-                if viewModel.isLoadingModels {
-                    ProgressView().controlSize(.small)
-                    Text("Fetching models...")
-                        .font(.system(size: 12))
-                        .foregroundStyle(.secondary)
-                } else {
-                    HStack(spacing: 4) {
-                        Circle()
-                            .fill(viewModel.availableModels.isEmpty ? Color.secondary : Color.green)
-                            .frame(width: 8, height: 8)
-                        Text(viewModel.availableModels.isEmpty
-                             ? "No models loaded"
-                             : "\(viewModel.availableModels.count) models available")
-                            .font(.system(size: 12))
-                    }
-                }
-
-                Spacer()
-
-                Button("Refresh Models") {
-                    viewModel.loadModels(for: .openRouter)
-                }
-                .font(.system(size: 12))
-                .controlSize(.small)
-                .disabled(viewModel.isLoadingModels)
-            }
-        }
-    }
 
     private var ollamaConnectionView: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -1252,7 +1211,7 @@ struct SettingsView: View {
                 Text("No models available")
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
-            } else if config.selectedProvider == .ollama {
+            } else if config.selectedProvider == .ollama || config.selectedProvider == .openRouter {
                 ollamaModelSelector
             } else {
                 Picker("", selection: configBinding(\.selectedModelName)) {
@@ -1321,16 +1280,20 @@ struct SettingsView: View {
             let notInstalled = viewModel.availableModels.filter { !$0.isInstalled }
             if !notInstalled.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("AVAILABLE TO DOWNLOAD")
+                    Text(config.selectedProvider == .openRouter ? "AVAILABLE MODELS" : "AVAILABLE TO DOWNLOAD")
                         .font(.system(size: 9, weight: .bold))
                         .foregroundStyle(.tertiary)
                         .tracking(0.8)
                         .padding(.top, 4)
 
                     ForEach(notInstalled) { model in
-                        ollamaModelRow(model: model, isSelected: false)
+                        ollamaModelRow(model: model, isSelected: config.selectedModelName == model.id)
                             .onTapGesture {
-                                viewModel.pullOllamaModel(name: model.id)
+                                if config.selectedProvider == .openRouter {
+                                    configService.update { $0.selectedModelName = model.id }
+                                } else {
+                                    viewModel.pullOllamaModel(name: model.id)
+                                }
                             }
                     }
                 }
@@ -1354,7 +1317,7 @@ struct SettingsView: View {
     private func ollamaModelRow(model: LLMModelInfo, isSelected: Bool) -> some View {
         HStack(spacing: 8) {
             // Selection indicator or download icon
-            if model.isInstalled {
+            if model.isInstalled || config.selectedProvider == .openRouter {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 12))
                     .foregroundStyle(isSelected ? Color.accentColor : .secondary.opacity(0.4))
@@ -1373,7 +1336,7 @@ struct SettingsView: View {
                 HStack(spacing: 4) {
                     Text(model.displayName)
                         .font(.system(size: 12, weight: isSelected ? .semibold : .regular))
-                        .foregroundStyle(model.isInstalled ? .primary : .secondary)
+                        .foregroundStyle((model.isInstalled || config.selectedProvider == .openRouter) ? .primary : .secondary)
 
                     if let size = model.parameterSize {
                         Text(size)
@@ -1405,8 +1368,8 @@ struct SettingsView: View {
                 }
             }
 
-            // Delete button for installed models
-            if model.isInstalled {
+            // Delete button for installed models (Ollama only)
+            if model.isInstalled && config.selectedProvider != .openRouter {
                 Button {
                     modelToDelete = model
                     showDeleteModelConfirmation = true

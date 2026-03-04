@@ -148,12 +148,18 @@ final class OpenRouterProvider: LLMProviderProtocol {
             let models = decoded.models
                 .enumerated()
                 .map { index, m -> LLMModelInfo in
-                    LLMModelInfo(
+                    var info = LLMModelInfo(
                         id: m.id,
                         displayName: m.displayName,
                         contextWindow: m.contextLength,
                         isDefault: index == 0
                     )
+                    info.isInstalled = true
+                    info.isRecommended = m.isRecommended ?? false
+                    info.tags = m.tags ?? []
+                    info.bestFor = m.bestFor
+                    info.parameterSize = m.parameterSize
+                    return info
                 }
             return models.isEmpty ? nil : models
         } catch {
@@ -346,6 +352,10 @@ private struct OpenRouterProxyResponse: Decodable {
         let displayName: String
         let contextLength: Int
         let provider: String
+        let isRecommended: Bool?
+        let tags: [String]?
+        let bestFor: String?
+        let parameterSize: String?
     }
 }
 
