@@ -320,11 +320,44 @@ const stages = [
     .pl-footer-wrap { width: 100%; }
     .pl-header-wrap { padding: 0; }
     .pl-header { padding: 0 20px 16px; }
-    .pl-ide { flex: none; }
-    .pl-ide { grid-template-columns: 1fr; min-height: 520px; }
-    .pl-stages { border-right: none; border-bottom: 1px solid var(--bdr); display: grid; grid-template-columns: 1fr 1fr; }
-    .pl-panel-wrap { min-height: 380px; }
-    .pl-panel { padding: 24px 20px; }
+
+    .pl-ide {
+      flex: none;
+      grid-template-columns: 1fr;
+      min-height: 0;
+      height: auto;
+    }
+
+    .pl-stages {
+      border-right: none;
+      border-bottom: 1px solid var(--bdr);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: visible;
+    }
+
+    .pl-panel-wrap {
+      position: static;
+      min-height: 0;
+      height: auto;
+      overflow: visible;
+    }
+
+    .pl-panel {
+      position: static;
+      inset: auto;
+      padding: 24px 20px;
+      display: none;
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+      overflow: visible;
+    }
+
+    .pl-panel.active {
+      display: flex;
+    }
+
     .pl-footer-row { padding: 12px 20px 24px; }
   }
 </style>
