@@ -218,16 +218,25 @@ const {
   } else {
     let revealRaf = null;
 
+    const clamp01 = (n) => Math.max(0, Math.min(1, n));
+
     const updateRevealFromScroll = () => {
       const vh = window.innerHeight || 1;
-      const viewportCenter = vh * 0.52;
 
       revealTargets.forEach((el) => {
         const rect = el.getBoundingClientRect();
-        const center = rect.top + rect.height * 0.5;
-        const distance = Math.abs(center - viewportCenter);
-        const maxDistance = vh * 0.72 + rect.height * 0.5;
-        const progress = Math.max(0, Math.min(1, 1 - distance / Math.max(1, maxDistance)));
+
+        // Enter fade reacts directly to top edge movement
+        const enterStart = vh * 1.02;
+        const enterEnd = vh * 0.55;
+        const enter = clamp01((enterStart - rect.top) / Math.max(1, enterStart - enterEnd));
+
+        // Exit fade reacts directly as bottom edge leaves upper viewport
+        const exitStart = vh * 0.70;
+        const exitEnd = vh * 0.14;
+        const exit = clamp01((rect.bottom - exitEnd) / Math.max(1, exitStart - exitEnd));
+
+        const progress = Math.min(enter, exit);
         el.style.setProperty('--rv-progress', progress.toFixed(4));
       });
     };
