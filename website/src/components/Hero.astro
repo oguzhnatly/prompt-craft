@@ -22,7 +22,8 @@ import AppWindow from './AppWindow.astro';
             class="hmc-typing-text"
             data-line1="Every prompt is optimized in seven stages"
             data-line2="before any model sees it."
-          >Every prompt is optimized in seven stages<br>before any model sees it.</span>
+            aria-label="Every prompt is optimized in seven stages before any model sees it."
+          ></span>
         </h1>
 
         <p class="hmc-body" data-reveal data-d="2">
@@ -218,6 +219,7 @@ import AppWindow from './AppWindow.astro';
   .hmc-typing-text {
     display: block;
     width: 100%;
+    min-height: 2.14em;
   }
 
   .hmc-typed-char {
@@ -455,7 +457,7 @@ import AppWindow from './AppWindow.astro';
 
         if (ch === '\n') {
           typingNode.append(document.createElement('br'));
-          setTimeout(step, 60);
+          setTimeout(step, 20);
           return;
         }
 
@@ -464,7 +466,7 @@ import AppWindow from './AppWindow.astro';
         span.textContent = ch;
         typingNode.append(span);
 
-        const delayMs = ch === ' ' ? 14 : 26;
+        const delayMs = ch === ' ' ? 16 : 28;
         setTimeout(step, delayMs);
       };
 
