@@ -17,9 +17,15 @@ import AppWindow from './AppWindow.astro';
           </span>
         </div>
 
-        <h1 class="hmc-h1 hmc-typing" data-reveal data-d="1" aria-label="Every prompt is optimized in seven stages before any model sees it.">
-          <span class="hmc-type-line hmc-type-line-1" data-text="Every prompt is optimized in seven stages"></span>
-          <span class="hmc-type-line hmc-type-line-2" data-text="before any model sees it."></span>
+        <h1
+          class="hmc-h1 hmc-typing"
+          data-reveal
+          data-d="1"
+          data-line1="Every prompt is optimized in seven stages"
+          data-line2="before any model sees it."
+          aria-label="Every prompt is optimized in seven stages before any model sees it."
+        >
+          <span class="hmc-type-line hmc-type-line-1"></span>
         </h1>
 
         <p class="hmc-body" data-reveal data-d="2">
@@ -216,19 +222,16 @@ import AppWindow from './AppWindow.astro';
     display: block;
     min-height: 1.06em;
     width: 100%;
-    transition: filter .24s ease;
   }
 
-  .hmc-type-line-2 {
-    visibility: hidden;
-  }
 
-  .hmc-type-line.is-typing {
-    filter: blur(2px);
-  }
-
-  .hmc-type-line.is-done {
-    filter: blur(0);
+  .hmc-type-char {
+    display: inline-block;
+    opacity: 0;
+    filter: blur(7px);
+    transform: translateY(2px);
+    animation: hmcCharIn .22s cubic-bezier(.16,.84,.26,1) forwards;
+    will-change: opacity, filter, transform;
   }
 
   .hmc-body {
@@ -353,10 +356,20 @@ import AppWindow from './AppWindow.astro';
     border-radius: 2px;
   }
 
+  @keyframes hmcCharIn {
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .hmc-type-line {
-      filter: none !important;
-      transition: none;
+    .hmc-type-char {
+      opacity: 1;
+      filter: none;
+      transform: none;
+      animation: none;
     }
   }
 
@@ -422,42 +435,41 @@ import AppWindow from './AppWindow.astro';
 
   if (heading && !heading.dataset.typedOnce) {
     const line1El = heading.querySelector('.hmc-type-line-1');
-    const line2El = heading.querySelector('.hmc-type-line-2');
-    const line1 = line1El?.dataset.text || '';
-    const line2 = line2El?.dataset.text || '';
+    const line1 = heading.dataset.line1 || '';
+    const line2 = heading.dataset.line2 || '';
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const renderFinalText = () => {
       line1El.textContent = line1;
+      const line2El = document.createElement('span');
+      line2El.className = 'hmc-type-line hmc-type-line-2';
       line2El.textContent = line2;
-      line2El.style.visibility = 'visible';
-      line1El.classList.add('is-done');
-      line2El.classList.add('is-done');
+      heading.append(line2El);
     };
 
     const charDelay = (ch) => {
-      if (ch === ' ') return 20;
-      if (',.;:'.includes(ch)) return 58;
-      if ('!?'.includes(ch)) return 88;
-      return 34;
+      if (ch === ' ') return 30;
+      if (',.;:'.includes(ch)) return 70;
+      if ('!?'.includes(ch)) return 105;
+      return 58;
     };
 
     const typeLine = (target, text, done) => {
       let index = 0;
-      target.textContent = '';
-      target.classList.remove('is-done');
-      target.classList.add('is-typing');
+      target.innerHTML = '';
 
       const step = () => {
         if (index >= text.length) {
-          target.classList.remove('is-typing');
-          target.classList.add('is-done');
           done?.();
           return;
         }
 
         const ch = text[index++];
-        target.textContent += ch;
+        const span = document.createElement('span');
+        span.className = 'hmc-type-char';
+        span.textContent = ch;
+        target.append(span);
+
         setTimeout(step, charDelay(ch));
       };
 
@@ -466,16 +478,18 @@ import AppWindow from './AppWindow.astro';
 
     const startTyping = () => {
       heading.dataset.typedOnce = '1';
-      line1El.textContent = '';
-      line2El.textContent = '';
-      line2El.style.visibility = 'hidden';
+      line1El.innerHTML = '';
 
-      typeLine(line1El, line1, () => {
-        setTimeout(() => {
-          line2El.style.visibility = 'visible';
-          typeLine(line2El, line2, () => {});
-        }, 420);
-      });
+      setTimeout(() => {
+        typeLine(line1El, line1, () => {
+          setTimeout(() => {
+            const line2El = document.createElement('span');
+            line2El.className = 'hmc-type-line hmc-type-line-2';
+            heading.append(line2El);
+            typeLine(line2El, line2, () => {});
+          }, 700);
+        });
+      }, 280);
     };
 
     if (prefersReducedMotion) {
