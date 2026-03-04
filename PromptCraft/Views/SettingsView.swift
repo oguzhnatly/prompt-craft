@@ -2776,7 +2776,6 @@ struct SettingsView: View {
             return "Both the menu bar popover and a desktop window are available."
         }
     }
-}
 
     // MARK: - Extensions Section
 
@@ -2928,6 +2927,8 @@ struct SettingsView: View {
         .padding(.vertical, 6)
     }
 
+
+}
 
 // MARK: - Ollama Confetti
 
