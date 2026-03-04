@@ -17,7 +17,7 @@ import AppWindow from './AppWindow.astro';
           </span>
         </div>
 
-        <h1 class="hmc-h1 hmc-typing" data-reveal data-d="1">
+        <h1 class="hmc-h1 hmc-typing">
           <span class="hmc-typing-line hmc-typing-line-1">Every prompt is optimized in seven stages</span>
           <span class="hmc-typing-line hmc-typing-line-2">before any model sees it.</span>
         </h1>
@@ -350,14 +350,14 @@ import AppWindow from './AppWindow.astro';
   }
 
   @keyframes hmcTypingFadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from { opacity: 0; filter: blur(6px); }
+    to   { opacity: 1; filter: blur(0px); }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .hmc-typing-line {
       opacity: 1;
-      filter: none;
+      filter: blur(0);
       animation: none;
     }
   }
