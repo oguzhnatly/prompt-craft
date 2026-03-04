@@ -82,6 +82,7 @@ enum AppConstants {
         static let ollamaModelsURL = "\(proxyBase)/v1/ollama-models"
         static let claudeModelsURL = "\(proxyBase)/v1/claude-models"
         static let openaiModelsURL = "\(proxyBase)/v1/openai-models"
+        static let openRouterModelsURL = "\(proxyBase)/v1/openrouter-models"
         static let proCheckoutURL = "https://buy.stripe.com/PRICE_PRO_LINK"
         static let cloudMonthlyCheckoutURL = "https://buy.stripe.com/PRICE_CLOUD_MONTHLY_LINK"
         static let cloudAnnualCheckoutURL = "https://buy.stripe.com/PRICE_CLOUD_ANNUAL_LINK"

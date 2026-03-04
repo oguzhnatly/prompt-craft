@@ -1201,8 +1201,9 @@ struct MainPopoverView: View {
                     .background(Color.red.opacity(0.05))
                     .modifier(ShakeEffect(animatableData: shakeError))
                 } else if viewModel.outputText.isEmpty && !viewModel.isProcessing {
-                    if onboardingManager.needsAPIKeyReminder && viewModel.errorMessage == nil {
-                        // API key reminder card
+                    if onboardingManager.needsAPIKeyReminder && viewModel.errorMessage == nil
+                        && !(trialService.isExpired && !licensingService.isProUser) {
+                        // API key reminder card (hide when trial is expired — upgrade CTA shown instead)
                         apiKeyReminderCard
                     } else {
                         // Empty state with pulsing
@@ -1618,13 +1619,23 @@ struct MainPopoverView: View {
                     Spacer()
                     Button("Upgrade Now") { pushScreen(.upgrade) }
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(Color.orange)
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
                 }
                 .font(.system(size: 11))
-                .foregroundStyle(.orange)
+                .foregroundStyle(Color.orange.opacity(0.9))
                 .padding(.horizontal, 16)
-                .padding(.vertical, 6)
-                .background(Color.orange.opacity(0.08))
+                .padding(.vertical, 7)
+                .background(Color.orange.opacity(0.12))
+                .overlay(
+                    Rectangle()
+                        .frame(height: 1)
+                        .foregroundStyle(Color.orange.opacity(0.25)),
+                    alignment: .bottom
+                )
             } else if trialService.shouldShowNudge {
                 // Day 10-12: gentle nudge
                 HStack(spacing: 6) {

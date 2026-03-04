@@ -194,18 +194,22 @@ struct OnboardingView: View {
             )) {
                 Text("Claude").tag(LLMProvider.anthropicClaude)
                 Text("OpenAI").tag(LLMProvider.openAI)
+                Text("OpenRouter").tag(LLMProvider.openRouter)
                 Text("Ollama").tag(LLMProvider.ollama)
             }
             .pickerStyle(.segmented)
             .padding(.horizontal, 40)
             .padding(.bottom, 16)
 
-            // API key input or Ollama status
+            // API key input or provider-specific view
             if LicensingService.shared.licenseType == .cloud {
                 cloudOnboardingView
                     .padding(.horizontal, 40)
             } else if configService.configuration.selectedProvider == .ollama {
                 ollamaOnboardingView
+                    .padding(.horizontal, 40)
+            } else if configService.configuration.selectedProvider == .openRouter {
+                openRouterOnboardingView
                     .padding(.horizontal, 40)
             } else {
                 apiKeyOnboardingView
@@ -373,6 +377,91 @@ struct OnboardingView: View {
             Text("Ollama runs locally -- no API key required.\nMake sure Ollama is running on your machine.")
                 .font(.system(size: 11))
                 .foregroundStyle(.secondary)
+        }
+    }
+
+    // MARK: - OpenRouter onboarding view
+
+    private var openRouterOnboardingView: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            // API key field
+            VStack(alignment: .leading, spacing: 4) {
+                Text("API Key")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.secondary)
+
+                HStack {
+                    SecureField("sk-or-v1-...", text: Binding(
+                        get: { settingsVM.apiKeyInput },
+                        set: {
+                            settingsVM.apiKeyInput = $0
+                            settingsVM.validationState = .idle
+                        }
+                    ))
+                    .font(.system(size: 13, design: .monospaced))
+                    .textFieldStyle(.roundedBorder)
+
+                    Button(action: { settingsVM.validateAPIKey() }) {
+                        if case .validating = settingsVM.validationState {
+                            ProgressView().controlSize(.small)
+                        } else {
+                            Text("Verify")
+                                .font(.system(size: 12, weight: .medium))
+                        }
+                    }
+                    .controlSize(.small)
+                    .disabled(settingsVM.apiKeyInput.isEmpty || settingsVM.validationState == .validating)
+                }
+            }
+
+            // Validation feedback
+            if case .valid = settingsVM.validationState {
+                HStack(spacing: 4) {
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                    Text("API key verified").foregroundStyle(.green)
+                }
+                .font(.system(size: 11))
+            } else if case .invalid(let msg) = settingsVM.validationState {
+                Text(msg).font(.system(size: 11)).foregroundStyle(.red)
+            }
+
+            // Model picker (loads after key verified)
+            if !settingsVM.availableModels.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Model")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(.secondary)
+
+                    Picker("", selection: Binding(
+                        get: { configService.configuration.selectedModelName },
+                        set: { configService.update { $0.selectedModelName = $0.selectedModelName; $0.selectedModelName = $1 } }
+                    )) {
+                        ForEach(settingsVM.availableModels) { model in
+                            Text(model.displayName).tag(model.id)
+                        }
+                    }
+                    .labelsHidden()
+                }
+            }
+
+            // Helper link
+            HStack(spacing: 4) {
+                Text("200+ models including DeepSeek, Llama, Grok, Gemini and more.")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+            }
+
+            Button(action: {
+                NSWorkspace.shared.open(URL(string: "https://openrouter.ai/settings/keys")!)
+            }) {
+                Text("Get free API key at openrouter.ai")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color.accentColor)
+            }
+            .buttonStyle(.plain)
+        }
+        .onAppear {
+            settingsVM.loadModels(for: .openRouter)
         }
     }
 

@@ -615,6 +615,9 @@ struct SettingsView: View {
                 cloudProviderNote
             } else if config.selectedProvider == .ollama {
                 ollamaConnectionView
+            } else if config.selectedProvider == .openRouter {
+                openRouterConnectionView
+                apiKeyView
             } else {
                 apiKeyView
             }
@@ -740,6 +743,44 @@ struct SettingsView: View {
     @State private var ollamaAutoStartAttempted = false
     @State private var showDeleteModelConfirmation = false
     @State private var modelToDelete: LLMModelInfo?
+
+    // MARK: - OpenRouter Connection View
+
+    private var openRouterConnectionView: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Models")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(.secondary)
+
+            HStack(spacing: 8) {
+                if viewModel.isLoadingModels {
+                    ProgressView().controlSize(.small)
+                    Text("Fetching models...")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                } else {
+                    HStack(spacing: 4) {
+                        Circle()
+                            .fill(viewModel.availableModels.isEmpty ? Color.secondary : Color.green)
+                            .frame(width: 8, height: 8)
+                        Text(viewModel.availableModels.isEmpty
+                             ? "No models loaded"
+                             : "\(viewModel.availableModels.count) models available")
+                            .font(.system(size: 12))
+                    }
+                }
+
+                Spacer()
+
+                Button("Refresh Models") {
+                    viewModel.loadModels(for: .openRouter)
+                }
+                .font(.system(size: 12))
+                .controlSize(.small)
+                .disabled(viewModel.isLoadingModels)
+            }
+        }
+    }
 
     private var ollamaConnectionView: some View {
         VStack(alignment: .leading, spacing: 6) {

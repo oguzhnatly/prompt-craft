@@ -95,9 +95,14 @@ final class OpenRouterProvider: LLMProviderProtocol {
     }
 
     private func fetchModelsFromAPI() async -> [LLMModelInfo]? {
+        // 1. Try cloud proxy first (cached, no auth required)
+        if let proxyModels = await fetchModelsFromProxy() {
+            return proxyModels
+        }
+
+        // 2. Fall back to direct OpenRouter API (requires key)
         guard let apiKey = keychainService.getAPIKey(for: .openRouter) else {
-            // Return curated list without fetching if no key
-            return Self.curatedModels
+            return nil
         }
 
         var request = URLRequest(url: modelsURL)
@@ -124,7 +129,35 @@ final class OpenRouterProvider: LLMProviderProtocol {
                 }
             return models.isEmpty ? nil : Array(models)
         } catch {
-            Logger.shared.warning("OpenRouter: model fetch failed: \(error.localizedDescription)")
+            Logger.shared.warning("OpenRouter: direct API model fetch failed: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    private func fetchModelsFromProxy() async -> [LLMModelInfo]? {
+        guard let url = URL(string: AppConstants.CloudAPI.openRouterModelsURL) else { return nil }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 8
+
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200 else { return nil }
+
+            let decoded = try JSONDecoder().decode(OpenRouterProxyResponse.self, from: data)
+            let models = decoded.models
+                .enumerated()
+                .map { index, m -> LLMModelInfo in
+                    LLMModelInfo(
+                        id: m.id,
+                        displayName: m.displayName,
+                        contextWindow: m.contextLength,
+                        isDefault: index == 0
+                    )
+                }
+            return models.isEmpty ? nil : models
+        } catch {
+            Logger.shared.warning("OpenRouter: proxy model fetch failed: \(error.localizedDescription)")
             return nil
         }
     }
@@ -302,6 +335,17 @@ private struct OpenRouterSSEEvent: Decodable {
 
     var contentDelta: String? {
         choices?.first?.delta?.content
+    }
+}
+
+private struct OpenRouterProxyResponse: Decodable {
+    let models: [ProxyModel]
+
+    struct ProxyModel: Decodable {
+        let id: String
+        let displayName: String
+        let contextLength: Int
+        let provider: String
     }
 }
 

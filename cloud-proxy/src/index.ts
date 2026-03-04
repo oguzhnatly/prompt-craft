@@ -7,6 +7,7 @@ import { handleStripeWebhook } from "./webhooks";
 import { handleOllamaModels } from "./ollama-models";
 import { handleClaudeModels } from "./claude-models";
 import { handleOpenAIModels } from "./openai-models";
+import { handleOpenRouterModels } from "./openrouter-models";
 
 export default {
   async fetch(
@@ -35,6 +36,9 @@ export default {
     }
     if (url.pathname === "/v1/openai-models" && request.method === "GET") {
       return handleOpenAIModels(env, ctx);
+    }
+    if (url.pathname === "/v1/openrouter-models" && request.method === "GET") {
+      return handleOpenRouterModels(env, ctx);
     }
 
     // --- Optimize endpoint ---
