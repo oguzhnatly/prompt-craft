@@ -1,11 +1,11 @@
 import AppIntents
+import AppKit
 import Foundation
 
 // MARK: - PromptCraft App Intents
 // Registers actions that appear in:
 // - Shortcuts.app (macOS Shortcuts / Automations)
 // - Spotlight (type "PromptCraft" or action names to surface these)
-// - Siri on macOS
 
 // MARK: - Optimize Prompt Intent
 
@@ -17,7 +17,6 @@ struct OptimizePromptIntent: AppIntent {
         categoryName: "Prompt Engineering"
     )
 
-    // Input parameter
     @Parameter(title: "Prompt", description: "The raw prompt text to optimize.")
     var promptText: String
 
@@ -28,21 +27,11 @@ struct OptimizePromptIntent: AppIntent {
         Summary("Optimize \(\.$promptText) using \(\.$styleName) style")
     }
 
-    @MainActor
     func perform() async throws -> some ReturnsValue<String> {
-        let result = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
-            Task {
-                do {
-                    let optimized = try await PromptCraftIntents.optimizePrompt(
-                        text: promptText,
-                        styleName: styleName
-                    )
-                    continuation.resume(returning: optimized)
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        let result = try await PromptCraftIntentsHelper.optimizePrompt(
+            text: promptText,
+            styleName: styleName
+        )
         return .result(value: result)
     }
 }
@@ -59,13 +48,23 @@ struct OptimizeClipboardIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some ProvidesDialog {
-        guard let clipboardText = NSPasteboard.general.string(forType: .string), !clipboardText.isEmpty else {
+        let clipboardText = await MainActor.run {
+            NSPasteboard.general.string(forType: .string) ?? ""
+        }
+
+        guard !clipboardText.isEmpty else {
             return .result(dialog: "Clipboard is empty. Copy a prompt first.")
         }
 
-        let optimized = try await PromptCraftIntents.optimizePrompt(text: clipboardText, styleName: "General")
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(optimized, forType: .string)
+        let optimized = try await PromptCraftIntentsHelper.optimizePrompt(
+            text: clipboardText,
+            styleName: "General"
+        )
+
+        await MainActor.run {
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(optimized, forType: .string)
+        }
 
         return .result(dialog: "Done! Optimized prompt copied to clipboard.")
     }
@@ -85,7 +84,10 @@ struct OpenPromptCraftIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        NotificationCenter.default.post(name: AppConstants.Notifications.shortcutActivated, object: nil)
+        NotificationCenter.default.post(
+            name: AppConstants.Notifications.shortcutActivated,
+            object: nil
+        )
         return .result()
     }
 }
@@ -135,20 +137,18 @@ struct PromptCraftShortcuts: AppShortcutsProvider {
 
 // MARK: - Internal Helper
 
-/// Shared optimization helper used by intents (avoids duplicating provider logic).
-private enum PromptCraftIntents {
+/// Shared optimization helper used by intents — avoids duplicating provider logic.
+enum PromptCraftIntentsHelper {
 
-    @MainActor
     static func optimizePrompt(text: String, styleName: String) async throws -> String {
-        let styleService = StyleService.shared
-        let styles = styleService.allStyles()
+        let styles = StyleService.shared.styles
         let style = styles.first { $0.name.lowercased() == styleName.lowercased() }
-            ?? styles.first { $0.name == "General" }
+            ?? styles.first(where: { $0.name == "General" })
             ?? styles.first
             ?? DefaultStyles.general
 
-        let provider = LLMProviderManager.shared
         let config = ConfigurationService.shared.configuration
+        let providerManager = LLMProviderManager.shared
 
         let assembled = await PromptAssembler.shared.assemble(
             rawInput: text,
@@ -158,8 +158,8 @@ private enum PromptCraftIntents {
         )
 
         var output = ""
-        let stream = provider.activeProvider.streamCompletion(
-            messages: assembled.messages.map { LLMMessage(role: $0.role, content: $0.content) },
+        let stream = providerManager.activeProvider.streamCompletion(
+            messages: assembled.messages,
             parameters: LLMRequestParameters(
                 model: config.selectedModelName,
                 temperature: config.temperature,

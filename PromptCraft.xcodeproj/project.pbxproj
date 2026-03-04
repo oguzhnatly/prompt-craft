@@ -70,6 +70,7 @@
 		A10001010000000000000150 /* WatchFolderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000150 /* WatchFolderService.swift */; };
 		A10001010000000000000151 /* OpenRouterProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000151 /* OpenRouterProvider.swift */; };
 		A10001010000000000000152 /* PromptCraftIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000152 /* PromptCraftIntents.swift */; };
+		A10001010000000000000153 /* LocalAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10002010000000000000153 /* LocalAPIService.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F3 /* OnboardingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F2 /* OnboardingManager.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F5 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F4 /* OnboardingView.swift */; };
 		D1A2B3C4E5F6071829304051 /* DesktopWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A2B3C4E5F6071829304050 /* DesktopWindowController.swift */; };
@@ -165,6 +166,7 @@
 		A10002010000000000000150 /* WatchFolderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFolderService.swift; sourceTree = "<group>"; };
 		A10002010000000000000151 /* OpenRouterProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenRouterProvider.swift; sourceTree = "<group>"; };
 		A10002010000000000000152 /* PromptCraftIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptCraftIntents.swift; sourceTree = "<group>"; };
+		A10002010000000000000153 /* LocalAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAPIService.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* OnboardingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingManager.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A7B8C9D0E1F4 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		D1A2B3C4E5F6071829304050 /* DesktopWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesktopWindowController.swift; sourceTree = "<group>"; };
@@ -325,6 +327,7 @@
 				A10002010000000000000150 /* WatchFolderService.swift */,
 				A10002010000000000000151 /* OpenRouterProvider.swift */,
 				A10002010000000000000152 /* PromptCraftIntents.swift */,
+				A10002010000000000000153 /* LocalAPIService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -549,6 +552,7 @@
 				A10001010000000000000150 /* WatchFolderService.swift in Sources */,
 				A10001010000000000000151 /* OpenRouterProvider.swift in Sources */,
 				A10001010000000000000152 /* PromptCraftIntents.swift in Sources */,
+				A10001010000000000000153 /* LocalAPIService.swift in Sources */,
 				E1F2A3B4C5D6E7F8A9B0C1D3 /* PromptExplanation.swift in Sources */,
 				E1F2A3B4C5D6E7F8A9B0C1D5 /* ExplanationView.swift in Sources */,
 			);
