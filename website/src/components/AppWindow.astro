@@ -88,9 +88,12 @@
         <svg viewBox="0 0 13 13" fill="none"><rect x="1.5" y="1.5" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.1"/><circle cx="9.5" cy="9.5" r="3" class="aw-tmpl-dot" stroke="currentColor" stroke-width="1"/><path d="M8 9.5h3M9.5 8v3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
         Templates
       </button>
-      <button class="aw-pill aw-pill-active" data-pill="general" tabindex="-1" aria-hidden="true">
-        <svg viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5l1.5 3 3.5.5-2.5 2.5.5 3.5-3-1.5-3 1.5.5-3.5-2.5-2.5 3.5-.5z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
-        General
+      <button class="aw-pill aw-pill-active aw-pill-optimize" data-pill="general" tabindex="-1" aria-hidden="true" title="Optimize" aria-label="Optimize">
+        <svg viewBox="0 0 13 13" fill="none">
+          <path d="M6.5 1L7.4 4.2H10.8L8.2 6.3L9.1 9.5L6.5 7.4L3.9 9.5L4.8 6.3L2.2 4.2H5.6Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/>
+          <circle cx="10.5" cy="2.5" r="1" fill="currentColor" opacity=".6"/>
+          <circle cx="2" cy="11" r="0.7" fill="currentColor" opacity=".4"/>
+        </svg>
       </button>
       <button class="aw-pill" data-pill="engineering" tabindex="-1" aria-hidden="true">
         <svg viewBox="0 0 13 13" fill="none"><path d="M9 4L5 11M4 7h5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><rect x="1" y="1" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.1"/></svg>
@@ -649,6 +652,7 @@
     flex-shrink: 0;
   }
   .aw-pill svg { width: 11px; height: 11px; flex-shrink: 0; }
+  .aw-pill-optimize { padding: 5px 10px; min-width: 32px; justify-content: center; }
   .aw-pill:hover { background: var(--aw-pill-h); }
   .aw-pill-active {
     background: #0A84FF !important;
@@ -828,7 +832,15 @@
 
 <script>
   // ── Interactive app demo with style + verbosity controls ─────────────
-  const fixedInput = 'summarize what i should know about LLMs';
+  const inputByStyle: Record<string, string> = {
+    general: 'summarize what i should know about LLMs',
+    engineering: 'explain how to build a reliable LLM pipeline in production',
+    research: 'what are the key open problems in large language model research',
+    content: 'write a short linkedin post about building AI products',
+    analysis: 'compare the trade offs between fine tuning and RAG for domain specific tasks',
+  };
+
+  const fixedInput = inputByStyle['general'];
 
   const outputByStyle: Record<string, Record<string, string>> = {
     general: {
@@ -1165,6 +1177,10 @@ This drives executive grade outputs instead of generic commentary.`
     const target = document.querySelector(`[data-pill="${name}"]`);
     if (target) target.classList.add('aw-pill-active');
     styleDesc.textContent = styleDescMap[name] || '';
+    // Update input text for this style (non-animated, instant swap)
+    const styleInput = inputByStyle[name] || fixedInput;
+    setInputText(styleInput);
+    charCount.textContent = `${styleInput.length} characters`;
   }
 
   function setVerbosity(index: number) {
@@ -1182,13 +1198,16 @@ This drives executive grade outputs instead of generic commentary.`
   }
 
   async function typeInputAnimated(token: number) {
+    const styleInput = inputByStyle[currentStyle] || fixedInput;
     setInputText('');
+    charCount.textContent = '0 characters';
     cursorEl.style.display = 'inline-block';
     let txt = '';
-    for (const ch of fixedInput) {
+    for (const ch of styleInput) {
       if (token !== runToken) return;
       txt += ch;
       setInputText(txt);
+      charCount.textContent = `${txt.length} characters`;
       await sleep(28);
     }
     if (token !== runToken) return;
