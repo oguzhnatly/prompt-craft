@@ -18,7 +18,8 @@ import AppWindow from './AppWindow.astro';
         </div>
 
         <h1 class="hmc-h1 hmc-typing" data-reveal data-d="1" aria-label="Every prompt is optimized in seven stages before any model sees it.">
-          <span class="hmc-typing-text" data-full="Every prompt is optimized in seven stages&#10;before any model sees it."></span>
+          <span class="hmc-type-line hmc-type-line-1" data-text="Every prompt is optimized in seven stages"></span>
+          <span class="hmc-type-line hmc-type-line-2" data-text="before any model sees it."></span>
         </h1>
 
         <p class="hmc-body" data-reveal data-d="2">
@@ -211,19 +212,23 @@ import AppWindow from './AppWindow.astro';
     gap: 0.08em;
   }
 
-  .hmc-typing-text {
+  .hmc-type-line {
     display: block;
+    min-height: 1.06em;
     width: 100%;
-    min-height: 2.14em;
+    transition: filter .24s ease;
   }
 
-  .hmc-type-char {
-    display: inline-block;
-    opacity: 0;
-    filter: blur(8px);
-    transform: translateY(2px);
-    animation: hmcCharIn .20s cubic-bezier(.16,.84,.26,1) forwards;
-    will-change: opacity, filter, transform;
+  .hmc-type-line-2 {
+    visibility: hidden;
+  }
+
+  .hmc-type-line.is-typing {
+    filter: blur(2px);
+  }
+
+  .hmc-type-line.is-done {
+    filter: blur(0);
   }
 
   .hmc-body {
@@ -348,20 +353,10 @@ import AppWindow from './AppWindow.astro';
     border-radius: 2px;
   }
 
-  @keyframes hmcCharIn {
-    to {
-      opacity: 1;
-      filter: blur(0);
-      transform: translateY(0);
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .hmc-type-char {
-      opacity: 1;
-      filter: none;
-      transform: none;
-      animation: none;
+    .hmc-type-line {
+      filter: none !important;
+      transition: none;
     }
   }
 
@@ -424,55 +419,63 @@ import AppWindow from './AppWindow.astro';
 
 <script>
   const heading = document.querySelector('.hmc-typing');
-  const typingNode = heading?.querySelector('.hmc-typing-text');
 
-  if (heading && typingNode && !heading.dataset.typedOnce) {
-    const fullText = typingNode.dataset.full || '';
+  if (heading && !heading.dataset.typedOnce) {
+    const line1El = heading.querySelector('.hmc-type-line-1');
+    const line2El = heading.querySelector('.hmc-type-line-2');
+    const line1 = line1El?.dataset.text || '';
+    const line2 = line2El?.dataset.text || '';
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const renderFinalText = () => {
-      const [line1, line2] = fullText.split('\n');
-      typingNode.innerHTML = '';
-      typingNode.append(document.createTextNode(line1 || ''));
-      if (line2 !== undefined) {
-        typingNode.append(document.createElement('br'));
-        typingNode.append(document.createTextNode(line2));
-      }
+      line1El.textContent = line1;
+      line2El.textContent = line2;
+      line2El.style.visibility = 'visible';
+      line1El.classList.add('is-done');
+      line2El.classList.add('is-done');
     };
 
     const charDelay = (ch) => {
-      if (ch === ' ') return 18;
-      if (',.;:'.includes(ch)) return 55;
-      if ('!?'.includes(ch)) return 90;
-      return 32;
+      if (ch === ' ') return 20;
+      if (',.;:'.includes(ch)) return 58;
+      if ('!?'.includes(ch)) return 88;
+      return 34;
+    };
+
+    const typeLine = (target, text, done) => {
+      let index = 0;
+      target.textContent = '';
+      target.classList.remove('is-done');
+      target.classList.add('is-typing');
+
+      const step = () => {
+        if (index >= text.length) {
+          target.classList.remove('is-typing');
+          target.classList.add('is-done');
+          done?.();
+          return;
+        }
+
+        const ch = text[index++];
+        target.textContent += ch;
+        setTimeout(step, charDelay(ch));
+      };
+
+      step();
     };
 
     const startTyping = () => {
       heading.dataset.typedOnce = '1';
-      typingNode.innerHTML = '';
+      line1El.textContent = '';
+      line2El.textContent = '';
+      line2El.style.visibility = 'hidden';
 
-      const chars = [...fullText];
-      let idx = 0;
-
-      const step = () => {
-        if (idx >= chars.length) return;
-
-        const ch = chars[idx++];
-        if (ch === '\n') {
-          typingNode.append(document.createElement('br'));
-          setTimeout(step, 40);
-          return;
-        }
-
-        const span = document.createElement('span');
-        span.className = 'hmc-type-char';
-        span.textContent = ch;
-        typingNode.append(span);
-
-        setTimeout(step, charDelay(ch));
-      };
-
-      setTimeout(step, 80);
+      typeLine(line1El, line1, () => {
+        setTimeout(() => {
+          line2El.style.visibility = 'visible';
+          typeLine(line2El, line2, () => {});
+        }, 420);
+      });
     };
 
     if (prefersReducedMotion) {
@@ -483,7 +486,7 @@ import AppWindow from './AppWindow.astro';
           io.disconnect();
           startTyping();
         }
-      }, { threshold: 0.55 });
+      }, { threshold: 0.62 });
 
       io.observe(heading);
     }
