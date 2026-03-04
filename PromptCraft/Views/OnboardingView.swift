@@ -391,17 +391,21 @@ struct OnboardingView: View {
                     .foregroundStyle(.secondary)
 
                 HStack {
-                    SecureField("sk-or-v1-...", text: Binding(
-                        get: { settingsVM.apiKeyInput },
-                        set: {
-                            settingsVM.apiKeyInput = $0
-                            settingsVM.validationState = .idle
-                        }
-                    ))
-                    .font(.system(size: 13, design: .monospaced))
-                    .textFieldStyle(.roundedBorder)
+                    if settingsVM.isKeyVisible {
+                        TextField("sk-or-v1-...", text: $settingsVM.apiKeyText)
+                            .font(.system(size: 13, design: .monospaced))
+                            .textFieldStyle(.roundedBorder)
+                    } else {
+                        SecureField("sk-or-v1-...", text: $settingsVM.apiKeyText)
+                            .font(.system(size: 13, design: .monospaced))
+                            .textFieldStyle(.roundedBorder)
+                    }
 
-                    Button(action: { settingsVM.validateAPIKey() }) {
+                    Button(action: {
+                        settingsVM.saveAPIKey(for: .openRouter)
+                        settingsVM.validateAPIKey(for: .openRouter)
+                        settingsVM.loadModels(for: .openRouter)
+                    }) {
                         if case .validating = settingsVM.validationState {
                             ProgressView().controlSize(.small)
                         } else {
@@ -410,7 +414,7 @@ struct OnboardingView: View {
                         }
                     }
                     .controlSize(.small)
-                    .disabled(settingsVM.apiKeyInput.isEmpty || settingsVM.validationState == .validating)
+                    .disabled(settingsVM.apiKeyText.isEmpty || settingsVM.validationState == .validating)
                 }
             }
 
@@ -425,8 +429,13 @@ struct OnboardingView: View {
                 Text(msg).font(.system(size: 11)).foregroundStyle(.red)
             }
 
-            // Model picker (loads after key verified)
-            if !settingsVM.availableModels.isEmpty {
+            // Model picker (loads after key verified or from proxy)
+            if settingsVM.isLoadingModels {
+                HStack(spacing: 6) {
+                    ProgressView().controlSize(.small)
+                    Text("Loading models...").font(.system(size: 11)).foregroundStyle(.secondary)
+                }
+            } else if !settingsVM.availableModels.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Model")
                         .font(.system(size: 12, weight: .medium))
@@ -434,7 +443,7 @@ struct OnboardingView: View {
 
                     Picker("", selection: Binding(
                         get: { configService.configuration.selectedModelName },
-                        set: { configService.update { $0.selectedModelName = $0.selectedModelName; $0.selectedModelName = $1 } }
+                        set: { newVal in configService.update { $0.selectedModelName = newVal } }
                     )) {
                         ForEach(settingsVM.availableModels) { model in
                             Text(model.displayName).tag(model.id)
@@ -444,12 +453,10 @@ struct OnboardingView: View {
                 }
             }
 
-            // Helper link
-            HStack(spacing: 4) {
-                Text("200+ models including DeepSeek, Llama, Grok, Gemini and more.")
-                    .font(.system(size: 11))
-                    .foregroundStyle(.secondary)
-            }
+            // Helper text
+            Text("200+ models including DeepSeek, Llama, Grok, Gemini and more.")
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
 
             Button(action: {
                 NSWorkspace.shared.open(URL(string: "https://openrouter.ai/settings/keys")!)
