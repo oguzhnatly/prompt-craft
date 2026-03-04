@@ -17,13 +17,9 @@ import AppWindow from './AppWindow.astro';
           </span>
         </div>
 
-        <h1 class="hmc-h1 hmc-typing" data-reveal data-d="1">
-          <span
-            class="hmc-typing-text"
-            data-line1="Every prompt is optimized in seven stages"
-            data-line2="before any model sees it."
-            aria-label="Every prompt is optimized in seven stages before any model sees it."
-          ></span>
+        <h1 class="hmc-h1 hmc-typing" data-reveal data-d="1" aria-label="Every prompt is optimized in seven stages before any model sees it.">
+          <span class="hmc-type-line hmc-type-line-1" data-text="Every prompt is optimized in seven stages"></span>
+          <span class="hmc-type-line hmc-type-line-2" data-text="before any model sees it."></span>
         </h1>
 
         <p class="hmc-body" data-reveal data-d="2">
@@ -216,10 +212,14 @@ import AppWindow from './AppWindow.astro';
     gap: 0.08em;
   }
 
-  .hmc-typing-text {
+  .hmc-type-line {
     display: block;
+    min-height: 1.06em;
     width: 100%;
-    min-height: 2.14em;
+  }
+
+  .hmc-type-line-2 {
+    visibility: hidden;
   }
 
   .hmc-type-char {
@@ -428,18 +428,19 @@ import AppWindow from './AppWindow.astro';
 </style>
 
 <script>
-  const typingNode = document.querySelector('.hmc-typing-text');
+  const heading = document.querySelector('.hmc-typing');
 
-  if (typingNode && !typingNode.dataset.typedOnce) {
-    const line1 = typingNode.dataset.line1 || '';
-    const line2 = typingNode.dataset.line2 || '';
+  if (heading && !heading.dataset.typedOnce) {
+    const line1El = heading.querySelector('.hmc-type-line-1');
+    const line2El = heading.querySelector('.hmc-type-line-2');
+    const line1 = line1El?.dataset.text || '';
+    const line2 = line2El?.dataset.text || '';
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const renderFinalText = () => {
-      typingNode.innerHTML = '';
-      typingNode.append(document.createTextNode(line1));
-      typingNode.append(document.createElement('br'));
-      typingNode.append(document.createTextNode(line2));
+      line1El.textContent = line1;
+      line2El.textContent = line2;
+      line2El.style.visibility = 'visible';
     };
 
     const charDelay = (ch) => {
@@ -449,13 +450,13 @@ import AppWindow from './AppWindow.astro';
       return 32;
     };
 
-    const typeLine = (target, text, onDone) => {
+    const typeLine = (target, text, done) => {
       const chars = [...text];
       let idx = 0;
 
       const step = () => {
         if (idx >= chars.length) {
-          onDone();
+          done();
           return;
         }
 
@@ -472,22 +473,13 @@ import AppWindow from './AppWindow.astro';
     };
 
     const startTyping = () => {
-      typingNode.dataset.typedOnce = '1';
-      typingNode.innerHTML = '';
-
-      const line1El = document.createElement('span');
-      const breakEl = document.createElement('br');
-      const line2El = document.createElement('span');
-
-      breakEl.style.display = 'none';
-      line2El.style.display = 'none';
-
-      typingNode.append(line1El, breakEl, line2El);
+      heading.dataset.typedOnce = '1';
+      line1El.textContent = '';
+      line2El.textContent = '';
+      line2El.style.visibility = 'hidden';
 
       typeLine(line1El, line1, () => {
-        breakEl.style.display = 'block';
-        line2El.style.display = 'inline';
-
+        line2El.style.visibility = 'visible';
         setTimeout(() => {
           typeLine(line2El, line2, () => {});
         }, 180);
@@ -502,9 +494,9 @@ import AppWindow from './AppWindow.astro';
           io.disconnect();
           startTyping();
         }
-      }, { threshold: 0.55 });
+      }, { threshold: 0.6 });
 
-      io.observe(typingNode);
+      io.observe(heading);
     }
   }
 </script>
