@@ -17,8 +17,9 @@ import AppWindow from './AppWindow.astro';
           </span>
         </div>
 
-        <h1 class="hmc-h1" data-reveal data-d="1">
-          Every prompt is optimized in seven stages<br>before any model sees it.
+        <h1 class="hmc-h1 hmc-typing" data-reveal data-d="1">
+          <span class="hmc-typing-line hmc-typing-line-1">Every prompt is optimized in seven stages</span>
+          <span class="hmc-typing-line hmc-typing-line-2">before any model sees it.</span>
         </h1>
 
         <p class="hmc-body" data-reveal data-d="2">
@@ -205,6 +206,33 @@ import AppWindow from './AppWindow.astro';
     max-width: 720px;
   }
 
+  .hmc-typing {
+    display: flex;
+    flex-direction: column;
+    gap: 0.08em;
+  }
+
+  .hmc-typing-line {
+    display: block;
+    width: 100%;
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    filter: blur(8px);
+    will-change: clip-path, filter, opacity;
+  }
+
+  .hmc-typing-line-1 {
+    animation:
+      hmcTypingReveal 1.25s steps(38, end) 0.08s forwards,
+      hmcTypingFocus 0.95s ease 0.08s forwards;
+  }
+
+  .hmc-typing-line-2 {
+    animation:
+      hmcTypingReveal 1.05s steps(24, end) 0.36s forwards,
+      hmcTypingFocus 0.85s ease 0.36s forwards;
+  }
+
   .hmc-body {
     font-size: 16px; line-height: 1.74; color: var(--mid);
     max-width: 560px; margin-bottom: 30px;
@@ -325,6 +353,31 @@ import AppWindow from './AppWindow.astro';
     height: 13px;
     object-fit: contain;
     border-radius: 2px;
+  }
+
+  @keyframes hmcTypingReveal {
+    from {
+      clip-path: inset(0 100% 0 0);
+      opacity: 0;
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes hmcTypingFocus {
+    from { filter: blur(8px); }
+    to { filter: blur(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hmc-typing-line {
+      clip-path: none;
+      opacity: 1;
+      filter: none;
+      animation: none;
+    }
   }
 
   @media (max-width: 1024px) {
