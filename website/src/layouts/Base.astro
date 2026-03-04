@@ -162,7 +162,7 @@ const {
     --rv-progress: 0;
     --rv-offset: 16px;
     opacity: var(--rv-progress);
-    transform: translate3d(0, calc((1 - var(--rv-progress)) * var(--rv-offset)), 0);
+    transform: translate3d(0, calc((1 - var(--rv-progress)) * var(--rv-offset)), 0) scale(calc(0.985 + (var(--rv-progress) * 0.015)));
     will-change: transform, opacity;
   }
   [data-reveal][data-d="1"] { --rv-offset: 12px; }
@@ -219,24 +219,25 @@ const {
     let revealRaf = null;
 
     const clamp01 = (n) => Math.max(0, Math.min(1, n));
+    const smooth = (t) => t * t * (3 - 2 * t);
 
     const updateRevealFromScroll = () => {
       const vh = window.innerHeight || 1;
+      const edgeBand = Math.max(56, vh * 0.10); // only top 10% and bottom 10% react
 
       revealTargets.forEach((el) => {
         const rect = el.getBoundingClientRect();
 
-        // Enter fade reacts directly to top edge movement
-        const enterStart = vh * 1.02;
-        const enterEnd = vh * 0.55;
-        const enter = clamp01((enterStart - rect.top) / Math.max(1, enterStart - enterEnd));
+        // Bottom edge band: fade in while entering the viewport
+        const enterLinear = clamp01((vh - rect.top) / edgeBand);
 
-        // Exit fade reacts directly as bottom edge leaves upper viewport
-        const exitStart = vh * 0.70;
-        const exitEnd = vh * 0.14;
-        const exit = clamp01((rect.bottom - exitEnd) / Math.max(1, exitStart - exitEnd));
+        // Top edge band: fade out while leaving the viewport
+        const exitLinear = clamp01(rect.bottom / edgeBand);
 
-        const progress = Math.min(enter, exit);
+        // Keep fully visible through the middle 80% of viewport
+        const linear = Math.min(enterLinear, exitLinear);
+        const progress = smooth(linear);
+
         el.style.setProperty('--rv-progress', progress.toFixed(4));
       });
     };
