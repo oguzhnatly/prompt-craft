@@ -4,6 +4,7 @@ import SwiftUI
 enum SettingsTab: String, CaseIterable {
     case general = "General"
     case aiProviders = "AI Providers"
+    case extensions = "Extensions"
     case behavior = "Behavior"
     case contextEngine = "Context Engine"
     case privacyAbout = "Privacy & About"
@@ -133,6 +134,9 @@ struct SettingsView: View {
             watchFolderSection
             sectionDivider
             localAPISection
+        case .extensions:
+            extensionsSection
+                .padding(.top, 12)
         case .contextEngine:
             contextEngineSection
                 .padding(.top, 12)
@@ -2835,4 +2839,181 @@ private struct ConfettiParticle: Identifiable {
     let finalX: CGFloat
     let finalY: CGFloat
     let finalRotation: Double
+
+
+    // MARK: - Extensions Section
+
+    private var extensionsSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            sectionHeader("Extensions")
+
+            // Local API requirement note
+            if !config.localAPIEnabled {
+                HStack(spacing: 8) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.orange)
+                    Text("Raycast and Alfred require the Local API. Enable it in the Behavior tab.")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Button("Enable") {
+                        configService.update { $0.localAPIEnabled = true }
+                    }
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(Color.accentColor)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color.orange.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .padding(.bottom, 12)
+            }
+
+            // Raycast
+            extensionRow(
+                icon: "bolt.fill",
+                iconColor: .red,
+                name: "Raycast",
+                subtitle: "Optimize prompts from Raycast launcher",
+                statusLabel: config.localAPIEnabled ? "Local API active on port \(config.localAPIPort)" : "Requires Local API",
+                statusColor: config.localAPIEnabled ? .green : .orange,
+                actionLabel: "Install Extension",
+                actionURL: "https://www.raycast.com/store"
+            )
+
+            sectionDivider
+
+            // Alfred
+            extensionRow(
+                icon: "magnifyingglass",
+                iconColor: .blue,
+                name: "Alfred Workflow",
+                subtitle: "Optimize with Alfred via hotkey or keyword",
+                statusLabel: config.localAPIEnabled ? "Local API active on port \(config.localAPIPort)" : "Requires Local API",
+                statusColor: config.localAPIEnabled ? .green : .orange,
+                actionLabel: "Import Workflow",
+                actionURL: "https://www.alfredapp.com/workflows/"
+            )
+
+            sectionDivider
+
+            // Apple Shortcuts
+            extensionRow(
+                icon: "square.grid.2x2.fill",
+                iconColor: .purple,
+                name: "Apple Shortcuts",
+                subtitle: "Automate prompts with Shortcuts.app and Siri",
+                statusLabel: "Built-in via App Intents",
+                statusColor: .green,
+                actionLabel: "Open Shortcuts",
+                actionURL: "shortcuts://"
+            )
+
+            sectionDivider
+
+            // Spotlight
+            extensionRow(
+                icon: "sparkle.magnifyingglass",
+                iconColor: Color(red: 0.2, green: 0.6, blue: 1.0),
+                name: "Spotlight",
+                subtitle: "Trigger PromptCraft from Spotlight search",
+                statusLabel: "Built-in via App Intents",
+                statusColor: .green,
+                actionLabel: nil,
+                actionURL: nil
+            )
+
+            sectionDivider
+
+            // API Token (for Raycast/Alfred)
+            if config.localAPIEnabled {
+                VStack(alignment: .leading, spacing: 6) {
+                    sectionSubheader("API Token")
+                    Text("Use this token to authenticate Raycast and Alfred requests.")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                    HStack(spacing: 8) {
+                        Text(localAPIService.getOrCreateToken())
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                        Spacer()
+                        Button(localAPITokenCopied ? "Copied!" : "Copy") {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString(localAPIService.getOrCreateToken(), forType: .string)
+                            localAPITokenCopied = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                localAPITokenCopied = false
+                            }
+                        }
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(localAPITokenCopied ? .green : Color.accentColor)
+                    }
+                    .padding(10)
+                    .background(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                }
+                .padding(.top, 4)
+            }
+        }
+    }
+
+    private func extensionRow(
+        icon: String,
+        iconColor: Color,
+        name: String,
+        subtitle: String,
+        statusLabel: String,
+        statusColor: Color,
+        actionLabel: String?,
+        actionURL: String?
+    ) -> some View {
+        HStack(spacing: 12) {
+            // Icon
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(iconColor.opacity(0.12))
+                    .frame(width: 36, height: 36)
+                Image(systemName: icon)
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(iconColor)
+            }
+
+            // Name + subtitle
+            VStack(alignment: .leading, spacing: 2) {
+                Text(name)
+                    .font(.system(size: 13, weight: .medium))
+                Text(subtitle)
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            // Status + action
+            VStack(alignment: .trailing, spacing: 4) {
+                HStack(spacing: 4) {
+                    Circle()
+                        .fill(statusColor)
+                        .frame(width: 6, height: 6)
+                    Text(statusLabel)
+                        .font(.system(size: 10))
+                        .foregroundStyle(.secondary)
+                }
+
+                if let label = actionLabel, let urlStr = actionURL,
+                   let url = URL(string: urlStr) {
+                    Button(label) {
+                        NSWorkspace.shared.open(url)
+                    }
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(Color.accentColor)
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+        .padding(.vertical, 6)
+    }
 }
