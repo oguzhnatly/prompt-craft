@@ -142,8 +142,8 @@ enum PromptCraftIntentsHelper {
 
     static func optimizePrompt(text: String, styleName: String) async throws -> String {
         let styles = StyleService.shared.styles
-        let style = styles.first { $0.name.lowercased() == styleName.lowercased() }
-            ?? styles.first(where: { $0.name == "General" })
+        let style = styles.first { $0.displayName.lowercased() == styleName.lowercased() }
+            ?? styles.first { $0.displayName == "Automatic" }
             ?? styles.first
             ?? DefaultStyles.general
 
