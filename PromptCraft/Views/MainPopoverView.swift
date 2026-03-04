@@ -1619,23 +1619,13 @@ struct MainPopoverView: View {
                     Spacer()
                     Button("Upgrade Now") { pushScreen(.upgrade) }
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(Color.orange)
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                        .foregroundStyle(.orange)
                 }
                 .font(.system(size: 11))
-                .foregroundStyle(Color.orange.opacity(0.9))
+                .foregroundStyle(.orange)
                 .padding(.horizontal, 16)
-                .padding(.vertical, 7)
-                .background(Color.orange.opacity(0.12))
-                .overlay(
-                    Rectangle()
-                        .frame(height: 1)
-                        .foregroundStyle(Color.orange.opacity(0.25)),
-                    alignment: .bottom
-                )
+                .padding(.vertical, 6)
+                .background(Color.orange.opacity(0.1))
             } else if trialService.shouldShowNudge {
                 // Day 10-12: gentle nudge
                 HStack(spacing: 6) {
