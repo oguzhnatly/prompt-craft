@@ -263,6 +263,7 @@
     --aw-pill-bdr:     rgba(84,84,88,0.65);
     --aw-pill-text:    rgba(235,235,245,0.85);
     --aw-pill-h:       rgba(58,58,60,0.9);
+    --aw-pill-active-bg: #0A84FF;
     --aw-desc:         rgba(235,235,245,0.40);
     --aw-out-text:     rgba(255,255,255,0.92);
     --aw-empty:        rgba(235,235,245,0.30);
@@ -658,6 +659,11 @@
   .aw-pill svg { width: 11px; height: 11px; flex-shrink: 0; }
   .aw-pill:hover { background: var(--aw-pill-h); }
   .aw-pill-active {
+    background: #0A84FF !important;
+    border-color: transparent !important;
+    color: #FFFFFF !important;
+  }
+  .app-win.dark .aw-pill-active {
     background: #0A84FF !important;
     border-color: transparent !important;
     color: #FFFFFF !important;
