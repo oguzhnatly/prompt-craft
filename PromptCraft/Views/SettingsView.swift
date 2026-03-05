@@ -2991,3 +2991,5 @@ private struct ConfettiParticle: Identifiable {
     let finalX: CGFloat
     let finalY: CGFloat
     let finalRotation: Double
+}
+
