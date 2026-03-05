@@ -859,6 +859,10 @@ struct SettingsView: View {
             if config.selectedProvider == .ollama && viewModel.validationState == .idle {
                 ensureOllamaRunning()
             }
+            if config.selectedProvider == .openRouter && viewModel.availableModels.isEmpty {
+                viewModel.loadModels(for: .openRouter)
+                viewModel.loadAPIKey(for: .openRouter)
+            }
         }
     }
 
@@ -1324,7 +1328,7 @@ struct SettingsView: View {
             if model.isInstalled || config.selectedProvider == .openRouter {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 12))
-                    .foregroundStyle(isSelected ? Color.accentColor : .secondary.opacity(0.4))
+                    .foregroundStyle(isSelected ? Color(red: 10/255, green: 132/255, blue: 255/255) : .secondary.opacity(0.4))
             } else {
                 if viewModel.downloadingModelName == model.id {
                     ProgressView().controlSize(.mini)
@@ -1390,7 +1394,7 @@ struct SettingsView: View {
         .padding(.vertical, 5)
         .background(
             RoundedRectangle(cornerRadius: 6)
-                .fill(isSelected ? Color.accentColor.opacity(0.1) : Color.clear)
+                .fill(isSelected ? Color(red: 10/255, green: 132/255, blue: 255/255).opacity(0.1) : Color.clear)
         )
         .contentShape(Rectangle())
     }

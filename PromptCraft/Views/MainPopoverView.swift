@@ -90,6 +90,7 @@ struct MainPopoverView: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.isWindowMode) private var isWindowMode
+    @Environment(\.colorScheme) private var colorScheme
 
     private let cursorTimer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
@@ -787,13 +788,21 @@ struct MainPopoverView: View {
             }
             .padding(.horizontal, 11)
             .padding(.vertical, 7)
-            .background(viewModel.activeTemplate != nil ? Color.purple.opacity(0.15) : Color(nsColor: .controlBackgroundColor))
+            .background(viewModel.activeTemplate != nil
+                ? Color.purple.opacity(0.15)
+                : (colorScheme == .dark
+                    ? Color(red: 44/255, green: 44/255, blue: 46/255)
+                    : Color.black.opacity(0.06)))
             .foregroundStyle(viewModel.activeTemplate != nil ? .purple : .secondary)
             .clipShape(Capsule())
             .overlay(
                 Capsule()
                     .strokeBorder(
-                        viewModel.activeTemplate != nil ? Color.purple.opacity(0.3) : Color(nsColor: .separatorColor),
+                        viewModel.activeTemplate != nil
+                            ? Color.purple.opacity(0.3)
+                            : (colorScheme == .dark
+                                ? Color(white: 0.33, opacity: 0.65)
+                                : Color.black.opacity(0.10)),
                         lineWidth: 0.5
                     )
             )
@@ -859,13 +868,25 @@ struct MainPopoverView: View {
             }
             .padding(.horizontal, 11)
             .padding(.vertical, 7)
-            .background(isSelected ? Color(red: 10/255, green: 132/255, blue: 255/255) : Color(nsColor: .controlBackgroundColor))
-            .foregroundStyle(isSelected ? .white : .primary)
+            .background(isSelected
+                ? Color(red: 10/255, green: 132/255, blue: 255/255)
+                : (colorScheme == .dark
+                    ? Color(red: 44/255, green: 44/255, blue: 46/255)
+                    : Color.black.opacity(0.06)))
+            .foregroundStyle(isSelected
+                ? .white
+                : (colorScheme == .dark
+                    ? Color(white: 1, opacity: 0.85)
+                    : Color.black.opacity(0.74)))
             .clipShape(Capsule())
             .overlay(
                 Capsule()
                     .strokeBorder(
-                        isSelected ? Color.clear : Color(nsColor: .separatorColor),
+                        isSelected
+                            ? Color.clear
+                            : (colorScheme == .dark
+                                ? Color(white: 0.33, opacity: 0.65)
+                                : Color.black.opacity(0.10)),
                         lineWidth: 0.5
                     )
             )
@@ -910,12 +931,16 @@ struct MainPopoverView: View {
             Image(systemName: "plus")
                 .font(.system(size: 11, weight: .semibold))
                 .frame(width: 26, height: 26)
-                .background(Color(nsColor: .controlBackgroundColor))
+                .background(colorScheme == .dark
+                    ? Color(red: 44/255, green: 44/255, blue: 46/255)
+                    : Color.black.opacity(0.06))
                 .foregroundStyle(.secondary)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 0.5)
+                        .strokeBorder(colorScheme == .dark
+                            ? Color(white: 0.33, opacity: 0.65)
+                            : Color.black.opacity(0.10), lineWidth: 0.5)
                 )
         }
         .buttonStyle(BounceTapStyle())
