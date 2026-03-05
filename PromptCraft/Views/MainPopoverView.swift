@@ -1080,26 +1080,46 @@ struct MainPopoverView: View {
         }
     }
 
+    private func verbosityColor(_ v: OutputVerbosity) -> Color {
+        switch v {
+        case .concise:  return Color(red: 10/255, green: 132/255, blue: 255/255)
+        case .balanced: return Color(red: 48/255, green: 209/255, blue: 88/255)
+        case .detailed: return Color(red: 255/255, green: 159/255, blue: 10/255)
+        }
+    }
+    private func verbosityBgOpacity(_ v: OutputVerbosity) -> Double {
+        switch v { case .concise: return 0.10; case .balanced: return 0.12; case .detailed: return 0.14 }
+    }
+    private func verbosityBorderOpacity(_ v: OutputVerbosity) -> Double {
+        switch v { case .concise: return 0.24; case .balanced: return 0.24; case .detailed: return 0.28 }
+    }
+
     private var complexityChip: some View {
-        HStack(spacing: 4) {
+        let verb = configService.configuration.outputVerbosity
+        let vColor = verbosityColor(verb)
+        return HStack(spacing: 4) {
             Circle()
-                .fill(Color.accentColor.opacity(0.7))
+                .fill(vColor.opacity(0.70))
                 .frame(width: 5, height: 5)
             Text(configService.configuration.outputVerbosity.displayName)
                 .id(verbosityLabelID)
                 .font(.system(size: 10, weight: .medium))
-                .foregroundStyle(Color.accentColor)
+                .foregroundStyle(vColor)
             if viewModel.complexityContextBoosted {
                 Image(systemName: "brain")
                     .font(.system(size: 8))
-                    .foregroundStyle(Color.accentColor.opacity(0.8))
+                    .foregroundStyle(vColor.opacity(0.8))
             }
         }
-        .padding(.horizontal, 8)
+        .padding(.horizontal, 10)
         .padding(.vertical, 3)
         .background(
             Capsule()
-                .fill(Color.accentColor.opacity(0.08))
+                .fill(vColor.opacity(verbosityBgOpacity(verb)))
+        )
+        .overlay(
+            Capsule()
+                .strokeBorder(vColor.opacity(verbosityBorderOpacity(verb)), lineWidth: 1)
         )
         .onTapGesture {
             cycleVerbosity()
@@ -1152,10 +1172,9 @@ struct MainPopoverView: View {
             )
         } else if viewModel.isOptimizeEnabled {
             LinearGradient(
-                colors: [
-                    Color.accentColor.opacity(isOptimizeHovered ? 1.0 : 0.95),
-                    Color.accentColor.opacity(isOptimizeHovered ? 0.9 : 0.85)
-                ],
+                colors: isOptimizeHovered
+                    ? [Color(red: 26/255, green: 142/255, blue: 255/255), Color(red: 0/255, green: 120/255, blue: 240/255)]
+                    : [Color(red: 10/255, green: 132/255, blue: 255/255), Color(red: 0/255, green: 112/255, blue: 224/255)],
                 startPoint: .top,
                 endPoint: .bottom
             )
