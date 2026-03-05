@@ -863,6 +863,12 @@ struct SettingsView: View {
                 viewModel.loadModels(for: .openRouter)
                 viewModel.loadAPIKey(for: .openRouter)
             }
+            if config.selectedProvider == .anthropicClaude && viewModel.availableModels.isEmpty {
+                viewModel.loadModels(for: .anthropicClaude)
+            }
+            if config.selectedProvider == .openAI && viewModel.availableModels.isEmpty {
+                viewModel.loadModels(for: .openAI)
+            }
         }
     }
 
@@ -1219,15 +1225,8 @@ struct SettingsView: View {
                 Text("No models available")
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
-            } else if config.selectedProvider == .ollama || config.selectedProvider == .openRouter {
-                ollamaModelSelector
             } else {
-                Picker("", selection: configBinding(\.selectedModelName)) {
-                    ForEach(viewModel.availableModels) { model in
-                        Text(model.displayName).tag(model.id)
-                    }
-                }
-                .labelsHidden()
+                ollamaModelSelector
             }
         }
     }
@@ -1288,7 +1287,7 @@ struct SettingsView: View {
             let notInstalled = viewModel.availableModels.filter { !$0.isInstalled }
             if !notInstalled.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(config.selectedProvider == .openRouter ? "AVAILABLE MODELS" : "AVAILABLE TO DOWNLOAD")
+                    Text(config.selectedProvider == .ollama ? "AVAILABLE TO DOWNLOAD" : "AVAILABLE MODELS")
                         .font(.system(size: 9, weight: .bold))
                         .foregroundStyle(.tertiary)
                         .tracking(0.8)

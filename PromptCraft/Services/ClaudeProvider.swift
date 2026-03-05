@@ -64,12 +64,31 @@ final class ClaudeProvider: LLMProviderProtocol {
                   httpResponse.statusCode == 200 else { return nil }
 
             let decoded = try JSONDecoder().decode(CloudModelsResponse.self, from: data)
-            let models = decoded.models.enumerated().map { index, m in
-                LLMModelInfo(
+            let models = decoded.models.map { m in
+                let ctxBadge: String
+                if m.contextWindow >= 1_000_000 { ctxBadge = "\(m.contextWindow / 1_000_000)M ctx" }
+                else if m.contextWindow >= 1_000 { ctxBadge = "\(m.contextWindow / 1_000)K ctx" }
+                else { ctxBadge = "\(m.contextWindow) ctx" }
+                let cat = m.category ?? ""
+                let tags: [String]
+                let bestFor: String?
+                switch cat {
+                case "flagship":  tags = ["Flagship"]; bestFor = "Best overall quality"
+                case "balanced":  tags = ["Balanced"]; bestFor = "Speed and quality balance"
+                case "fast":      tags = ["Fast"];     bestFor = "Fastest responses"
+                case "reasoning": tags = ["Reasoning", "Thinking"]; bestFor = "Complex reasoning"
+                default:          tags = [];            bestFor = nil
+                }
+                return LLMModelInfo(
                     id: m.id,
                     displayName: m.displayName,
                     contextWindow: m.contextWindow,
-                    isDefault: index == 0
+                    isDefault: m.isDefault ?? false,
+                    tags: tags,
+                    parameterSize: ctxBadge,
+                    isInstalled: true,
+                    isRecommended: m.isDefault ?? false,
+                    bestFor: bestFor
                 )
             }
             return models.isEmpty ? nil : models
