@@ -87,8 +87,8 @@ enum DefaultStyles {
 
     static let general = PromptStyle(
         id: generalID,
-        displayName: "Automatic",
-        shortDescription: "Maximum impact prompt optimized for density and clarity.",
+        displayName: "Optimize",
+        shortDescription: "Balanced general-purpose optimization",
         category: .communication,
         iconName: "sparkles",
         sortOrder: 0,
@@ -176,10 +176,10 @@ enum DefaultStyles {
 
     static let engineeringDirective = PromptStyle(
         id: engineeringID,
-        displayName: "Engineering Directive",
-        shortDescription: "Precise technical requirements with constraints and acceptance criteria.",
+        displayName: "Engineering",
+        shortDescription: "Technical precision with spec-grade constraints",
         category: .technical,
-        iconName: "hammer",
+        iconName: "wrench.and.screwdriver",
         sortOrder: 1,
         isBuiltIn: true,
         systemInstruction: buildSystemInstruction(
@@ -271,10 +271,10 @@ enum DefaultStyles {
 
     static let researchBrief = PromptStyle(
         id: researchID,
-        displayName: "Research Brief",
-        shortDescription: "Analytical prompt from focused question to full research framework.",
+        displayName: "Research",
+        shortDescription: "Academic rigor with source-awareness",
         category: .research,
-        iconName: "chart.bar.doc.horizontal",
+        iconName: "magnifyingglass",
         sortOrder: 2,
         isBuiltIn: true,
         systemInstruction: buildSystemInstruction(
@@ -364,8 +364,8 @@ enum DefaultStyles {
 
     static let contentBrief = PromptStyle(
         id: contentID,
-        displayName: "Content Brief",
-        shortDescription: "Audience aware content prompt scaled to complexity.",
+        displayName: "Content",
+        shortDescription: "Narrative structure with audience-aware tone",
         category: .creative,
         iconName: "doc.text",
         sortOrder: 3,
@@ -455,10 +455,10 @@ enum DefaultStyles {
 
     static let bugReport = PromptStyle(
         id: bugReportID,
-        displayName: "Bug Report",
-        shortDescription: "Triage ready bug report from concise to fully structured.",
+        displayName: "Analysis",
+        shortDescription: "Structured analytical frameworks",
         category: .technical,
-        iconName: "ladybug",
+        iconName: "chart.line.uptrend.xyaxis",
         sortOrder: 4,
         isBuiltIn: true,
         systemInstruction: buildSystemInstruction(
