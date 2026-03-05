@@ -947,9 +947,9 @@ struct OnboardingView: View {
 
             // Style badge
             HStack(spacing: 4) {
-                Image(systemName: "hammer")
+                Image(systemName: "wrench.and.screwdriver")
                     .font(.system(size: 10))
-                Text("Engineering Directive")
+                Text("Engineering")
                     .font(.system(size: 11, weight: .medium))
             }
             .padding(.horizontal, 10)
