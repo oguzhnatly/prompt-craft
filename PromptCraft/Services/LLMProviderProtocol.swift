@@ -177,7 +177,5 @@ struct CloudModelsResponse: Decodable {
         let contextWindow: Int
         let isDefault: Bool?
         let category: String?
-        let isDefault: Bool
-        let category: String?
     }
 }

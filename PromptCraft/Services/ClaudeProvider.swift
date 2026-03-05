@@ -69,10 +69,10 @@ final class ClaudeProvider: LLMProviderProtocol {
                 if m.contextWindow >= 1_000_000 { ctxBadge = "\(m.contextWindow / 1_000_000)M ctx" }
                 else if m.contextWindow >= 1_000 { ctxBadge = "\(m.contextWindow / 1_000)K ctx" }
                 else { ctxBadge = "\(m.contextWindow) ctx" }
-                let cat = m.category ?? ""
+                let modelCategory: String = m.category ?? ""
                 let tags: [String]
                 let bestFor: String?
-                switch cat {
+                switch modelCategory {
                 case "flagship":  tags = ["Flagship"]; bestFor = "Best overall quality"
                 case "balanced":  tags = ["Balanced"]; bestFor = "Speed and quality balance"
                 case "fast":      tags = ["Fast"];     bestFor = "Fastest responses"
