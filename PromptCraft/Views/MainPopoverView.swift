@@ -785,8 +785,8 @@ struct MainPopoverView: View {
                 Text("Templates")
                     .font(.system(size: 12, weight: .medium))
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
+            .padding(.horizontal, 11)
+            .padding(.vertical, 7)
             .background(viewModel.activeTemplate != nil ? Color.purple.opacity(0.15) : Color(nsColor: .controlBackgroundColor))
             .foregroundStyle(viewModel.activeTemplate != nil ? .purple : .secondary)
             .clipShape(Capsule())
@@ -857,9 +857,9 @@ struct MainPopoverView: View {
                 Text(style.displayName)
                     .font(.system(size: 12, weight: .medium))
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(isSelected ? Color.accentColor : Color(nsColor: .controlBackgroundColor))
+            .padding(.horizontal, 11)
+            .padding(.vertical, 7)
+            .background(isSelected ? Color(red: 10/255, green: 132/255, blue: 255/255) : Color(nsColor: .controlBackgroundColor))
             .foregroundStyle(isSelected ? .white : .primary)
             .clipShape(Capsule())
             .overlay(
@@ -912,9 +912,9 @@ struct MainPopoverView: View {
                 .frame(width: 26, height: 26)
                 .background(Color(nsColor: .controlBackgroundColor))
                 .foregroundStyle(.secondary)
-                .clipShape(Capsule())
+                .clipShape(RoundedRectangle(cornerRadius: 8))
                 .overlay(
-                    Capsule()
+                    RoundedRectangle(cornerRadius: 8)
                         .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 0.5)
                 )
         }
