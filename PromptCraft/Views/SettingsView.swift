@@ -2776,8 +2776,7 @@ struct SettingsView: View {
             return "Both the menu bar popover and a desktop window are available."
         }
     }
-
-    // MARK: - Extensions Section
+    // MARK: - Extensions
 
     private var extensionsSection: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -2810,7 +2809,8 @@ struct SettingsView: View {
                 icon: "bolt.fill", iconColor: .red,
                 name: "Raycast",
                 subtitle: "Optimize prompts from Raycast launcher",
-                statusLabel: config.localAPIEnabled ? "Local API on port \(config.localAPIPort)" : "Requires Local API",
+                statusLabel: config.localAPIEnabled
+                    ? "Local API on port \(config.localAPIPort)" : "Requires Local API",
                 statusColor: config.localAPIEnabled ? .green : .orange,
                 actionLabel: "Get Extension",
                 actionURL: "https://www.raycast.com/store"
@@ -2820,7 +2820,8 @@ struct SettingsView: View {
                 icon: "magnifyingglass", iconColor: .blue,
                 name: "Alfred Workflow",
                 subtitle: "Optimize with Alfred via hotkey or keyword",
-                statusLabel: config.localAPIEnabled ? "Local API on port \(config.localAPIPort)" : "Requires Local API",
+                statusLabel: config.localAPIEnabled
+                    ? "Local API on port \(config.localAPIPort)" : "Requires Local API",
                 statusColor: config.localAPIEnabled ? .green : .orange,
                 actionLabel: "Import Workflow",
                 actionURL: "https://www.alfredapp.com/workflows/"
@@ -2829,7 +2830,7 @@ struct SettingsView: View {
             extensionRow(
                 icon: "square.grid.2x2.fill", iconColor: .purple,
                 name: "Apple Shortcuts",
-                subtitle: "Automate prompts with Shortcuts.app and Siri",
+                subtitle: "Automate with Shortcuts.app and Siri",
                 statusLabel: "Built-in via App Intents",
                 statusColor: .green,
                 actionLabel: "Open Shortcuts",
@@ -2854,9 +2855,6 @@ struct SettingsView: View {
                         .font(.system(size: 9, weight: .bold))
                         .foregroundStyle(.tertiary)
                         .tracking(0.8)
-                    Text("Use this token to authenticate Raycast and Alfred.")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
                     HStack(spacing: 8) {
                         Text(localAPIService.getOrCreateToken())
                             .font(.system(size: 11, design: .monospaced))
@@ -2866,7 +2864,8 @@ struct SettingsView: View {
                         Spacer()
                         Button(localAPITokenCopied ? "Copied!" : "Copy") {
                             NSPasteboard.general.clearContents()
-                            NSPasteboard.general.setString(localAPIService.getOrCreateToken(), forType: .string)
+                            NSPasteboard.general.setString(
+                                localAPIService.getOrCreateToken(), forType: .string)
                             localAPITokenCopied = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                 localAPITokenCopied = false
@@ -2885,6 +2884,7 @@ struct SettingsView: View {
         }
     }
 
+    @ViewBuilder
     private func extensionRow(
         icon: String, iconColor: Color,
         name: String, subtitle: String,
@@ -2915,12 +2915,15 @@ struct SettingsView: View {
                         .font(.system(size: 10))
                         .foregroundStyle(.secondary)
                 }
-                if let label = actionLabel, let urlStr = actionURL,
+                if let label = actionLabel,
+                   let urlStr = actionURL,
                    let url = URL(string: urlStr) {
-                    Button(label) { NSWorkspace.shared.open(url) }
-                        .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(Color.accentColor)
-                        .buttonStyle(.plain)
+                    Button(label) {
+                        NSWorkspace.shared.open(url)
+                    }
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(Color.accentColor)
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -2992,4 +2995,3 @@ private struct ConfettiParticle: Identifiable {
     let finalY: CGFloat
     let finalRotation: Double
 }
-
